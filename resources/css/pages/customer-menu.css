@@ -1,0 +1,17 @@
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.bottom-sheet-up {
+    transform: translateY(100%);
+    transition: transform 0.35s ease;
+}
+
+.bottom-sheet-active {
+    transform: translateY(0);
+}

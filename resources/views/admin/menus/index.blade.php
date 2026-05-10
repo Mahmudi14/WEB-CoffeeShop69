@@ -1,0 +1,396 @@
+@extends('layouts.master')
+
+@section('title', 'Admin')
+@section('header-title', 'Menu')
+
+@section('content')
+    <div class="space-y-6">
+        <section class="relative overflow-hidden rounded-[2rem] bg-[#171412] p-6 shadow-xl border border-white/10">
+            <div
+                class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,158,11,0.22),transparent_35%),linear-gradient(135deg,rgba(255,255,255,0.06),transparent_45%)] pointer-events-none">
+            </div>
+
+            <div class="relative z-10 flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+                <div>
+                    <div
+                        class="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/10 px-3 py-1.5 mb-4">
+                        <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+                        <span class="text-[11px] font-black uppercase tracking-[0.22em] text-stone-300">
+                            Menu Management
+                        </span>
+                    </div>
+
+                    <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                        Data Menu
+                    </h2>
+
+                    <p class="mt-2 text-sm leading-6 text-stone-300">
+                        Kelola menu yang tampil di POS kasir dan katalog customer.
+                    </p>
+                </div>
+
+                <a href="{{ route('admin.menus.create') }}"
+                    class="inline-flex items-center justify-center rounded-2xl bg-amber-500 px-5 py-3 text-sm font-black text-stone-950 shadow-lg shadow-amber-500/25 transition hover:bg-amber-400 active:scale-[0.98]">
+                    Tambah Menu
+                </a>
+            </div>
+        </section>
+
+        <section class="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
+            <form method="GET" action="{{ route('admin.menus.index') }}" class="grid gap-4 lg:grid-cols-12 lg:items-end">
+                <div class="lg:col-span-4">
+                    <label class="mb-2 block text-xs font-black uppercase tracking-wider text-stone-400">
+                        Cari Menu
+                    </label>
+
+                    <input type="text" name="search" value="{{ $search }}" placeholder="Nama atau deskripsi menu"
+                        class="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm font-semibold text-stone-900 outline-none transition focus:border-amber-500 focus:ring-4 focus:ring-amber-100">
+                </div>
+
+                <div class="lg:col-span-2" x-data="filterDropdown(@js((string) $categoryId))" @keydown.escape.window="close()">
+                    <label class="mb-2 block text-xs font-black uppercase tracking-wider text-stone-400">
+                        Kategori
+                    </label>
+
+                    <input type="hidden" name="category_id" x-model="selectedValue">
+
+                    <div class="relative">
+                        <button type="button" @click="toggle()"
+                            class="flex w-full items-center justify-between gap-3 rounded-2xl border border-stone-200 bg-white px-4 py-3 text-left text-sm font-semibold text-stone-900 outline-none transition focus:border-amber-500 focus:ring-4 focus:ring-amber-100">
+                            <span class="min-w-0 truncate">
+                                <span x-show="selectedValue === ''">Semua</span>
+
+                                @foreach ($categories as $category)
+                                    <span x-show="selectedValue === @js((string) $category->id)" x-cloak>
+                                        {{ $category->name }}
+                                    </span>
+                                @endforeach
+                            </span>
+
+                            <svg class="h-4 w-4 shrink-0 text-stone-400 transition"
+                                :class="dropdownOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+
+                        <div x-show="dropdownOpen" x-cloak x-transition.origin.top @click.outside="close()"
+                            class="absolute left-0 right-0 top-[54px] z-50 max-h-64 overflow-y-auto rounded-2xl border border-stone-200 bg-white p-2 shadow-xl">
+                            <button type="button" @click="select('')"
+                                class="flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-amber-50 hover:text-amber-700"
+                                :class="selectedValue === '' ? 'bg-amber-100 text-amber-800' : 'text-stone-700'">
+                                <span>Semua</span>
+
+                                <svg x-show="selectedValue === ''" x-cloak class="h-4 w-4 shrink-0" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                            </button>
+
+                            @foreach ($categories as $category)
+                                <button type="button" @click="select(@js((string) $category->id))"
+                                    class="mt-1 flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-amber-50 hover:text-amber-700"
+                                    :class="selectedValue === @js((string) $category->id) ? 'bg-amber-100 text-amber-800' :
+                                        'text-stone-700'">
+                                    <span class="truncate">
+                                        {{ $category->name }}
+                                    </span>
+
+                                    <svg x-show="selectedValue === @js((string) $category->id)" x-cloak
+                                        class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                            d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2" x-data="filterDropdown(@js((string) $status))" @keydown.escape.window="close()">
+                    <label class="mb-2 block text-xs font-black uppercase tracking-wider text-stone-400">
+                        Status
+                    </label>
+
+                    <input type="hidden" name="status" x-model="selectedValue">
+
+                    <div class="relative">
+                        <button type="button" @click="toggle()"
+                            class="flex w-full items-center justify-between gap-3 rounded-2xl border border-stone-200 bg-white px-4 py-3 text-left text-sm font-semibold text-stone-900 outline-none transition focus:border-amber-500 focus:ring-4 focus:ring-amber-100">
+                            <span class="min-w-0 truncate">
+                                <span x-show="selectedValue === ''">Semua</span>
+                                <span x-show="selectedValue === 'active'" x-cloak>Aktif</span>
+                                <span x-show="selectedValue === 'inactive'" x-cloak>Nonaktif</span>
+                            </span>
+
+                            <svg class="h-4 w-4 shrink-0 text-stone-400 transition"
+                                :class="dropdownOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+
+                        <div x-show="dropdownOpen" x-cloak x-transition.origin.top @click.outside="close()"
+                            class="absolute left-0 right-0 top-[54px] z-50 overflow-hidden rounded-2xl border border-stone-200 bg-white p-2 shadow-xl">
+                            <button type="button" @click="select('')"
+                                class="flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-amber-50 hover:text-amber-700"
+                                :class="selectedValue === '' ? 'bg-amber-100 text-amber-800' : 'text-stone-700'">
+                                <span>Semua</span>
+                            </button>
+
+                            <button type="button" @click="select('active')"
+                                class="mt-1 flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-emerald-50 hover:text-emerald-700"
+                                :class="selectedValue === 'active' ? 'bg-emerald-100 text-emerald-800' : 'text-stone-700'">
+                                <span>Aktif</span>
+                            </button>
+
+                            <button type="button" @click="select('inactive')"
+                                class="mt-1 flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-rose-50 hover:text-rose-700"
+                                :class="selectedValue === 'inactive' ? 'bg-rose-100 text-rose-800' : 'text-stone-700'">
+                                <span>Nonaktif</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2" x-data="filterDropdown(@js((string) $availability))" @keydown.escape.window="close()">
+                    <label class="mb-2 block text-xs font-black uppercase tracking-wider text-stone-400">
+                        Ketersediaan
+                    </label>
+
+                    <input type="hidden" name="availability" x-model="selectedValue">
+
+                    <div class="relative">
+                        <button type="button" @click="toggle()"
+                            class="flex w-full items-center justify-between gap-3 rounded-2xl border border-stone-200 bg-white px-4 py-3 text-left text-sm font-semibold text-stone-900 outline-none transition focus:border-amber-500 focus:ring-4 focus:ring-amber-100">
+                            <span class="min-w-0 truncate">
+                                <span x-show="selectedValue === ''">Semua</span>
+                                <span x-show="selectedValue === 'available'" x-cloak>Tersedia</span>
+                                <span x-show="selectedValue === 'unavailable'" x-cloak>Habis</span>
+                            </span>
+
+                            <svg class="h-4 w-4 shrink-0 text-stone-400 transition"
+                                :class="dropdownOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+
+                        <div x-show="dropdownOpen" x-cloak x-transition.origin.top @click.outside="close()"
+                            class="absolute left-0 right-0 top-[54px] z-50 overflow-hidden rounded-2xl border border-stone-200 bg-white p-2 shadow-xl">
+                            <button type="button" @click="select('')"
+                                class="flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-amber-50 hover:text-amber-700"
+                                :class="selectedValue === '' ? 'bg-amber-100 text-amber-800' : 'text-stone-700'">
+                                <span>Semua</span>
+                            </button>
+
+                            <button type="button" @click="select('available')"
+                                class="mt-1 flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-sky-50 hover:text-sky-700"
+                                :class="selectedValue === 'available' ? 'bg-sky-100 text-sky-800' : 'text-stone-700'">
+                                <span>Tersedia</span>
+                            </button>
+
+                            <button type="button" @click="select('unavailable')"
+                                class="mt-1 flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-orange-50 hover:text-orange-700"
+                                :class="selectedValue === 'unavailable' ? 'bg-orange-100 text-orange-800' : 'text-stone-700'">
+                                <span>Habis</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex gap-3 lg:col-span-2 lg:justify-end">
+                    <button type="submit"
+                        class="inline-flex flex-1 items-center justify-center rounded-2xl bg-stone-950 px-5 py-3 text-sm font-black text-white shadow-sm transition hover:bg-stone-800 active:scale-[0.98] lg:flex-none">
+                        Filter
+                    </button>
+
+                    <a href="{{ route('admin.menus.index') }}"
+                        class="inline-flex flex-1 items-center justify-center rounded-2xl border border-stone-200 bg-white px-5 py-3 text-sm font-black text-stone-700 shadow-sm transition hover:bg-stone-50 active:scale-[0.98] lg:flex-none">
+                        Reset
+                    </a>
+                </div>
+            </form>
+        </section>
+
+        <section class="overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-sm">
+            <div class="border-b border-stone-200 px-6 py-5">
+                <h3 class="text-lg font-black text-stone-950">
+                    Daftar Menu
+                </h3>
+
+                <p class="mt-1 text-sm text-stone-500">
+                    Total menu: {{ $menus->total() }}
+                </p>
+            </div>
+
+            @if ($menus->isEmpty())
+                <div class="p-10 text-center">
+                    <p class="text-sm font-black text-stone-700">
+                        Belum ada menu.
+                    </p>
+                    <p class="mt-2 text-xs font-medium text-stone-500">
+                        Tambahkan menu agar bisa digunakan di POS dan katalog customer.
+                    </p>
+                </div>
+            @else
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-stone-200">
+                        <thead class="bg-stone-100">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-xs font-black uppercase tracking-wider text-stone-500">
+                                    Menu
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-black uppercase tracking-wider text-stone-500">
+                                    Kategori
+                                </th>
+                                <th
+                                    class="px-6 py-4 text-right text-xs font-black uppercase tracking-wider text-stone-500">
+                                    Harga
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-black uppercase tracking-wider text-stone-500">
+                                    Status
+                                </th>
+                                <th
+                                    class="px-6 py-4 text-right text-xs font-black uppercase tracking-wider text-stone-500">
+                                    Aksi
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="divide-y divide-stone-100">
+                            @foreach ($menus as $menu)
+                                <tr class="hover:bg-stone-50">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-4">
+                                            <div class="h-14 w-14 overflow-hidden rounded-2xl bg-stone-100">
+                                                @if ($menu->image)
+                                                    <img src="{{ \Illuminate\Support\Facades\Storage::url($menu->image) }}"
+                                                        alt="{{ $menu->name }}" class="h-full w-full object-cover">
+                                                @else
+                                                    <div
+                                                        class="flex h-full w-full items-center justify-center text-xs font-black text-stone-400">
+                                                        69
+                                                    </div>
+                                                @endif
+                                            </div>
+
+                                            <div>
+                                                <p class="text-sm font-black text-stone-950">
+                                                    {{ $menu->name }}
+                                                </p>
+
+                                                <p class="mt-1 line-clamp-1 text-xs font-semibold text-stone-500">
+                                                    {{ $menu->description ?: 'Tanpa deskripsi' }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm font-bold text-stone-700">
+                                        {{ $menu->category?->name ?? '-' }}
+                                    </td>
+
+                                    <td class="whitespace-nowrap px-6 py-4 text-right text-sm font-black text-stone-950">
+                                        Rp{{ number_format($menu->normal_price, 0, ',', '.') }}
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4">
+                                        <div class="flex flex-col gap-1">
+                                            @if ($menu->is_active)
+                                                <span
+                                                    class="w-fit rounded-full bg-emerald-100 px-3 py-1 text-xs font-black text-emerald-700">
+                                                    Aktif
+                                                </span>
+                                            @else
+                                                <span
+                                                    class="w-fit rounded-full bg-rose-100 px-3 py-1 text-xs font-black text-rose-700">
+                                                    Nonaktif
+                                                </span>
+                                            @endif
+
+                                            @if ($menu->is_available)
+                                                <span
+                                                    class="w-fit rounded-full bg-sky-100 px-3 py-1 text-xs font-black text-sky-700">
+                                                    Tersedia
+                                                </span>
+                                            @else
+                                                <span
+                                                    class="w-fit rounded-full bg-orange-100 px-3 py-1 text-xs font-black text-orange-700">
+                                                    Habis
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </td>
+
+                                    <td class="whitespace-nowrap px-6 py-4 text-right">
+                                        <div class="flex justify-end gap-2">
+                                            <a href="{{ route('admin.menus.edit', $menu) }}"
+                                                class="inline-flex rounded-2xl border border-stone-200 bg-white px-4 py-2 text-xs font-black text-stone-700 shadow-sm transition hover:bg-stone-50">
+                                                Edit
+                                            </a>
+
+                                            <form method="POST"
+                                                action="{{ route('admin.menus.toggle-availability', $menu) }}">
+                                                @csrf
+                                                @method('PATCH')
+
+                                                <button type="submit"
+                                                    class="{{ $menu->is_available
+                                                        ? 'border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100'
+                                                        : 'border-sky-200 bg-sky-50 text-sky-700 hover:bg-sky-100' }} inline-flex rounded-2xl border px-4 py-2 text-xs font-black transition">
+                                                    {{ $menu->is_available ? 'Tandai Habis' : 'Tersedia' }}
+                                                </button>
+                                            </form>
+
+                                            <form method="POST"
+                                                action="{{ route('admin.menus.toggle-status', $menu) }}">
+                                                @csrf
+                                                @method('PATCH')
+
+                                                <button type="submit"
+                                                    class="{{ $menu->is_active
+                                                        ? 'border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100'
+                                                        : 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100' }} inline-flex rounded-2xl border px-4 py-2 text-xs font-black transition">
+                                                    {{ $menu->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="border-t border-stone-200 px-6 py-4">
+                    {{ $menus->links() }}
+                </div>
+            @endif
+        </section>
+    </div>
+    <script>
+        function filterDropdown(initialValue) {
+            return {
+                selectedValue: initialValue || '',
+                dropdownOpen: false,
+
+                toggle() {
+                    this.dropdownOpen = !this.dropdownOpen;
+                },
+
+                close() {
+                    this.dropdownOpen = false;
+                },
+
+                select(value) {
+                    this.selectedValue = value;
+                    this.close();
+                },
+            };
+        }
+    </script>
+@endsection
