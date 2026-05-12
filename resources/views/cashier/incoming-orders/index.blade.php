@@ -377,10 +377,12 @@
                             </div>
 
                             @if ($order->payment?->proof_path)
-                                <a href="{{ asset('storage/' . $order->payment->proof_path) }}" target="_blank"
+                                <button type="button" data-proof-preview
+                                    data-proof-src="{{ asset('storage/' . $order->payment->proof_path) }}"
+                                    data-proof-title="Bukti Pembayaran {{ $order->order_number }}"
                                     class="mt-4 inline-flex w-full items-center justify-center rounded-2xl border border-orange-200 bg-white px-4 py-3 text-sm font-black text-orange-700 transition hover:bg-orange-100">
                                     Lihat Bukti Pembayaran
-                                </a>
+                                </button>
                             @else
                                 <div class="mt-4 rounded-2xl bg-rose-100 px-4 py-3 text-sm font-black text-rose-700">
                                     Bukti pembayaran tidak ditemukan.
@@ -423,6 +425,52 @@
                             </p>
                         </div>
                     @endforelse
+                    <div id="paymentProofModal" class="fixed inset-0 z-50 hidden">
+                        <div data-proof-backdrop class="absolute inset-0 bg-black/70"></div>
+
+                        <div class="relative z-10 flex min-h-screen items-center justify-center p-4">
+                            <div class="w-full max-w-3xl overflow-hidden rounded-[2rem] bg-white shadow-2xl">
+                                <div class="flex items-center justify-between border-b border-stone-100 px-5 py-4">
+                                    <div>
+                                        <h3 id="paymentProofTitle" class="text-base font-black text-stone-950">
+                                            Bukti Pembayaran
+                                        </h3>
+
+                                        <p class="mt-1 text-xs font-semibold text-stone-500">
+                                            Gunakan tombol zoom untuk memperbesar atau memperkecil bukti.
+                                        </p>
+                                    </div>
+
+                                    <button type="button" data-proof-close
+                                        class="flex h-10 w-10 items-center justify-center rounded-full bg-stone-100 text-2xl font-black text-stone-700 transition hover:bg-stone-200">
+                                        &times;
+                                    </button>
+                                </div>
+
+                                <div class="flex items-center justify-center gap-2 border-b border-stone-100 px-5 py-3">
+                                    <button type="button" data-proof-zoom-out
+                                        class="rounded-xl bg-stone-100 px-4 py-2 text-sm font-black text-stone-700 transition hover:bg-stone-200">
+                                        -
+                                    </button>
+
+                                    <button type="button" data-proof-reset
+                                        class="rounded-xl bg-stone-100 px-4 py-2 text-sm font-black text-stone-700 transition hover:bg-stone-200">
+                                        Reset
+                                    </button>
+
+                                    <button type="button" data-proof-zoom-in
+                                        class="rounded-xl bg-stone-100 px-4 py-2 text-sm font-black text-stone-700 transition hover:bg-stone-200">
+                                        +
+                                    </button>
+                                </div>
+
+                                <div class="max-h-[60vh] overflow-auto bg-stone-950 p-4">
+                                    <img id="paymentProofImage" src="" alt="Bukti pembayaran"
+                                        class="mx-auto h-auto max-w-none rounded-2xl bg-white object-contain">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -711,6 +759,73 @@
     @endif
 
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('paymentProofModal');
+            const image = document.getElementById('paymentProofImage');
+            const title = document.getElementById('paymentProofTitle');
+
+            const previewButtons = document.querySelectorAll('[data-proof-preview]');
+            const closeButtons = document.querySelectorAll('[data-proof-close]');
+            const backdrop = document.querySelector('[data-proof-backdrop]');
+            const zoomInButton = document.querySelector('[data-proof-zoom-in]');
+            const zoomOutButton = document.querySelector('[data-proof-zoom-out]');
+            const resetButton = document.querySelector('[data-proof-reset]');
+
+            let zoom = 1;
+
+            function applyZoom() {
+                image.style.width = `${zoom * 100}%`;
+            }
+
+            function openModal(src, modalTitle) {
+                zoom = 1;
+                image.src = src;
+                title.textContent = modalTitle || 'Bukti Pembayaran';
+                applyZoom();
+
+                modal.classList.remove('hidden');
+                document.body.classList.add('overflow-hidden');
+            }
+
+            function closeModal() {
+                modal.classList.add('hidden');
+                image.src = '';
+                document.body.classList.remove('overflow-hidden');
+            }
+
+            previewButtons.forEach((button) => {
+                button.addEventListener('click', () => {
+                    openModal(button.dataset.proofSrc, button.dataset.proofTitle);
+                });
+            });
+
+            closeButtons.forEach((button) => {
+                button.addEventListener('click', closeModal);
+            });
+
+            backdrop.addEventListener('click', closeModal);
+
+            zoomInButton.addEventListener('click', () => {
+                zoom = Math.min(zoom + 0.25, 4);
+                applyZoom();
+            });
+
+            zoomOutButton.addEventListener('click', () => {
+                zoom = Math.max(zoom - 0.25, 0.5);
+                applyZoom();
+            });
+
+            resetButton.addEventListener('click', () => {
+                zoom = 1;
+                applyZoom();
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
+                    closeModal();
+                }
+            });
+        });
         const incomingOrderStateKey = 'cashier_incoming_orders_state';
 
         function getIncomingOrderPageState() {
