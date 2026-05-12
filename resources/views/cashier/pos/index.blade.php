@@ -114,7 +114,7 @@
             </div>
         </section>
 
-        <div class="grid grid-cols-[minmax(0,1fr)_300px] gap-3 xl:grid-cols-[minmax(0,1fr)_340px]">
+        <div class="grid gap-3" style="grid-template-columns: minmax(0, 1fr) 300px;">
             {{-- Menu Area --}}
             <section class="min-w-0">
                 <div class="space-y-4">
