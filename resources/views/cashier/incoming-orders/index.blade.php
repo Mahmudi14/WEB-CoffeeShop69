@@ -66,112 +66,115 @@
         </section>
 
         {{-- Summary --}}
-        <section class="grid gap-4 md:grid-cols-3">
-            <div class="rounded-[2rem] border border-amber-200 bg-amber-50 p-5 shadow-sm">
-                <p class="text-sm font-bold text-amber-700">
-                    Menunggu Tunai
-                </p>
+        <section class="overflow-x-auto pb-2">
+            <div class="grid min-w-[1080px] grid-cols-3 gap-6">
+                <div class="rounded-[2rem] border border-amber-200 bg-amber-50 p-5 shadow-sm">
+                    <p class="text-sm font-bold text-amber-700">
+                        Menunggu Tunai
+                    </p>
 
-                <p class="mt-3 text-4xl font-black text-amber-800">
-                    {{ $pendingCashOrders->count() }}
-                </p>
-            </div>
+                    <p class="mt-3 text-4xl font-black text-amber-800">
+                        {{ $pendingCashOrders->count() }}
+                    </p>
+                </div>
 
-            <div class="rounded-[2rem] border border-orange-200 bg-orange-50 p-5 shadow-sm">
-                <p class="text-sm font-bold text-orange-700">
-                    Verifikasi Bukti
-                </p>
+                <div class="rounded-[2rem] border border-orange-200 bg-orange-50 p-5 shadow-sm">
+                    <p class="text-sm font-bold text-orange-700">
+                        Verifikasi Bukti
+                    </p>
 
-                <p class="mt-3 text-4xl font-black text-orange-800">
-                    {{ $pendingVerificationOrders->count() }}
-                </p>
-            </div>
+                    <p class="mt-3 text-4xl font-black text-orange-800">
+                        {{ $pendingVerificationOrders->count() }}
+                    </p>
+                </div>
 
-            <div class="rounded-[2rem] border border-sky-200 bg-sky-50 p-5 shadow-sm">
-                <p class="text-sm font-bold text-sky-700">
-                    Sedang Diproses
-                </p>
+                <div class="rounded-[2rem] border border-sky-200 bg-sky-50 p-5 shadow-sm">
+                    <p class="text-sm font-bold text-sky-700">
+                        Sedang Diproses
+                    </p>
 
-                <p class="mt-3 text-4xl font-black text-sky-800">
-                    {{ $processingOrders->count() }}
-                </p>
+                    <p class="mt-3 text-4xl font-black text-sky-800">
+                        {{ $processingOrders->count() }}
+                    </p>
+                </div>
             </div>
         </section>
 
         {{-- Order Columns --}}
-        <section class="grid gap-6 xl:grid-cols-3">
-            {{-- Menunggu Cash --}}
-            <div class="rounded-[2rem] border border-stone-100 bg-white shadow-sm overflow-hidden">
-                <div class="border-b border-stone-100 px-6 py-5">
-                    <h2 class="text-lg font-black text-stone-950">
-                        Menunggu Bayar Tunai
-                    </h2>
-                </div>
+        <section class="overflow-x-auto pb-2">
+            <div class="grid min-w-[1080px] grid-cols-3 gap-6">
+                {{-- Menunggu Cash --}}
+                <div class="rounded-[2rem] border border-stone-100 bg-white shadow-sm overflow-hidden">
+                    <div class="border-b border-stone-100 px-6 py-5">
+                        <h2 class="text-lg font-black text-stone-950">
+                            Menunggu Bayar Tunai
+                        </h2>
+                    </div>
 
-                <div id="pending-cash-scroll" data-preserve-scroll
-                    class="max-h-[calc(100vh-18rem)] space-y-4 overflow-y-auto p-5">
-                    @forelse ($pendingCashOrders as $order)
-                        <article data-order-card
-                            data-order-search="{{ Str::lower($order->order_number . ' ' . $order->customer_name . ' ' . ($order->table?->name ?? 'tanpa meja')) }}"
-                            class="rounded-[2rem] border border-amber-200 bg-amber-50/70 p-5">
-                            <div>
-                                <p class="text-lg font-black text-stone-950">
-                                    {{ $order->order_number }}
-                                </p>
+                    <div id="pending-cash-scroll" data-preserve-scroll
+                        class="max-h-[calc(100vh-18rem)] space-y-4 overflow-y-auto p-5">
+                        @forelse ($pendingCashOrders as $order)
+                            <article data-order-card
+                                data-order-search="{{ Str::lower($order->order_number . ' ' . $order->customer_name . ' ' . ($order->table?->name ?? 'tanpa meja')) }}"
+                                class="rounded-[2rem] border border-amber-200 bg-amber-50/70 p-5">
+                                <div>
+                                    <p class="text-lg font-black text-stone-950">
+                                        {{ $order->order_number }}
+                                    </p>
 
-                                <p class="mt-1 text-sm font-semibold text-stone-600">
-                                    {{ $order->table?->name ?? 'Tanpa meja' }} • {{ $order->customer_name }}
-                                </p>
+                                    <p class="mt-1 text-sm font-semibold text-stone-600">
+                                        {{ $order->table?->name ?? 'Tanpa meja' }} • {{ $order->customer_name }}
+                                    </p>
 
-                                <p class="mt-1 text-xs font-semibold text-stone-500">
-                                    {{ $order->created_at->format('d M Y H:i') }} • {{ $order->items->sum('quantity') }}
-                                    item
-                                </p>
-                            </div>
-
-                            <div class="mt-4 rounded-2xl bg-white p-4">
-                                <p class="mb-3 text-xs font-black uppercase tracking-wider text-stone-400">
-                                    Item
-                                </p>
-
-                                <div class="space-y-2">
-                                    @foreach ($order->items->take(3) as $item)
-                                        <div class="flex justify-between gap-3 text-sm">
-                                            <span class="font-bold text-stone-700">
-                                                {{ $item->quantity }}x {{ $item->menu_name }}
-                                            </span>
-
-                                            <span class="font-black text-stone-900">
-                                                Rp{{ number_format($item->subtotal_after_discount, 0, ',', '.') }}
-                                            </span>
-                                        </div>
-                                    @endforeach
-
-                                    @if ($order->items->count() > 3)
-                                        <p class="text-xs font-bold text-stone-500">
-                                            +{{ $order->items->count() - 3 }} item lainnya
-                                        </p>
-                                    @endif
+                                    <p class="mt-1 text-xs font-semibold text-stone-500">
+                                        {{ $order->created_at->format('d M Y H:i') }} • {{ $order->items->sum('quantity') }}
+                                        item
+                                    </p>
                                 </div>
-                            </div>
 
-                            <div class="mt-4 rounded-2xl bg-white p-4">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-sm font-bold text-stone-500">
-                                        Total
-                                    </span>
+                                <div class="mt-4 rounded-2xl bg-white p-4">
+                                    <p class="mb-3 text-xs font-black uppercase tracking-wider text-stone-400">
+                                        Item
+                                    </p>
 
-                                    <span class="text-2xl font-black text-stone-950">
-                                        Rp{{ number_format($order->grand_total, 0, ',', '.') }}
-                                    </span>
+                                    <div class="space-y-2">
+                                        @foreach ($order->items->take(3) as $item)
+                                            <div class="flex justify-between gap-3 text-sm">
+                                                <span class="font-bold text-stone-700">
+                                                    {{ $item->quantity }}x {{ $item->menu_name }}
+                                                </span>
+
+                                                <span class="font-black text-stone-900">
+                                                    Rp{{ number_format($item->subtotal_after_discount, 0, ',', '.') }}
+                                                </span>
+                                            </div>
+                                        @endforeach
+
+                                        @if ($order->items->count() > 3)
+                                            <p class="text-xs font-bold text-stone-500">
+                                                +{{ $order->items->count() - 3 }} item lainnya
+                                            </p>
+                                        @endif
+                                    </div>
                                 </div>
-                            </div>
 
-                            <form method="POST" action="{{ route('cashier.incoming-orders.accept-cash', $order) }}"
-                                x-data="cashPaymentModal({
-                                    grandTotal: {{ (int) $order->grand_total }}
-                                })"
-                                @submit="
+                                <div class="mt-4 rounded-2xl bg-white p-4">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm font-bold text-stone-500">
+                                            Total
+                                        </span>
+
+                                        <span class="text-2xl font-black text-stone-950">
+                                            Rp{{ number_format($order->grand_total, 0, ',', '.') }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <form method="POST" action="{{ route('cashier.incoming-orders.accept-cash', $order) }}"
+                                    x-data="cashPaymentModal({
+                                        grandTotal: {{ (int) $order->grand_total }}
+                                    })"
+                                    @submit="
         if (parseMoney(paidAmount) < grandTotal) {
             $event.preventDefault();
             return;
@@ -179,465 +182,471 @@
 
         submitting = true;
     "
-                                class="mt-4">
-                                @csrf
+                                    class="mt-4">
+                                    @csrf
 
-                                <button type="button" @click="openPaymentModal()"
-                                    class="w-full rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700 active:scale-[0.98]">
-                                    Verifikasi Pembayaran
-                                </button>
+                                    <button type="button" @click="openPaymentModal()"
+                                        class="w-full rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700 active:scale-[0.98]">
+                                        Verifikasi Pembayaran
+                                    </button>
 
-                                {{-- Payment Modal --}}
-                                <div x-show="showPaymentModal" x-cloak x-transition.opacity
-                                    @keydown.escape.window="closePaymentModal()"
-                                    class="fixed inset-0 z-[999] flex items-center justify-center bg-stone-950/60 px-4">
-                                    <div x-show="showPaymentModal" x-transition.scale.origin.center
-                                        @click.outside="closePaymentModal()"
-                                        class="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
-                                        <div class="flex items-start justify-between gap-4">
-                                            <div>
-                                                <p class="text-xs font-black uppercase tracking-[0.22em] text-emerald-600">
-                                                    Konfirmasi Pembayaran
+                                    {{-- Payment Modal --}}
+                                    <div x-show="showPaymentModal" x-cloak x-transition.opacity
+                                        @keydown.escape.window="closePaymentModal()"
+                                        class="fixed inset-0 z-[999] flex items-center justify-center bg-stone-950/60 px-4">
+                                        <div x-show="showPaymentModal" x-transition.scale.origin.center
+                                            @click.outside="closePaymentModal()"
+                                            class="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
+                                            <div class="flex items-start justify-between gap-4">
+                                                <div>
+                                                    <p
+                                                        class="text-xs font-black uppercase tracking-[0.22em] text-emerald-600">
+                                                        Konfirmasi Pembayaran
+                                                    </p>
+
+                                                    <h3 class="mt-2 text-2xl font-black tracking-tight text-stone-950">
+                                                        Masukkan Nominal
+                                                    </h3>
+
+                                                    <p class="mt-2 text-sm leading-6 text-stone-500">
+                                                        Pastikan uang diterima dan kembalian sudah sesuai sebelum pembayaran
+                                                        diverifikasi.
+                                                    </p>
+                                                </div>
+
+                                                <button type="button" @click="closePaymentModal()" :disabled="submitting"
+                                                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-stone-100 text-stone-500 transition hover:bg-stone-200 disabled:cursor-not-allowed disabled:opacity-60">
+                                                    ✕
+                                                </button>
+                                            </div>
+
+                                            <div class="mt-5 rounded-2xl bg-emerald-50 p-4">
+                                                <div class="flex items-center justify-between gap-4">
+                                                    <span class="text-sm font-black text-emerald-800">
+                                                        Total Bayar
+                                                    </span>
+
+                                                    <span class="text-xl font-black text-emerald-800">
+                                                        Rp{{ number_format($order->grand_total, 0, ',', '.') }}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div class="mt-5">
+                                                <label
+                                                    class="mb-2 block text-xs font-black uppercase tracking-wider text-stone-500">
+                                                    Uang Diterima
+                                                </label>
+
+                                                <div class="relative">
+                                                    <span
+                                                        class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-sm font-black text-stone-500">
+                                                        Rp
+                                                    </span>
+
+                                                    <input type="text" name="paid_amount" inputmode="numeric"
+                                                        x-ref="paidAmountInput" x-model="paidAmount"
+                                                        @input="formatPaidAmount()"
+                                                        class="w-full rounded-2xl border border-stone-200 bg-white py-4 pl-11 pr-4 text-lg font-black text-stone-950 outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
+                                                        placeholder="0">
+                                                </div>
+
+                                                <p class="mt-2 text-xs font-semibold text-stone-500">
+                                                    Minimal: Rp{{ number_format($order->grand_total, 0, ',', '.') }}
                                                 </p>
-
-                                                <h3 class="mt-2 text-2xl font-black tracking-tight text-stone-950">
-                                                    Masukkan Nominal
-                                                </h3>
-
-                                                <p class="mt-2 text-sm leading-6 text-stone-500">
-                                                    Pastikan uang diterima dan kembalian sudah sesuai sebelum pembayaran
-                                                    diverifikasi.
-                                                </p>
                                             </div>
 
-                                            <button type="button" @click="closePaymentModal()" :disabled="submitting"
-                                                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-stone-100 text-stone-500 transition hover:bg-stone-200 disabled:cursor-not-allowed disabled:opacity-60">
-                                                ✕
-                                            </button>
+                                            <div class="mt-4 rounded-2xl border border-stone-200 bg-stone-50 p-4">
+                                                <div class="flex items-center justify-between gap-4">
+                                                    <span class="text-sm font-black text-stone-600">
+                                                        Kembalian
+                                                    </span>
+
+                                                    <span class="text-xl font-black text-stone-950">
+                                                        Rp<span x-text="formatMoney(changeAmount())"></span>
+                                                    </span>
+                                                </div>
+
+                                                <template x-if="remainingAmount() > 0">
+                                                    <p class="mt-2 text-xs font-bold text-rose-600">
+                                                        Uang diterima masih kurang Rp<span
+                                                            x-text="formatMoney(remainingAmount())"></span>
+                                                    </p>
+                                                </template>
+
+                                                <template
+                                                    x-if="remainingAmount() === 0 && parseMoney(paidAmount) >= grandTotal">
+                                                    <p class="mt-2 text-xs font-bold text-emerald-700">
+                                                        Nominal pembayaran sudah cukup.
+                                                    </p>
+                                                </template>
+                                            </div>
+
+                                            <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                                                <button type="button" @click="closePaymentModal()" :disabled="submitting"
+                                                    class="inline-flex items-center justify-center rounded-2xl border border-stone-200 bg-white px-5 py-3 text-sm font-black text-stone-700 shadow-sm transition hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-60">
+                                                    Batal
+                                                </button>
+
+                                                <button type="submit"
+                                                    :disabled="submitting || parseMoney(paidAmount) < grandTotal"
+                                                    class="inline-flex min-w-[180px] items-center justify-center rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60">
+                                                    <span x-show="!submitting">
+                                                        Konfirmasi Pembayaran
+                                                    </span>
+
+                                                    <span x-show="submitting" x-cloak>
+                                                        Memproses...
+                                                    </span>
+                                                </button>
+                                            </div>
                                         </div>
+                                    </div>
+                                </form>
+                            </article>
+                        @empty
+                            <div class="rounded-[2rem] border border-dashed border-stone-300 bg-stone-50 p-8 text-center">
+                                <p class="text-sm font-black text-stone-700">
+                                    Tidak ada order tunai.
+                                </p>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
 
-                                        <div class="mt-5 rounded-2xl bg-emerald-50 p-4">
-                                            <div class="flex items-center justify-between gap-4">
-                                                <span class="text-sm font-black text-emerald-800">
-                                                    Total Bayar
+                {{-- Verifikasi Bukti --}}
+                <div class="rounded-[2rem] border border-stone-100 bg-white shadow-sm overflow-hidden">
+                    <div class="border-b border-stone-100 px-6 py-5">
+                        <h2 class="text-lg font-black text-stone-950">
+                            Verifikasi Bukti
+                        </h2>
+                    </div>
+
+                    <div id="pending-verification-scroll" data-preserve-scroll
+                        class="max-h-[calc(100vh-18rem)] space-y-4 overflow-y-auto p-5">
+                        @forelse ($pendingVerificationOrders as $order)
+                            <article data-order-card
+                                data-order-search="{{ Str::lower($order->order_number . ' ' . $order->customer_name . ' ' . ($order->table?->name ?? 'tanpa meja')) }}"
+                                class="rounded-[2rem] border border-orange-200 bg-orange-50/70 p-5">
+                                <div>
+                                    <p class="text-lg font-black text-stone-950">
+                                        {{ $order->order_number }}
+                                    </p>
+
+                                    <p class="mt-1 text-sm font-semibold text-stone-600">
+                                        {{ $order->table?->name ?? 'Tanpa meja' }} • {{ $order->customer_name }}
+                                    </p>
+
+                                    <p class="mt-1 text-xs font-semibold text-stone-500">
+                                        {{ strtoupper($order->payment?->method ?? '-') }} •
+                                        {{ $order->created_at->format('d M Y H:i') }}
+                                    </p>
+                                </div>
+
+                                <div class="mt-4 rounded-2xl bg-white p-4">
+                                    <p class="mb-3 text-xs font-black uppercase tracking-wider text-stone-400">
+                                        Item
+                                    </p>
+
+                                    <div class="space-y-2">
+                                        @foreach ($order->items->take(4) as $item)
+                                            <div class="flex justify-between gap-3 text-sm">
+                                                <span class="font-bold text-stone-700">
+                                                    {{ $item->quantity }}x {{ $item->menu_name }}
                                                 </span>
 
-                                                <span class="text-xl font-black text-emerald-800">
-                                                    Rp{{ number_format($order->grand_total, 0, ',', '.') }}
+                                                <span class="font-black text-stone-900">
+                                                    Rp{{ number_format($item->subtotal_after_discount, 0, ',', '.') }}
                                                 </span>
                                             </div>
-                                        </div>
+                                        @endforeach
 
-                                        <div class="mt-5">
-                                            <label
-                                                class="mb-2 block text-xs font-black uppercase tracking-wider text-stone-500">
-                                                Uang Diterima
-                                            </label>
+                                        @if ($order->items->count() > 4)
+                                            <p class="text-xs font-bold text-stone-500">
+                                                +{{ $order->items->count() - 4 }} item lainnya
+                                            </p>
+                                        @endif
+                                    </div>
+                                </div>
 
-                                            <div class="relative">
-                                                <span
-                                                    class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-sm font-black text-stone-500">
-                                                    Rp
-                                                </span>
+                                <div class="mt-3 rounded-2xl bg-white p-4">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm font-bold text-stone-500">
+                                            Total
+                                        </span>
 
-                                                <input type="text" name="paid_amount" inputmode="numeric"
-                                                    x-ref="paidAmountInput" x-model="paidAmount" @input="formatPaidAmount()"
-                                                    class="w-full rounded-2xl border border-stone-200 bg-white py-4 pl-11 pr-4 text-lg font-black text-stone-950 outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
-                                                    placeholder="0">
-                                            </div>
+                                        <span class="text-2xl font-black text-orange-800">
+                                            Rp{{ number_format($order->grand_total, 0, ',', '.') }}
+                                        </span>
+                                    </div>
+                                </div>
 
-                                            <p class="mt-2 text-xs font-semibold text-stone-500">
-                                                Minimal: Rp{{ number_format($order->grand_total, 0, ',', '.') }}
+                                @if ($order->payment?->proof_path)
+                                    <button type="button" data-proof-preview
+                                        data-proof-src="{{ asset('storage/' . $order->payment->proof_path) }}"
+                                        data-proof-title="Bukti Pembayaran {{ $order->order_number }}"
+                                        class="mt-4 inline-flex w-full items-center justify-center rounded-2xl border border-orange-200 bg-white px-4 py-3 text-sm font-black text-orange-700 transition hover:bg-orange-100">
+                                        Lihat Bukti Pembayaran
+                                    </button>
+                                @else
+                                    <div class="mt-4 rounded-2xl bg-rose-100 px-4 py-3 text-sm font-black text-rose-700">
+                                        Bukti pembayaran tidak ditemukan.
+                                    </div>
+                                @endif
+
+                                <form method="POST" action="{{ route('cashier.incoming-orders.accept-proof', $order) }}"
+                                    class="mt-4">
+                                    @csrf
+
+                                    <button type="submit"
+                                        class="w-full rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700 active:scale-[0.98]">
+                                        Terima Bukti
+                                    </button>
+                                </form>
+
+                                <details class="mt-3 rounded-2xl border border-rose-200 bg-white">
+                                    <summary class="cursor-pointer px-4 py-3 text-sm font-black text-rose-600">
+                                        Tolak Bukti
+                                    </summary>
+
+                                    <form method="POST"
+                                        action="{{ route('cashier.incoming-orders.reject-proof', $order) }}"
+                                        class="space-y-3 border-t border-rose-100 p-4">
+                                        @csrf
+
+                                        <input type="text" name="rejection_reason" required
+                                            placeholder="Alasan penolakan"
+                                            class="w-full rounded-2xl border border-rose-200 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-rose-500 focus:ring-4 focus:ring-rose-100">
+
+                                        <button type="submit"
+                                            class="w-full rounded-2xl bg-rose-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-rose-600/20 transition hover:bg-rose-700 active:scale-[0.98]">
+                                            Konfirmasi Tolak
+                                        </button>
+                                    </form>
+                                </details>
+                            </article>
+                        @empty
+                            <div class="rounded-[2rem] border border-dashed border-stone-300 bg-stone-50 p-8 text-center">
+                                <p class="text-sm font-black text-stone-700">
+                                    Tidak ada bukti yang perlu diverifikasi.
+                                </p>
+                            </div>
+                        @endforelse
+                        <div id="paymentProofModal" class="fixed inset-0 z-50 hidden">
+                            <div data-proof-backdrop class="absolute inset-0 bg-black/70"></div>
+
+                            <div class="relative z-10 flex min-h-screen items-center justify-center p-4">
+                                <div class="w-full max-w-3xl overflow-hidden rounded-[2rem] bg-white shadow-2xl">
+                                    <div class="flex items-center justify-between border-b border-stone-100 px-5 py-4">
+                                        <div>
+                                            <h3 id="paymentProofTitle" class="text-base font-black text-stone-950">
+                                                Bukti Pembayaran
+                                            </h3>
+
+                                            <p class="mt-1 text-xs font-semibold text-stone-500">
+                                                Gunakan tombol zoom untuk memperbesar atau memperkecil bukti.
                                             </p>
                                         </div>
 
-                                        <div class="mt-4 rounded-2xl border border-stone-200 bg-stone-50 p-4">
-                                            <div class="flex items-center justify-between gap-4">
-                                                <span class="text-sm font-black text-stone-600">
-                                                    Kembalian
-                                                </span>
-
-                                                <span class="text-xl font-black text-stone-950">
-                                                    Rp<span x-text="formatMoney(changeAmount())"></span>
-                                                </span>
-                                            </div>
-
-                                            <template x-if="remainingAmount() > 0">
-                                                <p class="mt-2 text-xs font-bold text-rose-600">
-                                                    Uang diterima masih kurang Rp<span
-                                                        x-text="formatMoney(remainingAmount())"></span>
-                                                </p>
-                                            </template>
-
-                                            <template
-                                                x-if="remainingAmount() === 0 && parseMoney(paidAmount) >= grandTotal">
-                                                <p class="mt-2 text-xs font-bold text-emerald-700">
-                                                    Nominal pembayaran sudah cukup.
-                                                </p>
-                                            </template>
-                                        </div>
-
-                                        <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-                                            <button type="button" @click="closePaymentModal()" :disabled="submitting"
-                                                class="inline-flex items-center justify-center rounded-2xl border border-stone-200 bg-white px-5 py-3 text-sm font-black text-stone-700 shadow-sm transition hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-60">
-                                                Batal
-                                            </button>
-
-                                            <button type="submit"
-                                                :disabled="submitting || parseMoney(paidAmount) < grandTotal"
-                                                class="inline-flex min-w-[180px] items-center justify-center rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60">
-                                                <span x-show="!submitting">
-                                                    Konfirmasi Pembayaran
-                                                </span>
-
-                                                <span x-show="submitting" x-cloak>
-                                                    Memproses...
-                                                </span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </article>
-                    @empty
-                        <div class="rounded-[2rem] border border-dashed border-stone-300 bg-stone-50 p-8 text-center">
-                            <p class="text-sm font-black text-stone-700">
-                                Tidak ada order tunai.
-                            </p>
-                        </div>
-                    @endforelse
-                </div>
-            </div>
-
-            {{-- Verifikasi Bukti --}}
-            <div class="rounded-[2rem] border border-stone-100 bg-white shadow-sm overflow-hidden">
-                <div class="border-b border-stone-100 px-6 py-5">
-                    <h2 class="text-lg font-black text-stone-950">
-                        Verifikasi Bukti
-                    </h2>
-                </div>
-
-                <div id="pending-verification-scroll" data-preserve-scroll
-                    class="max-h-[calc(100vh-18rem)] space-y-4 overflow-y-auto p-5">
-                    @forelse ($pendingVerificationOrders as $order)
-                        <article data-order-card
-                            data-order-search="{{ Str::lower($order->order_number . ' ' . $order->customer_name . ' ' . ($order->table?->name ?? 'tanpa meja')) }}"
-                            class="rounded-[2rem] border border-orange-200 bg-orange-50/70 p-5">
-                            <div>
-                                <p class="text-lg font-black text-stone-950">
-                                    {{ $order->order_number }}
-                                </p>
-
-                                <p class="mt-1 text-sm font-semibold text-stone-600">
-                                    {{ $order->table?->name ?? 'Tanpa meja' }} • {{ $order->customer_name }}
-                                </p>
-
-                                <p class="mt-1 text-xs font-semibold text-stone-500">
-                                    {{ strtoupper($order->payment?->method ?? '-') }} •
-                                    {{ $order->created_at->format('d M Y H:i') }}
-                                </p>
-                            </div>
-
-                            <div class="mt-4 rounded-2xl bg-white p-4">
-                                <p class="mb-3 text-xs font-black uppercase tracking-wider text-stone-400">
-                                    Item
-                                </p>
-
-                                <div class="space-y-2">
-                                    @foreach ($order->items->take(4) as $item)
-                                        <div class="flex justify-between gap-3 text-sm">
-                                            <span class="font-bold text-stone-700">
-                                                {{ $item->quantity }}x {{ $item->menu_name }}
-                                            </span>
-
-                                            <span class="font-black text-stone-900">
-                                                Rp{{ number_format($item->subtotal_after_discount, 0, ',', '.') }}
-                                            </span>
-                                        </div>
-                                    @endforeach
-
-                                    @if ($order->items->count() > 4)
-                                        <p class="text-xs font-bold text-stone-500">
-                                            +{{ $order->items->count() - 4 }} item lainnya
-                                        </p>
-                                    @endif
-                                </div>
-                            </div>
-
-                            <div class="mt-3 rounded-2xl bg-white p-4">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-sm font-bold text-stone-500">
-                                        Total
-                                    </span>
-
-                                    <span class="text-2xl font-black text-orange-800">
-                                        Rp{{ number_format($order->grand_total, 0, ',', '.') }}
-                                    </span>
-                                </div>
-                            </div>
-
-                            @if ($order->payment?->proof_path)
-                                <button type="button" data-proof-preview
-                                    data-proof-src="{{ asset('storage/' . $order->payment->proof_path) }}"
-                                    data-proof-title="Bukti Pembayaran {{ $order->order_number }}"
-                                    class="mt-4 inline-flex w-full items-center justify-center rounded-2xl border border-orange-200 bg-white px-4 py-3 text-sm font-black text-orange-700 transition hover:bg-orange-100">
-                                    Lihat Bukti Pembayaran
-                                </button>
-                            @else
-                                <div class="mt-4 rounded-2xl bg-rose-100 px-4 py-3 text-sm font-black text-rose-700">
-                                    Bukti pembayaran tidak ditemukan.
-                                </div>
-                            @endif
-
-                            <form method="POST" action="{{ route('cashier.incoming-orders.accept-proof', $order) }}"
-                                class="mt-4">
-                                @csrf
-
-                                <button type="submit"
-                                    class="w-full rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700 active:scale-[0.98]">
-                                    Terima Bukti
-                                </button>
-                            </form>
-
-                            <details class="mt-3 rounded-2xl border border-rose-200 bg-white">
-                                <summary class="cursor-pointer px-4 py-3 text-sm font-black text-rose-600">
-                                    Tolak Bukti
-                                </summary>
-
-                                <form method="POST" action="{{ route('cashier.incoming-orders.reject-proof', $order) }}"
-                                    class="space-y-3 border-t border-rose-100 p-4">
-                                    @csrf
-
-                                    <input type="text" name="rejection_reason" required placeholder="Alasan penolakan"
-                                        class="w-full rounded-2xl border border-rose-200 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-rose-500 focus:ring-4 focus:ring-rose-100">
-
-                                    <button type="submit"
-                                        class="w-full rounded-2xl bg-rose-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-rose-600/20 transition hover:bg-rose-700 active:scale-[0.98]">
-                                        Konfirmasi Tolak
-                                    </button>
-                                </form>
-                            </details>
-                        </article>
-                    @empty
-                        <div class="rounded-[2rem] border border-dashed border-stone-300 bg-stone-50 p-8 text-center">
-                            <p class="text-sm font-black text-stone-700">
-                                Tidak ada bukti yang perlu diverifikasi.
-                            </p>
-                        </div>
-                    @endforelse
-                    <div id="paymentProofModal" class="fixed inset-0 z-50 hidden">
-                        <div data-proof-backdrop class="absolute inset-0 bg-black/70"></div>
-
-                        <div class="relative z-10 flex min-h-screen items-center justify-center p-4">
-                            <div class="w-full max-w-3xl overflow-hidden rounded-[2rem] bg-white shadow-2xl">
-                                <div class="flex items-center justify-between border-b border-stone-100 px-5 py-4">
-                                    <div>
-                                        <h3 id="paymentProofTitle" class="text-base font-black text-stone-950">
-                                            Bukti Pembayaran
-                                        </h3>
-
-                                        <p class="mt-1 text-xs font-semibold text-stone-500">
-                                            Gunakan tombol zoom untuk memperbesar atau memperkecil bukti.
-                                        </p>
+                                        <button type="button" data-proof-close
+                                            class="flex h-10 w-10 items-center justify-center rounded-full bg-stone-100 text-2xl font-black text-stone-700 transition hover:bg-stone-200">
+                                            &times;
+                                        </button>
                                     </div>
 
-                                    <button type="button" data-proof-close
-                                        class="flex h-10 w-10 items-center justify-center rounded-full bg-stone-100 text-2xl font-black text-stone-700 transition hover:bg-stone-200">
-                                        &times;
-                                    </button>
-                                </div>
+                                    <div
+                                        class="flex items-center justify-center gap-2 border-b border-stone-100 px-5 py-3">
+                                        <button type="button" data-proof-zoom-out
+                                            class="rounded-xl bg-stone-100 px-4 py-2 text-sm font-black text-stone-700 transition hover:bg-stone-200">
+                                            -
+                                        </button>
 
-                                <div class="flex items-center justify-center gap-2 border-b border-stone-100 px-5 py-3">
-                                    <button type="button" data-proof-zoom-out
-                                        class="rounded-xl bg-stone-100 px-4 py-2 text-sm font-black text-stone-700 transition hover:bg-stone-200">
-                                        -
-                                    </button>
+                                        <button type="button" data-proof-reset
+                                            class="rounded-xl bg-stone-100 px-4 py-2 text-sm font-black text-stone-700 transition hover:bg-stone-200">
+                                            Reset
+                                        </button>
 
-                                    <button type="button" data-proof-reset
-                                        class="rounded-xl bg-stone-100 px-4 py-2 text-sm font-black text-stone-700 transition hover:bg-stone-200">
-                                        Reset
-                                    </button>
+                                        <button type="button" data-proof-zoom-in
+                                            class="rounded-xl bg-stone-100 px-4 py-2 text-sm font-black text-stone-700 transition hover:bg-stone-200">
+                                            +
+                                        </button>
+                                    </div>
 
-                                    <button type="button" data-proof-zoom-in
-                                        class="rounded-xl bg-stone-100 px-4 py-2 text-sm font-black text-stone-700 transition hover:bg-stone-200">
-                                        +
-                                    </button>
-                                </div>
-
-                                <div class="max-h-[60vh] overflow-auto bg-stone-950 p-4">
-                                    <img id="paymentProofImage" src="" alt="Bukti pembayaran"
-                                        class="mx-auto h-auto max-w-none rounded-2xl bg-white object-contain">
+                                    <div class="max-h-[60vh] overflow-auto bg-stone-950 p-4">
+                                        <img id="paymentProofImage" src="" alt="Bukti pembayaran"
+                                            class="mx-auto h-auto max-w-none rounded-2xl bg-white object-contain">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            {{-- Sedang Diproses --}}
-            <div class="rounded-[2rem] border border-stone-100 bg-white shadow-sm overflow-hidden">
-                <div class="border-b border-stone-100 px-6 py-5">
-                    <h2 class="text-lg font-black text-stone-950">
-                        Sedang Diproses
-                    </h2>
-                </div>
+                {{-- Sedang Diproses --}}
+                <div class="rounded-[2rem] border border-stone-100 bg-white shadow-sm overflow-hidden">
+                    <div class="border-b border-stone-100 px-6 py-5">
+                        <h2 class="text-lg font-black text-stone-950">
+                            Sedang Diproses
+                        </h2>
+                    </div>
 
-                <div id="processing-scroll" data-preserve-scroll
-                    class="max-h-[calc(100vh-18rem)] space-y-4 overflow-y-auto p-5">
-                    @forelse ($processingOrders as $order)
-                        @php
-                            $customerReceiptPending = $order->printJobs
-                                ->where('type', \App\Models\PrintJob::TYPE_CUSTOMER_RECEIPT)
-                                ->whereIn('status', [
-                                    \App\Models\PrintJob::STATUS_PENDING,
-                                    \App\Models\PrintJob::STATUS_PRINTING,
-                                ])
-                                ->isNotEmpty();
+                    <div id="processing-scroll" data-preserve-scroll
+                        class="max-h-[calc(100vh-18rem)] space-y-4 overflow-y-auto p-5">
+                        @forelse ($processingOrders as $order)
+                            @php
+                                $customerReceiptPending = $order->printJobs
+                                    ->where('type', \App\Models\PrintJob::TYPE_CUSTOMER_RECEIPT)
+                                    ->whereIn('status', [
+                                        \App\Models\PrintJob::STATUS_PENDING,
+                                        \App\Models\PrintJob::STATUS_PRINTING,
+                                    ])
+                                    ->isNotEmpty();
 
-                            $customerReceiptPrintedCount = $order->printJobs
-                                ->where('type', \App\Models\PrintJob::TYPE_CUSTOMER_RECEIPT)
-                                ->where('status', \App\Models\PrintJob::STATUS_PRINTED)
-                                ->count();
+                                $customerReceiptPrintedCount = $order->printJobs
+                                    ->where('type', \App\Models\PrintJob::TYPE_CUSTOMER_RECEIPT)
+                                    ->where('status', \App\Models\PrintJob::STATUS_PRINTED)
+                                    ->count();
 
-                            $kitchenPrint = $order->printJobs
-                                ->where('type', \App\Models\PrintJob::TYPE_KITCHEN_ORDER)
-                                ->sortByDesc('created_at')
-                                ->first();
-                        @endphp
+                                $kitchenPrint = $order->printJobs
+                                    ->where('type', \App\Models\PrintJob::TYPE_KITCHEN_ORDER)
+                                    ->sortByDesc('created_at')
+                                    ->first();
+                            @endphp
 
-                        <article data-order-card
-                            data-order-search="{{ Str::lower($order->order_number . ' ' . $order->customer_name . ' ' . ($order->table?->name ?? 'tanpa meja')) }}"
-                            class="rounded-[2rem] border border-sky-200 bg-sky-50/70 p-5">
-                            <div>
-                                <p class="text-lg font-black text-stone-950">
-                                    {{ $order->order_number }}
-                                </p>
+                            <article data-order-card
+                                data-order-search="{{ Str::lower($order->order_number . ' ' . $order->customer_name . ' ' . ($order->table?->name ?? 'tanpa meja')) }}"
+                                class="rounded-[2rem] border border-sky-200 bg-sky-50/70 p-5">
+                                <div>
+                                    <p class="text-lg font-black text-stone-950">
+                                        {{ $order->order_number }}
+                                    </p>
 
-                                <p class="mt-1 text-sm font-semibold text-stone-600">
-                                    {{ $order->table?->name ?? 'Tanpa meja' }} • {{ $order->customer_name }}
-                                </p>
+                                    <p class="mt-1 text-sm font-semibold text-stone-600">
+                                        {{ $order->table?->name ?? 'Tanpa meja' }} • {{ $order->customer_name }}
+                                    </p>
 
-                                <p class="mt-1 text-xs font-semibold text-stone-500">
-                                    {{ strtoupper($order->payment?->method ?? '-') }} • Paid
-                                </p>
-                            </div>
-
-                            <div class="mt-4 rounded-2xl bg-white p-4">
-                                <p class="mb-3 text-xs font-black uppercase tracking-wider text-stone-400">
-                                    Item
-                                </p>
-
-                                <div class="space-y-2">
-                                    @foreach ($order->items->take(4) as $item)
-                                        <div class="flex justify-between gap-3 text-sm">
-                                            <span class="font-bold text-stone-700">
-                                                {{ $item->quantity }}x {{ $item->menu_name }}
-                                            </span>
-
-                                            <span class="font-black text-stone-900">
-                                                Rp{{ number_format($item->subtotal_after_discount, 0, ',', '.') }}
-                                            </span>
-                                        </div>
-                                    @endforeach
-
-                                    @if ($order->items->count() > 4)
-                                        <p class="text-xs font-bold text-stone-500">
-                                            +{{ $order->items->count() - 4 }} item lainnya
-                                        </p>
-                                    @endif
-                                </div>
-                            </div>
-
-                            <div class="mt-4 grid gap-3 rounded-2xl bg-white p-4 text-sm">
-                                <div class="flex justify-between gap-4">
-                                    <span class="font-bold text-stone-500">
-                                        Kitchen Print
-                                    </span>
-
-                                    <span class="font-black text-stone-950">
-                                        {{ $kitchenPrint?->status ?? 'belum ada' }}
-                                    </span>
+                                    <p class="mt-1 text-xs font-semibold text-stone-500">
+                                        {{ strtoupper($order->payment?->method ?? '-') }} • Paid
+                                    </p>
                                 </div>
 
-                                <div class="flex justify-between gap-4">
-                                    <span class="font-bold text-stone-500">
-                                        Struk Customer
-                                    </span>
+                                <div class="mt-4 rounded-2xl bg-white p-4">
+                                    <p class="mb-3 text-xs font-black uppercase tracking-wider text-stone-400">
+                                        Item
+                                    </p>
 
+                                    <div class="space-y-2">
+                                        @foreach ($order->items->take(4) as $item)
+                                            <div class="flex justify-between gap-3 text-sm">
+                                                <span class="font-bold text-stone-700">
+                                                    {{ $item->quantity }}x {{ $item->menu_name }}
+                                                </span>
+
+                                                <span class="font-black text-stone-900">
+                                                    Rp{{ number_format($item->subtotal_after_discount, 0, ',', '.') }}
+                                                </span>
+                                            </div>
+                                        @endforeach
+
+                                        @if ($order->items->count() > 4)
+                                            <p class="text-xs font-bold text-stone-500">
+                                                +{{ $order->items->count() - 4 }} item lainnya
+                                            </p>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 grid gap-3 rounded-2xl bg-white p-4 text-sm">
+                                    <div class="flex justify-between gap-4">
+                                        <span class="font-bold text-stone-500">
+                                            Kitchen Print
+                                        </span>
+
+                                        <span class="font-black text-stone-950">
+                                            {{ $kitchenPrint?->status ?? 'belum ada' }}
+                                        </span>
+                                    </div>
+
+                                    <div class="flex justify-between gap-4">
+                                        <span class="font-bold text-stone-500">
+                                            Struk Customer
+                                        </span>
+
+                                        @if ($customerReceiptPending)
+                                            <span class="font-black text-amber-700">
+                                                antrean cetak
+                                            </span>
+                                        @elseif ($customerReceiptPrintedCount > 0)
+                                            <span class="font-black text-emerald-700">
+                                                sudah dicetak {{ $customerReceiptPrintedCount }}x
+                                            </span>
+                                        @else
+                                            <span class="font-black text-rose-600">
+                                                belum dicetak
+                                            </span>
+                                        @endif
+                                    </div>
+
+                                    <div class="flex justify-between gap-4">
+                                        <span class="font-bold text-stone-500">
+                                            Total
+                                        </span>
+
+                                        <span class="font-black text-stone-950">
+                                            Rp{{ number_format($order->grand_total, 0, ',', '.') }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 grid gap-3">
                                     @if ($customerReceiptPending)
-                                        <span class="font-black text-amber-700">
-                                            antrean cetak
-                                        </span>
-                                    @elseif ($customerReceiptPrintedCount > 0)
-                                        <span class="font-black text-emerald-700">
-                                            sudah dicetak {{ $customerReceiptPrintedCount }}x
-                                        </span>
-                                    @else
-                                        <span class="font-black text-rose-600">
-                                            belum dicetak
-                                        </span>
-                                    @endif
-                                </div>
-
-                                <div class="flex justify-between gap-4">
-                                    <span class="font-bold text-stone-500">
-                                        Total
-                                    </span>
-
-                                    <span class="font-black text-stone-950">
-                                        Rp{{ number_format($order->grand_total, 0, ',', '.') }}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="mt-4 grid gap-3">
-                                @if ($customerReceiptPending)
-                                    <button type="button" disabled
-                                        class="w-full cursor-not-allowed rounded-2xl bg-stone-300 px-5 py-3 text-sm font-black text-stone-500">
-                                        Struk Dalam Antrean
-                                    </button>
-                                @elseif ($customerReceiptPrintedCount < 1)
-                                    <form method="POST"
-                                        action="{{ route('cashier.incoming-orders.print-customer-receipt', $order) }}">
-                                        @csrf
-
-                                        <button type="submit"
-                                            class="w-full rounded-2xl bg-amber-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-amber-600/20 transition hover:bg-amber-700 active:scale-[0.98]">
-                                            Cetak Struk
+                                        <button type="button" disabled
+                                            class="w-full cursor-not-allowed rounded-2xl bg-stone-300 px-5 py-3 text-sm font-black text-stone-500">
+                                            Struk Dalam Antrean
                                         </button>
-                                    </form>
-                                @else
-                                    <div class="grid gap-3">
+                                    @elseif ($customerReceiptPrintedCount < 1)
                                         <form method="POST"
                                             action="{{ route('cashier.incoming-orders.print-customer-receipt', $order) }}">
                                             @csrf
 
                                             <button type="submit"
                                                 class="w-full rounded-2xl bg-amber-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-amber-600/20 transition hover:bg-amber-700 active:scale-[0.98]">
-                                                Cetak Ulang Struk
+                                                Cetak Struk
                                             </button>
                                         </form>
+                                    @else
+                                        <div class="grid gap-3">
+                                            <form method="POST"
+                                                action="{{ route('cashier.incoming-orders.print-customer-receipt', $order) }}">
+                                                @csrf
 
-                                        <form method="POST"
-                                            action="{{ route('cashier.incoming-orders.complete', $order) }}">
-                                            @csrf
+                                                <button type="submit"
+                                                    class="w-full rounded-2xl bg-amber-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-amber-600/20 transition hover:bg-amber-700 active:scale-[0.98]">
+                                                    Cetak Ulang Struk
+                                                </button>
+                                            </form>
 
-                                            <button type="submit"
-                                                class="w-full rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700 active:scale-[0.98]">
-                                                Selesaikan Pesanan
-                                            </button>
-                                        </form>
-                                    </div>
-                                @endif
+                                            <form method="POST"
+                                                action="{{ route('cashier.incoming-orders.complete', $order) }}">
+                                                @csrf
+
+                                                <button type="submit"
+                                                    class="w-full rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700 active:scale-[0.98]">
+                                                    Selesaikan Pesanan
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @endif
+                                </div>
+                            </article>
+                        @empty
+                            <div class="rounded-[2rem] border border-dashed border-stone-300 bg-stone-50 p-8 text-center">
+                                <p class="text-sm font-black text-stone-700">
+                                    Tidak ada order yang sedang diproses.
+                                </p>
                             </div>
-                        </article>
-                    @empty
-                        <div class="rounded-[2rem] border border-dashed border-stone-300 bg-stone-50 p-8 text-center">
-                            <p class="text-sm font-black text-stone-700">
-                                Tidak ada order yang sedang diproses.
-                            </p>
-                        </div>
-                    @endforelse
+                        @endforelse
+                    </div>
                 </div>
             </div>
         </section>
