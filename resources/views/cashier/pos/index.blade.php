@@ -114,9 +114,9 @@
             </div>
         </section>
 
-        <div class="grid gap-6 xl:grid-cols-12">
+        <div class="grid gap-6 lg:grid-cols-12">
             {{-- Menu Area --}}
-            <section class="xl:col-span-8">
+            <section class="lg:col-span-8">
                 <div class="space-y-8">
                     @forelse ($categories as $category)
                         @if ($category->menus->isNotEmpty())
@@ -207,9 +207,9 @@
             </section>
 
             {{-- Cart Area --}}
-            <aside class="xl:col-span-4">
+            <aside class="lg:col-span-4">
                 <div
-                    class="sticky top-24 flex max-h-[calc(100vh-7rem)] flex-col overflow-hidden rounded-[2rem] border border-stone-100 bg-white shadow-sm">
+                    class="lg:sticky lg:top-24 flex lg:max-h-[calc(100vh-7rem)] flex-col overflow-hidden rounded-[2rem] border border-stone-100 bg-white shadow-sm">
                     {{-- Cart Header --}}
                     <div class="shrink-0 border-b border-stone-100 p-5">
                         <div class="flex items-center justify-between gap-4">
