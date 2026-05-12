@@ -50,16 +50,16 @@
 @endphp
 
 <aside
-    class="fixed inset-y-0 left-0 z-50 w-64 border-r border-stone-800 bg-stone-950 transition-transform duration-300 lg:translate-x-0"
+    class="fixed inset-y-0 left-0 z-50 w-72 border-r border-stone-800 bg-stone-950 transition-transform duration-300 lg:translate-x-0"
     :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
     <div class="flex h-full flex-col">
         <x-sidebar-brand role="cashier" />
-        <nav class="flex-1 space-y-1 overflow-y-auto px-3 py-2">
+        <nav class="flex-1 space-y-1 overflow-y-auto px-4 py-2">
             @foreach ($navItems as $item)
                 <a href="{{ $item['href'] }}"
                     class="{{ $item['active']
                         ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/20'
-                        : 'text-stone-300 hover:bg-white/10 hover:text-white' }} group flex min-h-[52px] items-center gap-3 rounded-2xl px-4 py-4 text-sm font-bold transition active:scale-[0.98]">
+                        : 'text-stone-300 hover:bg-white/10 hover:text-white' }} group flex min-h-[58px] items-center gap-3 rounded-2xl px-4 py-4 text-sm font-bold transition active:scale-[0.98]">
                     <svg class="h-5 w-5 flex-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
                         <path d="{{ $item['icon'] }}" />
@@ -80,8 +80,8 @@
             @endforeach
         </nav>
 
-        <div class="border-t border-white/10 p-3">
-            <div class="rounded-2xl bg-white/5 p-3">
+        <div class="border-t border-white/10 p-4">
+            <div class="rounded-2xl bg-white/5 p-4">
                 <p class="text-sm font-bold text-white">
                     {{ auth()->user()->name }}
                 </p>
