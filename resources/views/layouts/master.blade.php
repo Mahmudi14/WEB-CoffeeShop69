@@ -92,7 +92,7 @@
         @endif
 
         {{-- Main content --}}
-        <div class="lg:pl-72">
+        <div class="lg:pl-64">
             @include('layouts.partials.master-topbar', [
                 'pageTitle' => $pageTitle,
                 'role' => $role,
