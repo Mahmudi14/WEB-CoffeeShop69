@@ -114,67 +114,70 @@
             </div>
         </section>
 
-        <div class="grid gap-4 md:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_360px]">
+        <div class="grid grid-cols-[minmax(0,1fr)_300px] gap-3 xl:grid-cols-[minmax(0,1fr)_340px]">
             {{-- Menu Area --}}
             <section class="min-w-0">
-                <div class="space-y-8">
+                <div class="space-y-4">
                     @forelse ($categories as $category)
                         @if ($category->menus->isNotEmpty())
                             <div x-show="categoryHasVisible({{ $category->id }})" x-cloak
-                                class="rounded-[2rem] border border-stone-100 bg-white p-5 shadow-sm">
-                                <div class="mb-5 flex items-center justify-between gap-4">
-                                    <h2 class="text-lg font-black text-stone-950">
+                                class="rounded-[1.15rem] border border-stone-100 bg-white p-3 shadow-sm">
+
+                                <div class="mb-2.5 flex items-center justify-between gap-3">
+                                    <h2 class="text-sm font-black text-stone-950">
                                         {{ $category->name }}
                                     </h2>
 
-                                    <span class="rounded-full bg-stone-100 px-3 py-1 text-xs font-black text-stone-500">
+                                    <span
+                                        class="rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-black text-stone-500">
                                         {{ $category->menus->count() }} menu
                                     </span>
                                 </div>
 
-                                <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                                <div class="grid grid-cols-2 gap-2 min-[980px]:grid-cols-3 2xl:grid-cols-4">
                                     @foreach ($category->menus as $menu)
                                         <div x-show="menuVisible({{ $category->id }}, @js($menu->name), @js($menu->description ?? ''))"
                                             x-cloak
-                                            class="group overflow-hidden rounded-[1.75rem] border border-stone-100 bg-stone-50 p-4 transition hover:-translate-y-0.5 hover:border-amber-200 hover:bg-white hover:shadow-md">
+                                            class="group overflow-hidden rounded-2xl border border-stone-100 bg-stone-50 p-2 transition hover:border-amber-200 hover:bg-white hover:shadow-sm">
+
                                             <div
-                                                class="mb-4 flex h-32 items-center justify-center overflow-hidden rounded-2xl bg-white text-stone-400 border border-stone-100">
+                                                class="mb-2 flex h-16 items-center justify-center overflow-hidden rounded-xl border border-stone-100 bg-white text-stone-400 min-[980px]:h-20">
                                                 @if ($menu->image_path)
                                                     <img src="{{ asset('storage/' . $menu->image_path) }}"
                                                         class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                                                         alt="{{ $menu->name }}">
                                                 @else
                                                     <span
-                                                        class="text-xs font-black uppercase tracking-widest text-stone-300">
+                                                        class="text-[9px] font-black uppercase tracking-widest text-stone-300">
                                                         No Image
                                                     </span>
                                                 @endif
                                             </div>
 
-                                            <div class="min-h-[74px]">
-                                                <h3 class="line-clamp-1 text-base font-black text-stone-950">
+                                            <div class="min-h-[38px]">
+                                                <h3 class="line-clamp-1 text-xs font-black text-stone-950">
                                                     {{ $menu->name }}
                                                 </h3>
 
-                                                <p class="mt-1 line-clamp-2 text-sm leading-6 text-stone-500">
+                                                <p class="mt-0.5 line-clamp-1 text-[11px] leading-4 text-stone-500">
                                                     {{ $menu->description ?: 'Tidak ada deskripsi.' }}
                                                 </p>
                                             </div>
 
-                                            <div class="mt-4">
-                                                <p class="text-xl font-black text-stone-950">
+                                            <div class="mt-2">
+                                                <p class="text-sm font-black text-stone-950">
                                                     Rp{{ number_format($menu->normal_price, 0, ',', '.') }}
                                                 </p>
                                             </div>
 
                                             <button type="button"
                                                 @click="addItem({
-                                                    id: {{ $menu->id }},
-                                                    name: @js($menu->name),
-                                                    normal_price: {{ (int) $menu->normal_price }},
-                                                    note: ''
-                                                })"
-                                                class="mt-4 flex w-full items-center justify-center rounded-2xl bg-amber-600 px-4 py-3 text-sm font-black text-white shadow-lg shadow-amber-600/20 transition hover:bg-amber-700 active:scale-[0.98]">
+                                        id: {{ $menu->id }},
+                                        name: @js($menu->name),
+                                        normal_price: {{ (int) $menu->normal_price }},
+                                        note: ''
+                                    })"
+                                                class="mt-2 flex w-full items-center justify-center rounded-xl bg-amber-600 px-2 py-2 text-[11px] font-black text-white shadow-sm shadow-amber-600/20 transition hover:bg-amber-700 active:scale-[0.98]">
                                                 Tambah
                                             </button>
                                         </div>
@@ -184,7 +187,7 @@
                         @endif
                     @empty
                         <div
-                            class="rounded-[2rem] border border-dashed border-stone-300 bg-white p-10 text-center shadow-sm">
+                            class="rounded-[1.15rem] border border-dashed border-stone-300 bg-white p-6 text-center shadow-sm">
                             <p class="text-sm font-black text-stone-700">
                                 Belum ada kategori menu.
                             </p>
@@ -193,12 +196,12 @@
 
                     @if ($categories->isNotEmpty())
                         <div x-show="!hasVisibleMenus()" x-cloak
-                            class="rounded-[2rem] border border-dashed border-stone-300 bg-white p-10 text-center shadow-sm">
+                            class="rounded-[1.15rem] border border-dashed border-stone-300 bg-white p-6 text-center shadow-sm">
                             <p class="text-sm font-black text-stone-700">
                                 Menu tidak ditemukan.
                             </p>
 
-                            <p class="mt-2 text-sm text-stone-500">
+                            <p class="mt-2 text-xs text-stone-500">
                                 Coba kata kunci atau kategori lain.
                             </p>
                         </div>
@@ -209,7 +212,7 @@
             {{-- Cart Area --}}
             <aside class="min-w-0">
                 <div
-                    class="md:sticky md:top-20 flex md:max-h-[calc(100vh-6rem)] flex-col overflow-hidden rounded-[1.5rem] border border-stone-100 bg-white shadow-sm">
+                    class="sticky top-20 flex max-h-[calc(100vh-6rem)] flex-col overflow-hidden rounded-[1.25rem] border border-stone-100 bg-white shadow-sm">
                     {{-- Cart Header --}}
                     <div class="shrink-0 border-b border-stone-100 p-5">
                         <div class="flex items-center justify-between gap-4">
