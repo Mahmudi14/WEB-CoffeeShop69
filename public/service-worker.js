@@ -1,4 +1,4 @@
-const CACHE_NAME = "coffee69-static-v1";
+const CACHE_NAME = "coffee69-static-v3";
 
 const STATIC_ASSETS = [
     "/manifest.json",
@@ -46,6 +46,12 @@ self.addEventListener("fetch", function (event) {
         return;
     }
 
+    // Jangan pernah cache halaman HTML / route Laravel
+    if (request.mode === "navigate") {
+        event.respondWith(fetch(request));
+        return;
+    }
+
     const blockedPaths = [
         "/login",
         "/logout",
@@ -56,6 +62,7 @@ self.addEventListener("fetch", function (event) {
         "/cashier",
         "/admin",
         "/superadmin",
+        "/profile",
     ];
 
     if (
