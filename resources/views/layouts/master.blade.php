@@ -77,59 +77,58 @@
     </style>
 </head>
 
-<body class="min-h-screen bg-stone-50 text-stone-900 antialiased">
-    <div x-data="{ sidebarOpen: false }" class="min-h-screen">
-        {{-- Mobile overlay --}}
-        <div x-cloak x-show="sidebarOpen" x-transition.opacity class="fixed inset-0 z-40 bg-stone-950/50 lg:hidden"
-            @click="sidebarOpen = false"></div>
+<body class="min-h-screen overflow-x-hidden bg-stone-50 text-stone-900 antialiased">
+    <div x-cloak x-show="sidebarOpen" x-transition.opacity
+        class="fixed inset-0 z-40 bg-stone-950/50 {{ $role === 'cashier' ? 'xl:hidden' : 'lg:hidden' }}"
+        @click="sidebarOpen = false"></div>
 
-        {{-- Sidebar by role --}}
-        @if ($sidebarView)
-            @include($sidebarView, [
-                'role' => $role,
-                'roleLabel' => $roleLabel,
-            ])
-        @endif
+    {{-- Sidebar by role --}}
+    @if ($sidebarView)
+        @include($sidebarView, [
+            'role' => $role,
+            'roleLabel' => $roleLabel,
+        ])
+    @endif
 
-        {{-- Main content --}}
-        <div class="lg:pl-72">
-            @include('layouts.partials.master-topbar', [
-                'pageTitle' => $pageTitle,
-                'role' => $role,
-                'roleLabel' => $roleLabel,
-            ])
+    {{-- Main content --}}
+    <div class="{{ $role === 'cashier' ? 'xl:pl-72' : 'lg:pl-72' }}">
+        @include('layouts.partials.master-topbar', [
+            'pageTitle' => $pageTitle,
+            'role' => $role,
+            'roleLabel' => $roleLabel,
+        ])
 
-            <main class="px-4 py-6 sm:px-6 lg:px-8">
-                @if (session('success'))
-                    <div
-                        class="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm font-semibold text-emerald-700">
-                        {{ session('success') }}
-                    </div>
-                @endif
+        <main class="px-4 py-6 sm:px-6 {{ $role === 'cashier' ? 'xl:px-8' : 'lg:px-8' }}">
+            @if (session('success'))
+                <div
+                    class="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm font-semibold text-emerald-700">
+                    {{ session('success') }}
+                </div>
+            @endif
 
-                @if (session('error'))
-                    <div
-                        class="mb-6 rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 text-sm font-semibold text-rose-700">
-                        {{ session('error') }}
-                    </div>
-                @endif
+            @if (session('error'))
+                <div
+                    class="mb-6 rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 text-sm font-semibold text-rose-700">
+                    {{ session('error') }}
+                </div>
+            @endif
 
-                @if ($errors->any())
-                    <div
-                        class="mb-6 rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 text-sm font-semibold text-rose-700">
-                        <p class="font-black">Terjadi kesalahan:</p>
+            @if ($errors->any())
+                <div
+                    class="mb-6 rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 text-sm font-semibold text-rose-700">
+                    <p class="font-black">Terjadi kesalahan:</p>
 
-                        <ul class="mt-2 list-inside list-disc space-y-1">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+                    <ul class="mt-2 list-inside list-disc space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-                @yield('content')
-            </main>
-        </div>
+            @yield('content')
+        </main>
+    </div>
     </div>
     <script>
         if ('serviceWorker' in navigator) {
@@ -147,6 +146,7 @@
     @if (session('clear_pos_cart'))
         <script>
             localStorage.removeItem('cashier_pos_cart');
+            localStorage.removeItem('cashier_pos_cart_v2');
         </script>
     @endif
     @if (($role ?? null) === 'cashier')
