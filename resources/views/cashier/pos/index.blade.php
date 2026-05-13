@@ -97,8 +97,8 @@
                 </div>
             </div>
         </section>
-        <div
-            class="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_400px] 2xl:grid-cols-[minmax(0,1fr)_430px]">
+        <div <div
+            class="grid items-start gap-5 md:grid-cols-[minmax(0,1fr)_280px] lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_400px] 2xl:grid-cols-[minmax(0,1fr)_430px]">
             {{-- Menu Area --}}
             <section class="min-w-0">
                 <div class="space-y-8">
