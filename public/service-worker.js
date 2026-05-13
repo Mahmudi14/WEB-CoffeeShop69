@@ -1,28 +1,32 @@
-const CACHE_NAME = "coffee69-v1";
+const CACHE_NAME = "coffee69-static-v1";
 
 const STATIC_ASSETS = [
-    "/",
-    "/login",
     "/manifest.json",
-    "/assets/images/icons/icon-192.png",
-    "/assets/images/icons/icon-512.png",
+    "/icons/icon-192.png",
+    "/icons/icon-512.png",
 ];
 
-self.addEventListener("install", (event) => {
+self.addEventListener("install", function (event) {
     event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS)),
+        caches.open(CACHE_NAME).then(function (cache) {
+            return cache.addAll(STATIC_ASSETS);
+        }),
     );
 
     self.skipWaiting();
 });
 
-self.addEventListener("activate", (event) => {
+self.addEventListener("activate", function (event) {
     event.waitUntil(
-        caches.keys().then((keys) => {
+        caches.keys().then(function (keys) {
             return Promise.all(
                 keys
-                    .filter((key) => key !== CACHE_NAME)
-                    .map((key) => caches.delete(key)),
+                    .filter(function (key) {
+                        return key !== CACHE_NAME;
+                    })
+                    .map(function (key) {
+                        return caches.delete(key);
+                    }),
             );
         }),
     );
@@ -30,12 +34,42 @@ self.addEventListener("activate", (event) => {
     self.clients.claim();
 });
 
-self.addEventListener("fetch", (event) => {
-    if (event.request.method !== "GET") {
+self.addEventListener("fetch", function (event) {
+    const request = event.request;
+    const url = new URL(request.url);
+
+    if (request.method !== "GET") {
+        return;
+    }
+
+    if (url.origin !== location.origin) {
+        return;
+    }
+
+    const blockedPaths = [
+        "/login",
+        "/logout",
+        "/register",
+        "/forgot-password",
+        "/reset-password",
+        "/dashboard",
+        "/cashier",
+        "/admin",
+        "/superadmin",
+    ];
+
+    if (
+        blockedPaths.some(function (path) {
+            return url.pathname.startsWith(path);
+        })
+    ) {
+        event.respondWith(fetch(request));
         return;
     }
 
     event.respondWith(
-        fetch(event.request).catch(() => caches.match(event.request)),
+        caches.match(request).then(function (cachedResponse) {
+            return cachedResponse || fetch(request);
+        }),
     );
 });

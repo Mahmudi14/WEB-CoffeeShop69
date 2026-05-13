@@ -34,7 +34,7 @@
                                 placeholder="Cari menu...">
                         </div>
                         {{-- Custom Category Dropdown --}}
-                        <div x-data="{ openCategory: false }" class="relative z-[80]">
+                        <div x-data="{ openCategory: false }" class="relative ">
                             <button type="button" @click="openCategory = !openCategory"
                                 @keydown.escape.window="openCategory = false"
                                 class="flex h-[52px] w-full items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white px-4 text-left text-sm font-bold text-stone-700 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-500/20">
