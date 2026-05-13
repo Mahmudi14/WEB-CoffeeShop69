@@ -97,9 +97,9 @@
                 </div>
             </div>
         </section>
-        <div class="grid gap-6 lg:grid-cols-12 items-start">
+        <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] xl:grid-cols-[minmax(0,1fr)_360px] items-start">
             {{-- Menu Area --}}
-            <section class="lg:col-span-7 xl:col-span-8">
+            <section class="min-w-0">
                 <div class="space-y-8">
                     @forelse ($categories as $category)
                         @if ($category->menus->isNotEmpty())
@@ -110,7 +110,7 @@
                                     <span class="rounded-full bg-stone-100 px-3 py-1 text-xs font-black text-stone-500">
                                         {{ $category->menus->count() }} menu </span>
                                 </div>
-                                <div class="grid gap-3 sm:grid-cols-2 min-[900px]:grid-cols-3 xl:gap-4">
+                                <div class="grid gap-4 grid-cols-2 xl:grid-cols-3">
                                     @foreach ($category->menus as $menu)
                                         <div x-show="menuVisible({{ $category->id }}, @js($menu->name), @js($menu->description ?? ''))"
                                             x-cloak
@@ -157,7 +157,7 @@
                 </div>
             </section>
             {{-- Cart Area --}}
-            <aside class="lg:col-span-5 xl:col-span-4">
+            <aside class="w-full">
                 <div
                     class="sticky top-6 flex h-[calc(100dvh-6rem)] flex-col overflow-hidden rounded-[2rem] border border-stone-100 bg-white shadow-sm">
                     {{-- Cart Header --}}
