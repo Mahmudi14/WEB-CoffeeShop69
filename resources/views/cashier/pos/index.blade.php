@@ -98,8 +98,8 @@
             </div>
         </section>
         <div
-            class="grid items-start gap-4 min-[900px]:grid-cols-[minmax(0,1fr)_320px] min-[1180px]:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_390px] 2xl:grid-cols-[minmax(0,1fr)_420px]">
-            {{-- Menu Area --}}
+            class="grid items-start gap-4 min-[768px]:grid-cols-[minmax(0,7fr)_minmax(280px,3fr)] xl:grid-cols-[minmax(0,7fr)_minmax(320px,3fr)]">
+            {{-- Menu Area - 70% --}}
             <section class="min-w-0">
                 <div class="space-y-8">
                     @forelse ($categories as $category)
@@ -107,11 +107,17 @@
                             <div x-show="categoryHasVisible({{ $category->id }})" x-cloak
                                 class="rounded-[2rem] border border-stone-100 bg-white p-5 shadow-sm">
                                 <div class="mb-5 flex items-center justify-between gap-4">
-                                    <h2 class="text-lg font-black text-stone-950"> {{ $category->name }} </h2>
+                                    <h2 class="text-lg font-black text-stone-950">
+                                        {{ $category->name }}
+                                    </h2>
+
                                     <span class="rounded-full bg-stone-100 px-3 py-1 text-xs font-black text-stone-500">
-                                        {{ $category->menus->count() }} menu </span>
+                                        {{ $category->menus->count() }} menu
+                                    </span>
                                 </div>
-                                <div class="grid gap-3 sm:grid-cols-2 min-[900px]:grid-cols-3 xl:gap-4">
+
+                                <div
+                                    class="grid grid-cols-1 gap-3 min-[768px]:grid-cols-2 min-[1180px]:grid-cols-3 xl:gap-4">
                                     @foreach ($category->menus as $menu)
                                         <div x-show="menuVisible({{ $category->id }}, @js($menu->name), @js($menu->description ?? ''))"
                                             x-cloak
@@ -125,19 +131,29 @@
                                                 @else
                                                     <span
                                                         class="text-xs font-black uppercase tracking-widest text-stone-300">
-                                                        No Image </span>
+                                                        No Image
+                                                    </span>
                                                 @endif
                                             </div>
+
                                             <div>
                                                 <h3 class="line-clamp-1 text-sm font-black text-stone-950 xl:text-base">
-                                                    {{ $menu->name }} </h3>
+                                                    {{ $menu->name }}
+                                                </h3>
                                             </div>
+
                                             <div class="mt-4">
                                                 <p class="text-lg font-black text-stone-950 xl:text-xl">
-                                                    Rp{{ number_format($menu->normal_price, 0, ',', '.') }} </p>
+                                                    Rp{{ number_format($menu->normal_price, 0, ',', '.') }}
+                                                </p>
                                             </div>
+
                                             <button type="button"
-                                                @click="addItem({ id: {{ $menu->id }}, name: @js($menu->name), normal_price: {{ (int) $menu->normal_price }} })"
+                                                @click="addItem({
+                                            id: {{ $menu->id }},
+                                            name: @js($menu->name),
+                                            normal_price: {{ (int) $menu->normal_price }}
+                                        })"
                                                 class="mt-3 flex w-full items-center justify-center rounded-2xl bg-amber-600 px-4 py-2.5 text-sm font-black text-white shadow-lg shadow-amber-600/20 transition hover:bg-amber-700 active:scale-[0.98] xl:mt-4 xl:py-3">
                                                 Tambah
                                             </button>
@@ -145,103 +161,152 @@
                                     @endforeach
                                 </div>
                             </div>
-                        @endif @empty <div
-                            class="rounded-[2rem] border border-dashed border-stone-300 bg-white p-10 text-center shadow-sm">
-                            <p class="text-sm font-black text-stone-700"> Belum ada kategori menu. </p>
-                        </div> @endforelse @if ($categories->isNotEmpty())
-                            <div x-show="!hasVisibleMenus()" x-cloak
-                                class="rounded-[2rem] border border-dashed border-stone-300 bg-white p-10 text-center shadow-sm">
-                                <p class="text-sm font-black text-stone-700"> Menu tidak ditemukan. </p>
-                                <p class="mt-2 text-sm text-stone-500"> Coba kata kunci atau kategori lain. </p>
-                            </div>
                         @endif
+                    @empty
+                        <div
+                            class="rounded-[2rem] border border-dashed border-stone-300 bg-white p-10 text-center shadow-sm">
+                            <p class="text-sm font-black text-stone-700">
+                                Belum ada kategori menu.
+                            </p>
+                        </div>
+                    @endforelse
+
+                    @if ($categories->isNotEmpty())
+                        <div x-show="!hasVisibleMenus()" x-cloak
+                            class="rounded-[2rem] border border-dashed border-stone-300 bg-white p-10 text-center shadow-sm">
+                            <p class="text-sm font-black text-stone-700">
+                                Menu tidak ditemukan.
+                            </p>
+
+                            <p class="mt-2 text-sm text-stone-500">
+                                Coba kata kunci atau kategori lain.
+                            </p>
+                        </div>
+                    @endif
                 </div>
             </section>
-            {{-- Cart Area --}}
+
+            {{-- Cart Area - 30% --}}
             <aside class="min-w-0 self-start">
                 <div
-                    class="flex w-full max-h-none flex-col overflow-hidden rounded-[2rem] border border-stone-100 bg-white shadow-sm min-[900px]:sticky min-[900px]:top-24 min-[900px]:max-h-[calc(100dvh-7rem)]">
+                    class="flex w-full max-h-none flex-col overflow-hidden rounded-[2rem] border border-stone-100 bg-white shadow-sm min-[768px]:sticky min-[768px]:top-24 min-[768px]:max-h-[calc(100dvh-7rem)]">
                     {{-- Cart Header --}}
                     <div class="shrink-0 border-b border-stone-100 p-4 xl:p-5">
                         <div class="flex items-center justify-between gap-4">
                             <div>
-                                <h2 class="text-lg font-black text-stone-950"> Cart </h2>
+                                <h2 class="text-lg font-black text-stone-950">
+                                    Cart
+                                </h2>
+
                                 <p class="mt-1 text-xs font-semibold text-stone-500">
                                     <span x-text="cart.length"></span>
                                     item dipilih
                                 </p>
                             </div>
+
                             <button x-show="cart.length > 0" type="button" @click="clearCart()"
                                 class="rounded-full bg-rose-50 px-3 py-1.5 text-xs font-black text-rose-600 transition hover:bg-rose-100">
-                                Kosongkan </button>
+                                Kosongkan
+                            </button>
                         </div>
                     </div>
+
                     {{-- Empty State --}}
                     <template x-if="cart.length === 0">
                         <div class="p-5">
                             <div class="rounded-2xl border border-dashed border-stone-300 bg-stone-50 p-8 text-center">
                                 <div
-                                    class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-stone-300 border border-stone-100">
+                                    class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-stone-100 bg-white text-stone-300">
                                     <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"
                                             d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 7h14M9 21a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z" />
                                     </svg>
                                 </div>
-                                <p class="mt-4 text-sm font-black text-stone-700"> Cart masih kosong. </p>
+
+                                <p class="mt-4 text-sm font-black text-stone-700">
+                                    Cart masih kosong.
+                                </p>
                             </div>
                         </div>
                     </template>
+
                     {{-- Cart Content --}}
                     <template x-if="cart.length > 0">
                         <div class="flex min-h-0 flex-1 flex-col">
                             {{-- Items --}}
                             <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 xl:p-5">
-                                <div class="space-y-3"> <template x-for="item in cart" :key="item.key">
+                                <div class="space-y-3">
+                                    <template x-for="item in cart" :key="item.key">
                                         <div class="rounded-2xl border border-stone-100 bg-stone-50 p-4">
                                             <div class="flex items-start justify-between gap-3">
                                                 <div class="min-w-0">
                                                     <p class="truncate text-sm font-black text-stone-950"
-                                                        x-text="item.name"> </p>
-                                                    <p class="mt-1 text-xs font-semibold text-stone-500"> <span
-                                                            x-text="formatCurrency(item.normal_price)"></span> / item </p>
-                                                </div> <button type="button" @click="removeItem(item.key)"
+                                                        x-text="item.name"></p>
+
+                                                    <p class="mt-1 text-xs font-semibold text-stone-500">
+                                                        <span x-text="formatCurrency(item.normal_price)"></span>
+                                                        / item
+                                                    </p>
+                                                </div>
+
+                                                <button type="button" @click="removeItem(item.key)"
                                                     class="rounded-full bg-white px-3 py-1 text-xs font-black text-rose-600 transition hover:bg-rose-50">
-                                                    Hapus </button>
+                                                    Hapus
+                                                </button>
                                             </div>
+
                                             <div class="mt-4 flex items-center justify-between gap-3">
-                                                <div class="flex items-center gap-2"> <button type="button"
-                                                        @click="decreaseQty(item.key)"
+                                                <div class="flex items-center gap-2">
+                                                    <button type="button" @click="decreaseQty(item.key)"
                                                         class="flex h-9 w-9 items-center justify-center rounded-xl border border-stone-200 bg-white text-lg font-black text-stone-700 transition hover:bg-stone-100">
-                                                        - </button> <input type="number" min="1"
-                                                        x-model.number="item.quantity"
+                                                        -
+                                                    </button>
+
+                                                    <input type="number" min="1" x-model.number="item.quantity"
                                                         @input="item.quantity = Math.max(Number(item.quantity) || 1, 1); persistCart()"
                                                         class="h-9 w-16 rounded-xl border border-stone-200 bg-white px-2 text-center text-sm font-black text-stone-900 outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-100">
+
                                                     <button type="button" @click="increaseQty(item.key)"
                                                         class="flex h-9 w-9 items-center justify-center rounded-xl border border-stone-200 bg-white text-lg font-black text-stone-700 transition hover:bg-stone-100">
-                                                        + </button>
+                                                        +
+                                                    </button>
                                                 </div>
+
                                                 <p class="text-sm font-black text-stone-950"
-                                                    x-text="formatCurrency(item.normal_price * item.quantity)"> </p>
+                                                    x-text="formatCurrency(item.normal_price * item.quantity)"></p>
                                             </div>
                                         </div>
-                                    </template> </div>
+                                    </template>
+                                </div>
                             </div>
+
                             {{-- Summary --}}
                             <div class="shrink-0 border-t border-stone-100 bg-white p-4 xl:p-5">
                                 <div class="space-y-4">
-                                    <div class="flex items-center justify-between"> <span
-                                            class="text-sm font-bold text-stone-500"> Subtotal </span> <span
-                                            class="text-lg font-black text-stone-950"
-                                            x-text="formatCurrency(subtotal())"></span> </div>
-                                    <div class="rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3">
-                                        <p class="text-xs font-bold leading-5 text-amber-800"> Promo dan PPN dihitung saat
-                                            checkout. </p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm font-bold text-stone-500">
+                                            Subtotal
+                                        </span>
+
+                                        <span class="text-lg font-black text-stone-950"
+                                            x-text="formatCurrency(subtotal())"></span>
                                     </div>
-                                    <form method="POST" action="{{ route('cashier.pos.prepare-checkout') }}"> @csrf
+
+                                    <div class="rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3">
+                                        <p class="text-xs font-bold leading-5 text-amber-800">
+                                            Promo dan PPN dihitung saat checkout.
+                                        </p>
+                                    </div>
+
+                                    <form method="POST" action="{{ route('cashier.pos.prepare-checkout') }}">
+                                        @csrf
+
                                         <input type="hidden" name="cart_json" :value="JSON.stringify(cartPayload())">
+
                                         <button type="submit"
                                             class="flex h-[52px] w-full items-center justify-center rounded-2xl bg-amber-600 px-5 text-sm font-black text-white shadow-lg shadow-amber-600/20 transition hover:bg-amber-700 active:scale-[0.98]">
-                                            Checkout </button>
+                                            Checkout
+                                        </button>
                                     </form>
                                 </div>
                             </div>
@@ -249,7 +314,6 @@
                     </template>
                 </div>
             </aside>
-            </>
         </div>
 
         <script>
