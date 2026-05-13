@@ -117,22 +117,21 @@
                                 </div>
 
                                 <div
-                                    class="grid grid-cols-1 gap-3 min-[768px]:grid-cols-2 min-[1180px]:grid-cols-3 xl:gap-4">
+                                    class="grid grid-cols-1 gap-3 min-[640px]:grid-cols-2 min-[1024px]:grid-cols-3 xl:gap-4">
                                     @foreach ($category->menus as $menu)
                                         <div x-show="menuVisible({{ $category->id }}, @js($menu->name), @js($menu->description ?? ''))"
                                             x-cloak
-                                            class="group overflow-hidden rounded-[1.75rem] border border-stone-100 bg-stone-50 p-4 transition hover:-translate-y-0.5 hover:border-amber-200 hover:bg-white hover:shadow-md">
+                                            class="group overflow-hidden rounded-[1.5rem] border border-stone-100 bg-stone-50 p-3 transition hover:-translate-y-0.5 hover:border-amber-200 hover:bg-white hover:shadow-md xl:p-4">
                                             <div
-                                                class="mb-3 flex h-24 items-center justify-center overflow-hidden rounded-2xl border border-stone-100 bg-white text-stone-400 min-[1200px]:h-28 xl:mb-4 xl:h-32">
+                                                class="mb-3 aspect-[3/4] w-full overflow-hidden rounded-2xl border border-stone-100 bg-white text-stone-400 xl:mb-4">
                                                 @if ($menu->image_path)
-                                                    <img src="{{ asset('storage/' . $menu->image_path) }}"
-                                                        class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                                                        alt="{{ $menu->name }}">
+                                                    <img src="{{ Storage::url($menu->image_path) }}"
+                                                        class="h-full w-full object-cover object-center transition duration-300 group-hover:scale-105"
+                                                        alt="{{ $menu->name }}" loading="lazy">
                                                 @else
-                                                    <span
-                                                        class="text-xs font-black uppercase tracking-widest text-stone-300">
-                                                        No Image
-                                                    </span>
+                                                    <img src="{{ Storage::url('menus/default.png') }}"
+                                                        class="h-full w-full object-cover object-center transition duration-300 group-hover:scale-105"
+                                                        alt="{{ $menu->name }}" loading="lazy">
                                                 @endif
                                             </div>
 
@@ -142,19 +141,19 @@
                                                 </h3>
                                             </div>
 
-                                            <div class="mt-4">
-                                                <p class="text-lg font-black text-stone-950 xl:text-xl">
+                                            <div class="mt-3">
+                                                <p class="text-base font-black text-stone-950 xl:text-xl">
                                                     Rp{{ number_format($menu->normal_price, 0, ',', '.') }}
                                                 </p>
                                             </div>
 
                                             <button type="button"
                                                 @click="addItem({
-                                            id: {{ $menu->id }},
-                                            name: @js($menu->name),
-                                            normal_price: {{ (int) $menu->normal_price }}
-                                        })"
-                                                class="mt-3 flex w-full items-center justify-center rounded-2xl bg-amber-600 px-4 py-2.5 text-sm font-black text-white shadow-lg shadow-amber-600/20 transition hover:bg-amber-700 active:scale-[0.98] xl:mt-4 xl:py-3">
+                    id: {{ $menu->id }},
+                    name: @js($menu->name),
+                    normal_price: {{ (int) $menu->normal_price }}
+                })"
+                                                class="mt-3 flex w-full items-center justify-center rounded-2xl bg-amber-600 px-4 py-2.5 text-sm font-black text-white shadow-lg shadow-amber-600/20 transition hover:bg-amber-700 active:scale-[0.98] xl:py-3">
                                                 Tambah
                                             </button>
                                         </div>

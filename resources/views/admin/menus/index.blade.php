@@ -268,14 +268,12 @@
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-4">
                                             <div class="h-14 w-14 overflow-hidden rounded-2xl bg-stone-100">
-                                                @if ($menu->image)
-                                                    <img src="{{ \Illuminate\Support\Facades\Storage::url($menu->image) }}"
+                                                @if ($menu->image_path)
+                                                    <img src="{{ Storage::url($menu->image_path) }}"
                                                         alt="{{ $menu->name }}" class="h-full w-full object-cover">
                                                 @else
-                                                    <div
-                                                        class="flex h-full w-full items-center justify-center text-xs font-black text-stone-400">
-                                                        69
-                                                    </div>
+                                                    <img src="{{ Storage::url('menus/default.png') }}"
+                                                        alt="{{ $menu->name }}" class="h-full w-full object-cover">
                                                 @endif
                                             </div>
 
