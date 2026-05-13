@@ -293,12 +293,6 @@
                                             x-text="formatCurrency(subtotal())"></span>
                                     </div>
 
-                                    <div class="rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3">
-                                        <p class="text-xs font-bold leading-5 text-amber-800">
-                                            Promo dan PPN dihitung saat checkout.
-                                        </p>
-                                    </div>
-
                                     <form method="POST" action="{{ route('cashier.pos.prepare-checkout') }}">
                                         @csrf
 
