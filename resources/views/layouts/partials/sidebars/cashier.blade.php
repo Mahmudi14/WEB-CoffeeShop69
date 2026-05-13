@@ -50,8 +50,8 @@
 @endphp
 
 <aside
-    class="fixed inset-y-0 left-0 z-50 w-72 border-r border-stone-800 bg-stone-950 transition-transform duration-300 xl:translate-x-0"
-    :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
+    class="fixed inset-y-0 left-0 z-50 w-72 -translate-x-full border-r border-stone-800 bg-stone-950 transition-transform duration-300 xl:translate-x-0"
+    :class="{ 'translate-x-0': sidebarOpen }">
     <div class="flex h-full flex-col">
         <x-sidebar-brand role="cashier" />
         <nav class="flex-1 space-y-1 overflow-y-auto px-4 py-2">

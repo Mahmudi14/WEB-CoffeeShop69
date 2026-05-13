@@ -97,8 +97,8 @@
                 </div>
             </div>
         </section>
-        <div <div
-            class="grid items-start gap-5 md:grid-cols-[minmax(0,1fr)_280px] lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_400px] 2xl:grid-cols-[minmax(0,1fr)_430px]">
+        <div
+            class="grid items-start gap-4 min-[900px]:grid-cols-[minmax(0,1fr)_320px] min-[1180px]:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_390px] 2xl:grid-cols-[minmax(0,1fr)_420px]">
             {{-- Menu Area --}}
             <section class="min-w-0">
                 <div class="space-y-8">
@@ -160,7 +160,7 @@
             {{-- Cart Area --}}
             <aside class="min-w-0 self-start">
                 <div
-                    class="flex max-h-none flex-col overflow-hidden rounded-[2rem] border border-stone-100 bg-white shadow-sm min-[900px]:sticky min-[900px]:top-24 min-[900px]:max-h-[calc(100dvh-7rem)]">
+                    class="flex w-full max-h-none flex-col overflow-hidden rounded-[2rem] border border-stone-100 bg-white shadow-sm min-[900px]:sticky min-[900px]:top-24 min-[900px]:max-h-[calc(100dvh-7rem)]">
                     {{-- Cart Header --}}
                     <div class="shrink-0 border-b border-stone-100 p-4 xl:p-5">
                         <div class="flex items-center justify-between gap-4">
@@ -249,183 +249,183 @@
                     </template>
                 </div>
             </aside>
+            </>
         </div>
-    </div>
 
-    <script>
-        function posCart(menus, initialCart = [], shouldClear = false) {
-            return {
-                menus: menus,
-                initialCart: initialCart,
-                shouldClear: shouldClear,
-                storageKey: 'cashier_pos_cart',
-                cart: [],
-                searchQuery: '',
-                selectedCategory: 'all',
+        <script>
+            function posCart(menus, initialCart = [], shouldClear = false) {
+                return {
+                    menus: menus,
+                    initialCart: initialCart,
+                    shouldClear: shouldClear,
+                    storageKey: 'cashier_pos_cart',
+                    cart: [],
+                    searchQuery: '',
+                    selectedCategory: 'all',
 
-                init() {
-                    if (this.shouldClear) {
-                        this.cart = [];
-                        localStorage.removeItem(this.storageKey);
-                        return;
-                    }
+                    init() {
+                        if (this.shouldClear) {
+                            this.cart = [];
+                            localStorage.removeItem(this.storageKey);
+                            return;
+                        }
 
-                    const savedCart = localStorage.getItem(this.storageKey);
+                        const savedCart = localStorage.getItem(this.storageKey);
 
-                    if (savedCart) {
-                        try {
-                            const parsed = JSON.parse(savedCart);
+                        if (savedCart) {
+                            try {
+                                const parsed = JSON.parse(savedCart);
 
-                            this.cart = Array.isArray(parsed) ?
-                                parsed.map(item => this.normalizeItem(item)) :
-                                this.initialCart.map(item => this.normalizeItem(item));
-                        } catch (error) {
+                                this.cart = Array.isArray(parsed) ?
+                                    parsed.map(item => this.normalizeItem(item)) :
+                                    this.initialCart.map(item => this.normalizeItem(item));
+                            } catch (error) {
+                                this.cart = this.initialCart.map(item => this.normalizeItem(item));
+                            }
+                        } else {
                             this.cart = this.initialCart.map(item => this.normalizeItem(item));
                         }
-                    } else {
-                        this.cart = this.initialCart.map(item => this.normalizeItem(item));
-                    }
 
-                    this.$watch('cart', value => {
-                        localStorage.setItem(this.storageKey, JSON.stringify(value));
-                    });
-                },
-
-                normalizeItem(item) {
-                    return {
-                        key: item.key || `${item.menu_id}-${Date.now()}-${Math.random().toString(16).slice(2)}`,
-                        menu_id: Number(item.menu_id),
-                        name: item.name,
-                        normal_price: Number(item.normal_price),
-                        quantity: Math.max(Number(item.quantity) || 1, 1),
-                    };
-                },
-
-                normalizeText(value) {
-                    return String(value ?? '').toLowerCase().trim();
-                },
-
-                menuVisible(categoryId, menuName, menuDescription = '') {
-                    const categoryMatched =
-                        this.selectedCategory === 'all' ||
-                        String(this.selectedCategory) === String(categoryId);
-
-                    const keyword = this.normalizeText(this.searchQuery);
-                    const text = this.normalizeText(`${menuName} ${menuDescription}`);
-
-                    return categoryMatched && (keyword === '' || text.includes(keyword));
-                },
-
-                categoryHasVisible(categoryId) {
-                    return this.menus.some(menu => {
-                        return String(menu.category_id) === String(categoryId) &&
-                            this.menuVisible(menu.category_id, menu.name, menu.description || '');
-                    });
-                },
-
-                hasVisibleMenus() {
-                    return this.menus.some(menu => {
-                        return this.menuVisible(menu.category_id, menu.name, menu.description || '');
-                    });
-                },
-
-                addItem(menu) {
-                    const existing = this.cart.find(item => item.menu_id === menu.id);
-
-                    if (existing) {
-                        existing.quantity++;
-                        this.persistCart();
-                        return;
-                    }
-
-                    this.cart.push({
-                        key: `${menu.id}-${Date.now()}-${Math.random().toString(16).slice(2)}`,
-                        menu_id: menu.id,
-                        name: menu.name,
-                        normal_price: Number(menu.normal_price),
-                        quantity: 1,
-                    });
-
-                    this.persistCart();
-                },
-
-                removeItem(key) {
-                    this.cart = this.cart.filter(item => item.key !== key);
-                    this.persistCart();
-                },
-
-                increaseQty(key) {
-                    const item = this.cart.find(item => item.key === key);
-
-                    if (!item) return;
-
-                    item.quantity++;
-                    this.persistCart();
-                },
-
-                decreaseQty(key) {
-                    const item = this.cart.find(item => item.key === key);
-
-                    if (!item) return;
-
-                    item.quantity--;
-
-                    if (item.quantity <= 0) {
-                        this.removeItem(key);
-                        return;
-                    }
-
-                    this.persistCart();
-                },
-
-                async clearCart() {
-                    this.cart = [];
-                    localStorage.removeItem(this.storageKey);
-
-                    try {
-                        await fetch('{{ route('cashier.pos.cart.clear') }}', {
-                            method: 'DELETE',
-                            headers: {
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                                    'content'),
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json',
-                            },
+                        this.$watch('cart', value => {
+                            localStorage.setItem(this.storageKey, JSON.stringify(value));
                         });
-                    } catch (error) {
-                        console.error('Gagal menghapus session cart:', error);
-                    }
-                },
+                    },
 
-                persistCart() {
-                    localStorage.setItem(this.storageKey, JSON.stringify(this.cart));
-                },
+                    normalizeItem(item) {
+                        return {
+                            key: item.key || `${item.menu_id}-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+                            menu_id: Number(item.menu_id),
+                            name: item.name,
+                            normal_price: Number(item.normal_price),
+                            quantity: Math.max(Number(item.quantity) || 1, 1),
+                        };
+                    },
 
-                subtotal() {
-                    return this.cart.reduce((total, item) => {
-                        const qty = Math.max(Number(item.quantity) || 1, 1);
+                    normalizeText(value) {
+                        return String(value ?? '').toLowerCase().trim();
+                    },
 
-                        return total + (Number(item.normal_price) * qty);
-                    }, 0);
-                },
+                    menuVisible(categoryId, menuName, menuDescription = '') {
+                        const categoryMatched =
+                            this.selectedCategory === 'all' ||
+                            String(this.selectedCategory) === String(categoryId);
 
-                cartPayload() {
-                    return this.cart
-                        .filter(item => Number(item.quantity) > 0)
-                        .map(item => ({
-                            menu_id: item.menu_id,
-                            quantity: Number(item.quantity),
-                        }));
-                },
+                        const keyword = this.normalizeText(this.searchQuery);
+                        const text = this.normalizeText(`${menuName} ${menuDescription}`);
 
-                formatCurrency(value) {
-                    return new Intl.NumberFormat('id-ID', {
-                        style: 'currency',
-                        currency: 'IDR',
-                        maximumFractionDigits: 0,
-                    }).format(value);
-                },
-            };
-        }
-    </script>
-@endsection
+                        return categoryMatched && (keyword === '' || text.includes(keyword));
+                    },
+
+                    categoryHasVisible(categoryId) {
+                        return this.menus.some(menu => {
+                            return String(menu.category_id) === String(categoryId) &&
+                                this.menuVisible(menu.category_id, menu.name, menu.description || '');
+                        });
+                    },
+
+                    hasVisibleMenus() {
+                        return this.menus.some(menu => {
+                            return this.menuVisible(menu.category_id, menu.name, menu.description || '');
+                        });
+                    },
+
+                    addItem(menu) {
+                        const existing = this.cart.find(item => item.menu_id === menu.id);
+
+                        if (existing) {
+                            existing.quantity++;
+                            this.persistCart();
+                            return;
+                        }
+
+                        this.cart.push({
+                            key: `${menu.id}-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+                            menu_id: menu.id,
+                            name: menu.name,
+                            normal_price: Number(menu.normal_price),
+                            quantity: 1,
+                        });
+
+                        this.persistCart();
+                    },
+
+                    removeItem(key) {
+                        this.cart = this.cart.filter(item => item.key !== key);
+                        this.persistCart();
+                    },
+
+                    increaseQty(key) {
+                        const item = this.cart.find(item => item.key === key);
+
+                        if (!item) return;
+
+                        item.quantity++;
+                        this.persistCart();
+                    },
+
+                    decreaseQty(key) {
+                        const item = this.cart.find(item => item.key === key);
+
+                        if (!item) return;
+
+                        item.quantity--;
+
+                        if (item.quantity <= 0) {
+                            this.removeItem(key);
+                            return;
+                        }
+
+                        this.persistCart();
+                    },
+
+                    async clearCart() {
+                        this.cart = [];
+                        localStorage.removeItem(this.storageKey);
+
+                        try {
+                            await fetch('{{ route('cashier.pos.cart.clear') }}', {
+                                method: 'DELETE',
+                                headers: {
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                        'content'),
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json',
+                                },
+                            });
+                        } catch (error) {
+                            console.error('Gagal menghapus session cart:', error);
+                        }
+                    },
+
+                    persistCart() {
+                        localStorage.setItem(this.storageKey, JSON.stringify(this.cart));
+                    },
+
+                    subtotal() {
+                        return this.cart.reduce((total, item) => {
+                            const qty = Math.max(Number(item.quantity) || 1, 1);
+
+                            return total + (Number(item.normal_price) * qty);
+                        }, 0);
+                    },
+
+                    cartPayload() {
+                        return this.cart
+                            .filter(item => Number(item.quantity) > 0)
+                            .map(item => ({
+                                menu_id: item.menu_id,
+                                quantity: Number(item.quantity),
+                            }));
+                    },
+
+                    formatCurrency(value) {
+                        return new Intl.NumberFormat('id-ID', {
+                            style: 'currency',
+                            currency: 'IDR',
+                            maximumFractionDigits: 0,
+                        }).format(value);
+                    },
+                };
+            }
+        </script>
+    @endsection
