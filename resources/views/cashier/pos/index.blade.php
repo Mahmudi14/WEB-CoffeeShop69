@@ -188,7 +188,7 @@
 
             {{-- Cart Area - 30% --}}
             <aside
-                class="min-w-0 self-start min-[768px]:sticky min-[768px]:top-24 min-[768px]:z-20 min-[768px]:max-h-[calc(100dvh-7rem)]">
+                class="min-w-0 self-start min-[768px]:sticky min-[768px]:top-24 min-[768px]:z-20 min-[768px]:max-h-[calc(100dvh-10rem)]">
                 <div
                     class="flex w-full flex-col overflow-hidden rounded-[2rem] border border-stone-100 bg-white shadow-sm min-[768px]:max-h-[calc(100dvh-7rem)]">
                     {{-- Cart Header --}}
