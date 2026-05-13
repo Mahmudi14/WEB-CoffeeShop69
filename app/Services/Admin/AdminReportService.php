@@ -232,40 +232,36 @@ class AdminReportService
     }
 
     private function paidOrderQuery(Carbon $startDate, Carbon $endDate, string $selectedKasir): Builder
-    {
-        $query = Order::query()
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->where('payment_status', Order::PAYMENT_PAID)
-            ->whereNotIn('order_status', [
-                Order::STATUS_CANCELLED,
-                Order::STATUS_REJECTED,
-                Order::STATUS_EXPIRED,
-            ]);
+{
+    return Order::query()
+        ->where('payment_status', Order::PAYMENT_PAID)
+        ->whereNotIn('order_status', [
+            Order::STATUS_CANCELLED,
+            Order::STATUS_REJECTED,
+            Order::STATUS_EXPIRED,
+        ])
+        ->whereHas('shift', function (Builder $shiftQuery) use ($startDate, $endDate, $selectedKasir) {
+            $shiftQuery->whereBetween('opened_at', [$startDate, $endDate]);
 
-        if ($selectedKasir !== 'all') {
-            $query->where(function ($query) use ($selectedKasir) {
-                $query
-                    ->where('cashier_id', $selectedKasir)
-                    ->orWhereHas('shift', function ($shiftQuery) use ($selectedKasir) {
-                        $shiftQuery->where('user_id', $selectedKasir);
-                    });
-            });
-        }
-
-        return $query;
-    }
+            if ($selectedKasir !== 'all') {
+                $shiftQuery->where('user_id', $selectedKasir);
+            }
+        });
+}
 
     private function expenseTotal(Carbon $startDate, Carbon $endDate, string $selectedKasir): int
-    {
-        $query = ShiftExpense::query()
-            ->whereBetween('created_at', [$startDate, $endDate]);
+{
+    $query = ShiftExpense::query()
+        ->whereHas('shift', function (Builder $shiftQuery) use ($startDate, $endDate, $selectedKasir) {
+            $shiftQuery->whereBetween('opened_at', [$startDate, $endDate]);
 
-        if ($selectedKasir !== 'all') {
-            $query->where('user_id', $selectedKasir);
-        }
+            if ($selectedKasir !== 'all') {
+                $shiftQuery->where('user_id', $selectedKasir);
+            }
+        });
 
-        return (int) $query->sum('amount');
-    }
+    return (int) $query->sum('amount');
+}
 
     private function summaryCards(
         int $totalRevenue,

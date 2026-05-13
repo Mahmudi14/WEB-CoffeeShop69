@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class IncomingOrderPaymentService
 {
@@ -25,8 +26,8 @@ class IncomingOrderPaymentService
         $order->loadMissing('payment');
 
         $this->guard->ensurePendingCashOrder($order);
-
         DB::transaction(function () use ($order, $activeShift, $cashier, $paidAmount) {
+        $this->assignToActiveShift($order, $activeShift, $cashier);
             $order->update([
                 'cashier_shift_id' => $activeShift->id,
                 'cashier_id' => $cashier->id,
@@ -61,6 +62,7 @@ class IncomingOrderPaymentService
         $this->guard->ensurePendingProofOrder($order);
 
         DB::transaction(function () use ($order, $activeShift, $cashier) {
+        $this->assignToActiveShift($order, $activeShift, $cashier);
             $order->update([
                 'cashier_shift_id' => $activeShift->id,
                 'cashier_id' => $cashier->id,
@@ -124,4 +126,21 @@ class IncomingOrderPaymentService
             'completed_at' => now(),
         ]);
     }
+
+    private function assignToActiveShift(Order $order, CashierShift $activeShift, User $cashier): void
+{
+    if (
+        $order->cashier_shift_id !== null
+        && (int) $order->cashier_shift_id !== (int) $activeShift->id
+    ) {
+        throw ValidationException::withMessages([
+            'order' => 'Order ini sudah masuk ke shift kasir lain.',
+        ]);
+    }
+
+    $order->forceFill([
+        'cashier_shift_id' => $order->cashier_shift_id ?: $activeShift->id,
+        'cashier_id' => $order->cashier_id ?: $cashier->id,
+    ])->save();
+}
 }

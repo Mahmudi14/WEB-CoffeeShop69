@@ -90,7 +90,7 @@ class RolePermissionSeeder extends Seeder
         );
 
         $adminUser = User::firstOrCreate(
-            ['email' => 'admin@69coffeeshop.test'],
+            ['email' => 'mahmudi@gmail.com'],
             [
                 'name' => 'Admin',
                 'password' => Hash::make('password'),
@@ -99,7 +99,7 @@ class RolePermissionSeeder extends Seeder
         );
 
         $cashierUser = User::firstOrCreate(
-            ['email' => 'cashier@69coffeeshop.test'],
+            ['email' => 'mnwrhahmd16@gmail.com'],
             [
                 'name' => 'Kasir',
                 'password' => Hash::make('password'),

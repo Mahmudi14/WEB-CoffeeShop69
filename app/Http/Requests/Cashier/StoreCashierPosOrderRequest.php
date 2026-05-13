@@ -51,7 +51,7 @@ class StoreCashierPosOrderRequest extends FormRequest
                 ]),
             ],
             'paid_amount' => ['nullable', 'integer', 'min:0'],
-            'payment_note' => ['nullable', 'string', 'max:500'],
+            'customer_note' => ['nullable', 'string', 'max:1000'],
         ];
     }
 

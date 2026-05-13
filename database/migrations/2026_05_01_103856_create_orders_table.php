@@ -13,11 +13,12 @@ return new class extends Migration
 
             $table->string('order_number')->unique();
 
-            $table->foreignId('cashier_shift_id')->nullable()->constrained('cashier_shifts')->nullOnDelete();
-            $table->foreignId('cashier_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->foreignId('table_id')->nullable()->constrained('cafe_tables')->nullOnDelete();
+            $table->foreignId('cashier_shift_id')->nullable()->constrained('cashier_shifts')->restrictOnDelete();
+            $table->foreignId('cashier_id')->nullable()->constrained('users')->restrictOnDelete();
 
             $table->string('customer_name');
+            $table->text('customer_note')->nullable();
+            $table->foreignId('table_id')->nullable()->constrained('cafe_tables')->nullOnDelete();
 
             $table->string('order_source'); // cashier_pos, customer_qr
             $table->string('order_type'); // dine_in, takeaway

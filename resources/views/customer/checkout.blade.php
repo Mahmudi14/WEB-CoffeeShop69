@@ -308,9 +308,9 @@
 
             <div>
                 <label class="mb-2 block text-sm font-bold text-stone-700">Catatan</label>
-                <textarea name="note" rows="3"
+                <textarea name="customer_note" rows="3"
                     class="w-full rounded-2xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-100"
-                    placeholder="Opsional">{{ old('note') }}</textarea>
+                    placeholder="Opsional">{{ old('customer_note') }}</textarea>
             </div>
 
             <div class="flex gap-3">

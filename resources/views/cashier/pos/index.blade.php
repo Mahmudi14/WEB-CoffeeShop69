@@ -155,20 +155,28 @@
                             </div>
                         @endif
                 </div>
-            </section> {{-- Cart Area --}} <aside class="xl:col-span-4">
+            </section>
+            {{-- Cart Area --}}
+            <aside class="xl:col-span-4">
                 <div
                     class="sticky top-24 flex max-h-[calc(100vh-7rem)] flex-col overflow-hidden rounded-[2rem] border border-stone-100 bg-white shadow-sm">
-                    {{-- Cart Header --}} <div class="shrink-0 border-b border-stone-100 p-5">
+                    {{-- Cart Header --}}
+                    <div class="shrink-0 border-b border-stone-100 p-5">
                         <div class="flex items-center justify-between gap-4">
                             <div>
                                 <h2 class="text-lg font-black text-stone-950"> Cart </h2>
-                                <p class="mt-1 text-xs font-semibold text-stone-500"> <span x-text="cart.length"></span>
-                                    item dipilih </p>
-                            </div> <button x-show="cart.length > 0" type="button" @click="clearCart()"
+                                <p class="mt-1 text-xs font-semibold text-stone-500">
+                                    <span x-text="cart.length"></span>
+                                    item dipilih
+                                </p>
+                            </div>
+                            <button x-show="cart.length > 0" type="button" @click="clearCart()"
                                 class="rounded-full bg-rose-50 px-3 py-1.5 text-xs font-black text-rose-600 transition hover:bg-rose-100">
                                 Kosongkan </button>
                         </div>
-                    </div> {{-- Empty State --}} <template x-if="cart.length === 0">
+                    </div>
+                    {{-- Empty State --}}
+                    <template x-if="cart.length === 0">
                         <div class="p-5">
                             <div class="rounded-2xl border border-dashed border-stone-300 bg-stone-50 p-8 text-center">
                                 <div
@@ -181,9 +189,12 @@
                                 <p class="mt-4 text-sm font-black text-stone-700"> Cart masih kosong. </p>
                             </div>
                         </div>
-                    </template> {{-- Cart Content --}} <template x-if="cart.length > 0">
-                        <div class="flex min-h-0 flex-1 flex-col"> {{-- Items --}} <div
-                                class="min-h-0 flex-1 overflow-y-auto p-5">
+                    </template>
+                    {{-- Cart Content --}}
+                    <template x-if="cart.length > 0">
+                        <div class="flex min-h-0 flex-1 flex-col">
+                            {{-- Items --}}
+                            <div class="min-h-0 flex-1 overflow-y-auto p-5">
                                 <div class="space-y-3"> <template x-for="item in cart" :key="item.key">
                                         <div class="rounded-2xl border border-stone-100 bg-stone-50 p-4">
                                             <div class="flex items-start justify-between gap-3">
@@ -211,10 +222,6 @@
                                                 <p class="text-sm font-black text-stone-950"
                                                     x-text="formatCurrency(item.normal_price * item.quantity)"> </p>
                                             </div>
-                                            <div class="mt-3"> <input type="text" x-model="item.note"
-                                                    @input="persistCart()" placeholder="Catatan item opsional"
-                                                    class="w-full rounded-xl border border-stone-200 bg-white px-3 py-2 text-xs font-semibold text-stone-700 outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-100">
-                                            </div>
                                         </div>
                                     </template> </div>
                             </div> {{-- Summary --}} <div class="shrink-0 border-t border-stone-100 bg-white p-5">
@@ -236,7 +243,8 @@
                                 </div>
                             </div>
                         </div>
-                    </template> </div>
+                    </template>
+                </div>
             </aside>
         </div>
     </div>
@@ -334,7 +342,6 @@
                         name: menu.name,
                         normal_price: Number(menu.normal_price),
                         quantity: 1,
-                        note: '',
                     });
 
                     this.persistCart();
@@ -406,7 +413,6 @@
                         .map(item => ({
                             menu_id: item.menu_id,
                             quantity: Number(item.quantity),
-                            note: item.note || null,
                         }));
                 },
 

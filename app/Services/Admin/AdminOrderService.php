@@ -28,35 +28,36 @@ class AdminOrderService
         return ! in_array($order->order_status, $this->uncancellableStatuses(), true);
     }
 
-    public function cancel(Order $order, User $admin, string $reason): Order
-    {
-        if (! $this->canCancel($order)) {
-            throw ValidationException::withMessages([
-                'order' => 'Order ini tidak bisa dibatalkan.',
+    public function cancel(Order $order, User $admin, ?string $reason = null): Order
+{
+    if (! $this->canCancel($order)) {
+        throw ValidationException::withMessages([
+            'order' => 'Order ini tidak bisa dibatalkan.',
+        ]);
+    }
+
+    DB::transaction(function () use ($order, $admin, $reason) {
+        $order->update([
+            'order_status' => Order::STATUS_CANCELLED,
+            'payment_status' => Order::PAYMENT_VOIDED,
+            'cancelled_by' => $admin->id,
+            'cancelled_at' => now(),
+            'cancel_reason' => $reason,
+
+            // Jangan pernah null-kan ini:
+            // 'cashier_id' => null,
+            // 'cashier_shift_id' => null,
+        ]);
+
+        if ($order->payment) {
+            $order->payment->update([
+                'status' => Payment::STATUS_VOIDED,
             ]);
         }
+    });
 
-        return DB::transaction(function () use ($order, $admin, $reason) {
-            $order->loadMissing('payment');
-
-            $order->update([
-                'order_status' => Order::STATUS_CANCELLED,
-                'payment_status' => Order::PAYMENT_VOIDED,
-                'cancelled_by' => $admin->id,
-                'cancelled_at' => now(),
-                'cancel_reason' => $reason,
-            ]);
-
-            if ($order->payment) {
-                $order->payment->update([
-                    'status' => Payment::STATUS_VOIDED,
-                    'note' => trim(($order->payment->note ? $order->payment->note . "\n" : '') . 'Dibatalkan admin: ' . $reason),
-                ]);
-            }
-
-            return $order->fresh();
-        });
-    }
+    return $order->refresh();
+}
 
     private function uncancellableStatuses(): array
     {

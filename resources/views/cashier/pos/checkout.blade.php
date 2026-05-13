@@ -177,11 +177,11 @@
                 {{-- Payment Note --}}
                 <div>
                     <label class="mb-2 block text-sm font-bold text-stone-700">
-                        Catatan Pembayaran
+                        Catatan Pesanan
                     </label>
 
-                    <textarea name="payment_note" rows="3" placeholder="Opsional"
-                        class="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-amber-500 focus:ring-4 focus:ring-amber-100">{{ old('payment_note') }}</textarea>
+                    <textarea name="customer_note" rows="3" placeholder="Opsional"
+                        class="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-amber-500 focus:ring-4 focus:ring-amber-100">{{ old('customer_note') }}</textarea>
                 </div>
 
                 {{-- Actions --}}

@@ -45,6 +45,7 @@ class CashierPosOrderService
                 'cashier_id' => $cashier->id,
                 'table_id' => $data['table_id'] ?? null,
                 'customer_name' => $data['customer_name'],
+                'customer_note' => $data['customer_note'] ?? null,
                 'order_source' => Order::SOURCE_CASHIER_POS,
                 'order_type' => $data['order_type'],
                 'order_status' => Order::STATUS_PROCESSING,
@@ -70,7 +71,6 @@ class CashierPosOrderService
                     'subtotal_before_discount' => $pricedItem['subtotal_before_discount'],
                     'total_discount' => $pricedItem['total_discount'],
                     'subtotal_after_discount' => $pricedItem['subtotal_after_discount'],
-                    'note' => $pricedItem['note'],
                 ]);
 
                 foreach ($pricedItem['promotions'] as $promotion) {
@@ -102,7 +102,6 @@ class CashierPosOrderService
                 'amount' => $pricing['grand_total'],
                 'paid_amount' => $paidAmount,
                 'change_amount' => max($paidAmount - $pricing['grand_total'], 0),
-                'note' => $data['payment_note'] ?? null,
                 'verified_by' => $cashier->id,
                 'verified_at' => now(),
                 'created_by' => $cashier->id,

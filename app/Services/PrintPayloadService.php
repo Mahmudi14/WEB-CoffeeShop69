@@ -12,62 +12,68 @@ use Illuminate\Support\Facades\DB;
 class PrintPayloadService
 {
     public function buildKitchenOrderPayload(Order $order): array
-    {
-        $order->loadMissing(['items', 'payment', 'cashier', 'table']);
+{
+    $order->loadMissing(['items', 'payment', 'cashier', 'table']);
 
-        $itemNotes = $order->items
-            ->filter(fn ($item) => filled($item->note))
-            ->map(fn ($item) => $item->menu_name . ': ' . $item->note)
-            ->values()
-            ->all();
+    $notes = collect();
 
-        return [
-            'transaction_id' => $order->order_number,
-            'created_at' => $order->created_at?->format('Y-m-d H:i:s') ?? now()->format('Y-m-d H:i:s'),
-            'customer_name' => $order->customer_name,
-            'table_name' => $order->table?->name ?? 'Takeaway',
-            'cashier_name' => $order->cashier?->name ?? auth()->user()?->name ?? '-',
-            'payment_method' => $order->payment?->method,
-            'note' => implode("\n", $itemNotes),
-            'total' => (int) $order->grand_total,
-
-            'items' => $order->items
-                ->map(fn ($item) => [
-                    'name' => $item->menu_name,
-                    'qty' => (int) $item->quantity,
-                    'price' => (int) $item->final_price,
-                    'subtotal' => (int) $item->subtotal_after_discount,
-                ])
-                ->values()
-                ->all(),
-        ];
+    if (filled($order->customer_note)) {
+        $notes->push('Customer: ' . $order->customer_note);
     }
+
+    $order->items
+        ->filter(fn ($item) => filled($item->note))
+        ->each(function ($item) use ($notes) {
+            $notes->push($item->menu_name . ': ' . $item->note);
+        });
+
+    return [
+        'transaction_id' => $order->order_number,
+        'created_at' => $order->created_at?->format('Y-m-d H:i:s') ?? now()->format('Y-m-d H:i:s'),
+        'customer_name' => $order->customer_name,
+        'table_name' => $order->table?->name ?? 'Takeaway',
+        'cashier_name' => $order->cashier?->name ?? auth()->user()?->name ?? '-',
+        'payment_method' => $order->payment?->method,
+        'note' => $notes->implode("\n"),
+        'total' => (int) $order->grand_total,
+
+        'items' => $order->items
+            ->map(fn ($item) => [
+                'name' => $item->menu_name,
+                'qty' => (int) $item->quantity,
+                'price' => (int) $item->final_price,
+                'subtotal' => (int) $item->subtotal_after_discount,
+            ])
+            ->values()
+            ->all(),
+    ];
+}
 
     public function buildCustomerReceiptPayload(Order $order): array
-    {
-        $order->loadMissing(['items', 'payment', 'cashier', 'table']);
+{
+    $order->loadMissing(['items', 'payment', 'cashier', 'table']);
 
-        return [
-            'transaction_id' => $order->order_number,
-            'created_at' => $order->created_at?->format('Y-m-d H:i:s') ?? now()->format('Y-m-d H:i:s'),
-            'customer_name' => $order->customer_name,
-            'table_name' => $order->table?->name ?? 'Takeaway',
-            'cashier_name' => $order->cashier?->name ?? auth()->user()?->name ?? '-',
-            'payment_method' => $order->payment?->method,
-            'note' => $order->payment?->note ?? '',
-            'total' => (int) $order->grand_total,
+    return [
+        'transaction_id' => $order->order_number,
+        'created_at' => $order->created_at?->format('Y-m-d H:i:s') ?? now()->format('Y-m-d H:i:s'),
+        'customer_name' => $order->customer_name,
+        'table_name' => $order->table?->name ?? 'Takeaway',
+        'cashier_name' => $order->cashier?->name ?? auth()->user()?->name ?? '-',
+        'payment_method' => $order->payment?->method,
+        'note' => $order->customer_note ?? '',
+        'total' => (int) $order->grand_total,
 
-            'items' => $order->items
-                ->map(fn ($item) => [
-                    'name' => $item->menu_name,
-                    'qty' => (int) $item->quantity,
-                    'price' => (int) $item->final_price,
-                    'subtotal' => (int) $item->subtotal_after_discount,
-                ])
-                ->values()
-                ->all(),
-        ];
-    }
+        'items' => $order->items
+            ->map(fn ($item) => [
+                'name' => $item->menu_name,
+                'qty' => (int) $item->quantity,
+                'price' => (int) $item->final_price,
+                'subtotal' => (int) $item->subtotal_after_discount,
+            ])
+            ->values()
+            ->all(),
+    ];
+}
 
     public function buildShiftClosingPayload(CashierShift $shift): array
     {

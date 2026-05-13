@@ -25,8 +25,6 @@ return new class extends Migration
             $table->unsignedBigInteger('total_discount')->default(0);
             $table->unsignedBigInteger('subtotal_after_discount');
 
-            $table->text('note')->nullable();
-
             $table->timestamps();
 
             $table->index('order_id');

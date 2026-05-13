@@ -35,7 +35,7 @@ class StoreQrOrderRequest extends FormRequest
                 'mimes:jpg,jpeg,png,webp,pdf',
                 'max:2048',
             ],
-            'note' => ['nullable', 'string', 'max:500'],
+            'customer_note' => ['nullable', 'string', 'max:1000'],
         ];
     }
 

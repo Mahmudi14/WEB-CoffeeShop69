@@ -24,7 +24,6 @@ return new class extends Migration
             $table->dateTime('proof_uploaded_at')->nullable();
 
             $table->string('reference')->nullable();
-            $table->text('note')->nullable();
 
             $table->foreignId('verified_by')->nullable()->constrained('users')->nullOnDelete();
             $table->dateTime('verified_at')->nullable();

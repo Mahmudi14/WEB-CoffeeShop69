@@ -41,6 +41,7 @@ class CustomerOrderService
                 'cashier_id' => null,
                 'table_id' => $table->id,
                 'customer_name' => $data['customer_name'],
+                'customer_note' => $data['customer_note'] ?? null,
                 'order_source' => Order::SOURCE_CUSTOMER_QR,
                 'order_type' => Order::TYPE_DINE_IN,
                 'order_status' => $isCash
@@ -69,7 +70,6 @@ class CustomerOrderService
                     'subtotal_before_discount' => $pricedItem['subtotal_before_discount'],
                     'total_discount' => $pricedItem['total_discount'],
                     'subtotal_after_discount' => $pricedItem['subtotal_after_discount'],
-                    'note' => $pricedItem['note'],
                 ]);
 
                 foreach ($pricedItem['promotions'] as $promotion) {

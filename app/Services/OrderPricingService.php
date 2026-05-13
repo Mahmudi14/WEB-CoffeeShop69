@@ -80,7 +80,6 @@ class OrderPricingService
                 'subtotal_before_discount' => $itemSubtotalBeforeDiscount,
                 'total_discount' => $itemTotalDiscount,
                 'subtotal_after_discount' => $itemSubtotalAfterDiscount,
-                'note' => $cartItem['note'] ?? null,
                 'promotions' => $appliedPromotions,
             ];
         }
