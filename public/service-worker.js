@@ -1,32 +1,28 @@
-const CACHE_NAME = "coffee69-static-v3";
+const CACHE_NAME = "coffee69-v1";
 
 const STATIC_ASSETS = [
+    "/",
+    "/login",
     "/manifest.json",
-    "/icons/icon-192.png",
-    "/icons/icon-512.png",
+    "/assets/images/icons/icon-192.png",
+    "/assets/images/icons/icon-512.png",
 ];
 
-self.addEventListener("install", function (event) {
+self.addEventListener("install", (event) => {
     event.waitUntil(
-        caches.open(CACHE_NAME).then(function (cache) {
-            return cache.addAll(STATIC_ASSETS);
-        }),
+        caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS)),
     );
 
     self.skipWaiting();
 });
 
-self.addEventListener("activate", function (event) {
+self.addEventListener("activate", (event) => {
     event.waitUntil(
-        caches.keys().then(function (keys) {
+        caches.keys().then((keys) => {
             return Promise.all(
                 keys
-                    .filter(function (key) {
-                        return key !== CACHE_NAME;
-                    })
-                    .map(function (key) {
-                        return caches.delete(key);
-                    }),
+                    .filter((key) => key !== CACHE_NAME)
+                    .map((key) => caches.delete(key)),
             );
         }),
     );
@@ -34,49 +30,12 @@ self.addEventListener("activate", function (event) {
     self.clients.claim();
 });
 
-self.addEventListener("fetch", function (event) {
-    const request = event.request;
-    const url = new URL(request.url);
-
-    if (request.method !== "GET") {
-        return;
-    }
-
-    if (url.origin !== location.origin) {
-        return;
-    }
-
-    // Jangan pernah cache halaman HTML / route Laravel
-    if (request.mode === "navigate") {
-        event.respondWith(fetch(request));
-        return;
-    }
-
-    const blockedPaths = [
-        "/login",
-        "/logout",
-        "/register",
-        "/forgot-password",
-        "/reset-password",
-        "/dashboard",
-        "/cashier",
-        "/admin",
-        "/superadmin",
-        "/profile",
-    ];
-
-    if (
-        blockedPaths.some(function (path) {
-            return url.pathname.startsWith(path);
-        })
-    ) {
-        event.respondWith(fetch(request));
+self.addEventListener("fetch", (event) => {
+    if (event.request.method !== "GET") {
         return;
     }
 
     event.respondWith(
-        caches.match(request).then(function (cachedResponse) {
-            return cachedResponse || fetch(request);
-        }),
+        fetch(event.request).catch(() => caches.match(event.request)),
     );
 });

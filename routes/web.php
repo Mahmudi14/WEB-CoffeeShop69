@@ -55,7 +55,7 @@ Route::get('/', function () {
     return redirect()
         ->route('login')
         ->with('error', 'Akun belum memiliki role yang valid.');
-})->middleware('no-cache');
+});
 
 
 /*
@@ -101,7 +101,7 @@ Route::middleware(['auth', 'role:superadmin'])
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'role:admin', 'no-cache'])
+Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
@@ -136,7 +136,7 @@ Route::middleware(['auth', 'role:admin', 'no-cache'])
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'role:cashier', 'no-cache'])
+Route::middleware(['auth', 'role:cashier'])
     ->prefix('cashier')
     ->name('cashier.')
     ->group(function () {
