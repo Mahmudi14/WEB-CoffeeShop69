@@ -7,11 +7,10 @@
 @endphp
 
 <header class="sticky top-0 z-30 border-b border-stone-200 bg-stone-50/90 backdrop-blur">
-    <div
-        class="flex h-20 items-center justify-between px-4 sm:px-6 {{ ($role ?? null) === 'cashier' ? 'xl:px-8' : 'lg:px-8' }}">
+    <div class="flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
         <div class="flex min-w-0 items-center gap-3">
             <button type="button"
-                class="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-stone-200 bg-white text-stone-700 shadow-sm transition hover:bg-stone-100 {{ ($role ?? null) === 'cashier' ? 'xl:hidden' : 'lg:hidden' }}"
+                class="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-stone-200 bg-white text-stone-700 shadow-sm transition hover:bg-stone-100 lg:hidden"
                 @click="sidebarOpen = true" aria-label="Buka sidebar">
                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M4 6h16M4 12h16M4 18h16" />
