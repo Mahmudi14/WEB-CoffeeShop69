@@ -99,7 +99,7 @@
         </section>
 
         {{-- Order Columns --}}
-        <section class="grid gap-6 xl:grid-cols-3">
+        <section class="grid gap-6 lg:grid-cols-3">
             {{-- Menunggu Cash --}}
             <div class="rounded-[2rem] border border-stone-100 bg-white shadow-sm overflow-hidden">
                 <div class="border-b border-stone-100 px-6 py-5">

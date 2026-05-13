@@ -22,13 +22,13 @@
             class="grid w-full items-start gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(360px,5fr)] 2xl:grid-cols-[minmax(0,8fr)_minmax(420px,4fr)]">
             {{-- LEFT: Customer & Payment Form --}}
             <section class="min-w-0">
-                <form method="POST" action="{{ route('cashier.pos.store') }}" x-data="checkoutPosForm({
+                <form id="checkout-pos-form" method="POST" action="{{ route('cashier.pos.store') }}" x-data="checkoutPosForm({
                     orderType: @js(old('order_type', \App\Models\Order::TYPE_DINE_IN)),
                     dineInType: @js(\App\Models\Order::TYPE_DINE_IN),
                     paymentMethod: @js(old('payment_method', \App\Models\Payment::METHOD_CASH)),
                     cashMethod: @js(\App\Models\Payment::METHOD_CASH),
                     grandTotal: @js((int) $pricing['grand_total']),
-                    paidAmount: @js(old('paid_amount', number_format($pricing['grand_total'], 0, ',', '.')))
+                    paidAmount: @js(old('paid_amount', ''))
                 })"
                     @submit="handleSubmit($event)"
                     class="space-y-6 rounded-3xl border border-stone-200 bg-white p-6 shadow-sm">
@@ -210,110 +210,105 @@
                     </div>
 
                     {{-- Payment Modal - Cash Only --}}
-                    <div x-show="showPaymentModal && paymentMethod === cashMethod" x-cloak x-transition.opacity
-                        @keydown.escape.window="closePaymentModal()"
-                        class="fixed inset-0 z-[999] flex items-center justify-center bg-stone-950/60 px-4">
-                        <div x-show="showPaymentModal && paymentMethod === cashMethod" x-transition.scale.origin.center
-                            @click.outside="closePaymentModal()"
-                            class="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
-                            <div class="flex items-start justify-between gap-4">
-                                <div>
-                                    <p class="text-xs font-black uppercase tracking-[0.22em] text-amber-600">
-                                        Konfirmasi Order
-                                    </p>
+                    <template x-teleport="body">
+                        <div x-show="showPaymentModal && paymentMethod === cashMethod" x-cloak x-transition.opacity
+                            @keydown.escape.window="closePaymentModal()" @click.self="closePaymentModal()"
+                            class="fixed inset-0 z-[9999] flex min-h-dvh items-center justify-center bg-stone-950/60 px-4 py-6">
+                            <div x-show="showPaymentModal && paymentMethod === cashMethod" x-transition.scale.origin.center
+                                @click.stop
+                                class="max-h-[calc(100dvh-3rem)] w-full max-w-md overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl">
+                                <div class="flex items-start justify-between gap-4">
+                                    <div>
+                                        <p class="text-xs font-black uppercase tracking-[0.22em] text-amber-600">
+                                            Konfirmasi Order
+                                        </p>
 
-                                    <h3 class="mt-2 text-2xl font-black tracking-tight text-stone-950">
-                                        Masukkan Nominal
-                                    </h3>
+                                        <h3 class="mt-2 text-2xl font-black tracking-tight text-stone-950">
+                                            Masukkan Nominal
+                                        </h3>
+                                    </div>
 
-                                    <p class="mt-2 text-sm leading-6 text-stone-500">
-                                        Pastikan nominal pembayaran sudah sesuai sebelum order dibuat.
-                                    </p>
+                                    <button type="button" @click="closePaymentModal()" :disabled="submitting"
+                                        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-stone-100 text-stone-500 transition hover:bg-stone-200 disabled:cursor-not-allowed disabled:opacity-60">
+                                        ✕
+                                    </button>
                                 </div>
 
-                                <button type="button" @click="closePaymentModal()" :disabled="submitting"
-                                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-stone-100 text-stone-500 transition hover:bg-stone-200 disabled:cursor-not-allowed disabled:opacity-60">
-                                    ✕
-                                </button>
-                            </div>
+                                <div class="mt-5 rounded-2xl bg-amber-50 p-4">
+                                    <div class="flex items-center justify-between gap-4">
+                                        <span class="text-sm font-black text-amber-800">
+                                            Total Bayar
+                                        </span>
 
-                            <div class="mt-5 rounded-2xl bg-amber-50 p-4">
-                                <div class="flex items-center justify-between gap-4">
-                                    <span class="text-sm font-black text-amber-800">
-                                        Total Bayar
-                                    </span>
-
-                                    <span class="text-xl font-black text-amber-800">
-                                        Rp{{ number_format($pricing['grand_total'], 0, ',', '.') }}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="mt-5">
-                                <label class="mb-2 block text-xs font-black uppercase tracking-wider text-stone-500">
-                                    Uang Diterima
-                                </label>
-
-                                <div class="relative">
-                                    <span
-                                        class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-sm font-black text-stone-500">
-                                        Rp
-                                    </span>
-
-                                    <input type="text" inputmode="numeric" x-ref="paidAmountInput"
-                                        x-model="paidAmount" @input="formatPaidAmount()"
-                                        class="w-full rounded-2xl border border-stone-200 bg-white py-4 pl-11 pr-4 text-lg font-black text-stone-950 outline-none transition focus:border-amber-500 focus:ring-4 focus:ring-amber-100"
-                                        placeholder="0">
+                                        <span class="text-xl font-black text-amber-800">
+                                            Rp{{ number_format($pricing['grand_total'], 0, ',', '.') }}
+                                        </span>
+                                    </div>
                                 </div>
 
-                                <p class="mt-2 text-xs font-semibold text-stone-500">
-                                    Nominal ini digunakan untuk menghitung pembayaran dan kembalian.
-                                </p>
-                            </div>
+                                <div class="mt-5">
+                                    <label class="mb-2 block text-xs font-black uppercase tracking-wider text-stone-500">
+                                        Uang Diterima
+                                    </label>
 
-                            <div class="mt-4 rounded-2xl border border-stone-200 bg-stone-50 p-4">
-                                <div class="flex items-center justify-between gap-4">
-                                    <span class="text-sm font-black text-stone-600">
-                                        Kembalian
-                                    </span>
+                                    <div class="relative">
+                                        <span
+                                            class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-sm font-black text-stone-500">
+                                            Rp
+                                        </span>
 
-                                    <span class="text-xl font-black text-stone-950">
-                                        Rp<span x-text="formatMoney(changeAmount())"></span>
-                                    </span>
+                                        <input type="text" inputmode="numeric" x-ref="paidAmountInput"
+                                            x-model="paidAmount" @input="formatPaidAmount()"
+                                            class="w-full rounded-2xl border border-stone-200 bg-white py-4 pl-11 pr-4 text-lg font-black text-stone-950 outline-none transition focus:border-amber-500 focus:ring-4 focus:ring-amber-100"
+                                            placeholder="0">
+                                    </div>
                                 </div>
 
-                                <template x-if="remainingAmount() > 0">
-                                    <p class="mt-2 text-xs font-bold text-rose-600">
-                                        Uang diterima masih kurang Rp<span x-text="formatMoney(remainingAmount())"></span>
-                                    </p>
-                                </template>
+                                <div class="mt-4 rounded-2xl border border-stone-200 bg-stone-50 p-4">
+                                    <div class="flex items-center justify-between gap-4">
+                                        <span class="text-sm font-black text-stone-600">
+                                            Kembalian
+                                        </span>
 
-                                <template x-if="remainingAmount() === 0 && parseMoney(paidAmount) >= grandTotal">
-                                    <p class="mt-2 text-xs font-bold text-emerald-700">
-                                        Nominal pembayaran sudah cukup.
-                                    </p>
-                                </template>
-                            </div>
+                                        <span class="text-xl font-black text-stone-950">
+                                            Rp<span x-text="formatMoney(changeAmount())"></span>
+                                        </span>
+                                    </div>
 
-                            <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-                                <button type="button" @click="closePaymentModal()" :disabled="submitting"
-                                    class="inline-flex items-center justify-center rounded-2xl border border-stone-200 bg-white px-5 py-3 text-sm font-black text-stone-700 shadow-sm transition hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-60">
-                                    Batal
-                                </button>
+                                    <template x-if="remainingAmount() > 0">
+                                        <p class="mt-2 text-xs font-bold text-rose-600">
+                                            Uang diterima masih kurang Rp<span
+                                                x-text="formatMoney(remainingAmount())"></span>
+                                        </p>
+                                    </template>
 
-                                <button type="submit" :disabled="submitting || parseMoney(paidAmount) < grandTotal"
-                                    class="inline-flex min-w-[180px] items-center justify-center rounded-2xl bg-amber-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-amber-600/20 transition hover:bg-amber-700 disabled:cursor-not-allowed disabled:opacity-60">
-                                    <span x-show="!submitting">
-                                        Konfirmasi Order
-                                    </span>
+                                    <template x-if="remainingAmount() === 0 && parseMoney(paidAmount) >= grandTotal">
+                                        <p class="mt-2 text-xs font-bold text-emerald-700">
+                                            Nominal pembayaran sudah cukup.
+                                        </p>
+                                    </template>
+                                </div>
 
-                                    <span x-show="submitting" x-cloak>
-                                        Memproses...
-                                    </span>
-                                </button>
+                                <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                                    <button type="button" @click="closePaymentModal()" :disabled="submitting"
+                                        class="inline-flex items-center justify-center rounded-2xl border border-stone-200 bg-white px-5 py-3 text-sm font-black text-stone-700 shadow-sm transition hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-60">
+                                        Batal
+                                    </button>
+
+                                    <button type="submit" form="checkout-pos-form" :disabled="submitting"
+                                        class="inline-flex min-w-[180px] items-center justify-center rounded-2xl bg-amber-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-amber-600/20 transition hover:bg-amber-700 disabled:cursor-not-allowed disabled:opacity-60">
+                                        <span x-show="!submitting">
+                                            Konfirmasi Order
+                                        </span>
+
+                                        <span x-show="submitting" x-cloak>
+                                            Memproses...
+                                        </span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </template>
                 </form>
             </section>
 
@@ -432,7 +427,7 @@
                 cashMethod: config.cashMethod,
 
                 grandTotal: Number(config.grandTotal || 0),
-                paidAmount: config.paidAmount || '0',
+                paidAmount: config.paidAmount ?? '',
 
                 handleOrderButtonClick(form) {
                     if (this.submitting) {
@@ -459,6 +454,11 @@
                     ) {
                         event.preventDefault();
                         this.showPaymentModal = true;
+
+                        this.$nextTick(() => {
+                            this.$refs.paidAmountInput?.focus();
+                        });
+
                         return;
                     }
 
@@ -468,10 +468,6 @@
                 openPaymentModal() {
                     if (this.paymentMethod !== this.cashMethod) {
                         return;
-                    }
-
-                    if (this.parseMoney(this.paidAmount) <= 0) {
-                        this.paidAmount = this.formatMoney(this.grandTotal);
                     }
 
                     this.showPaymentModal = true;
@@ -498,7 +494,14 @@
                 },
 
                 formatPaidAmount() {
-                    this.paidAmount = this.formatMoney(this.parseMoney(this.paidAmount));
+                    const rawValue = String(this.paidAmount || '').replace(/\D/g, '');
+
+                    if (rawValue === '') {
+                        this.paidAmount = '';
+                        return;
+                    }
+
+                    this.paidAmount = this.formatMoney(rawValue);
                 },
 
                 changeAmount() {
@@ -507,26 +510,6 @@
 
                 remainingAmount() {
                     return Math.max(this.grandTotal - this.parseMoney(this.paidAmount), 0);
-                },
-            };
-        }
-
-        function tableDropdown(initialTableId) {
-            return {
-                selectedTable: initialTableId,
-                tableOpen: false,
-
-                toggle() {
-                    this.tableOpen = !this.tableOpen;
-                },
-
-                close() {
-                    this.tableOpen = false;
-                },
-
-                select(tableId) {
-                    this.selectedTable = tableId;
-                    this.close();
                 },
             };
         }
