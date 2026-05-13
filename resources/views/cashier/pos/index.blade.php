@@ -97,10 +97,9 @@
                 </div>
             </div>
         </section>
-        <div
-            class="grid gap-6 min-[900px]:grid-cols-[minmax(0,1fr)_340px] min-[1200px]:grid-cols-[minmax(0,1fr)_390px] xl:grid-cols-[minmax(0,1fr)_420px]">
+        <div class="grid gap-6 lg:grid-cols-12 items-start">
             {{-- Menu Area --}}
-            <section class="min-w-0">
+            <section class="lg:col-span-7 xl:col-span-8">
                 <div class="space-y-8">
                     @forelse ($categories as $category)
                         @if ($category->menus->isNotEmpty())
@@ -158,9 +157,9 @@
                 </div>
             </section>
             {{-- Cart Area --}}
-            <aside class="min-w-0">
+            <aside class="lg:col-span-5 xl:col-span-4">
                 <div
-                    class="flex max-h-none flex-col overflow-hidden rounded-[2rem] border border-stone-100 bg-white shadow-sm min-[900px]:sticky min-[900px]:top-24 min-[900px]:max-h-[calc(100dvh-7rem)]">
+                    class="sticky top-6 flex h-[calc(100dvh-6rem)] flex-col overflow-hidden rounded-[2rem] border border-stone-100 bg-white shadow-sm">
                     {{-- Cart Header --}}
                     <div class="shrink-0 border-b border-stone-100 p-4 xl:p-5">
                         <div class="flex items-center justify-between gap-4">
@@ -195,7 +194,7 @@
                     <template x-if="cart.length > 0">
                         <div class="flex min-h-0 flex-1 flex-col">
                             {{-- Items --}}
-                            <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 xl:p-5">
+                            <div class="min-h-0 flex-1 overflow-y-auto p-5">
                                 <div class="space-y-3"> <template x-for="item in cart" :key="item.key">
                                         <div class="rounded-2xl border border-stone-100 bg-stone-50 p-4">
                                             <div class="flex items-start justify-between gap-3">
