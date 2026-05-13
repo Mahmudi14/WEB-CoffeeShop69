@@ -9,7 +9,7 @@
             <div
                 class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,158,11,0.22),transparent_35%),linear-gradient(135deg,rgba(255,255,255,0.06),transparent_45%)] pointer-events-none">
             </div>
-            <div class="relative z-10 flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+            <div class="relative z-70 flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
                 <div>
                     <div
                         class="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/10 px-3 py-1.5">
@@ -34,14 +34,15 @@
                                 placeholder="Cari menu...">
                         </div>
                         {{-- Custom Category Dropdown --}}
-                        <div x-data="{ openCategory: false }" class="relative">
+                        <div x-data="{ openCategory: false }" class="relative z-[80]">
                             <button type="button" @click="openCategory = !openCategory"
                                 @keydown.escape.window="openCategory = false"
                                 class="flex h-[52px] w-full items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white px-4 text-left text-sm font-bold text-stone-700 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-500/20">
                                 <span class="min-w-0 truncate">
-                                    <span x-show="selectedCategory === 'all'">Semua
-                                        Kategori
+                                    <span x-show="selectedCategory === 'all'">
+                                        Semua Kategori
                                     </span>
+
                                     @foreach ($categories as $category)
                                         @if ($category->menus->isNotEmpty())
                                             <span x-show="selectedCategory === '{{ $category->id }}'" x-cloak>
@@ -50,6 +51,7 @@
                                         @endif
                                     @endforeach
                                 </span>
+
                                 <svg class="h-4 w-4 shrink-0 text-stone-400 transition"
                                     :class="openCategory ? 'rotate-180' : ''" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
@@ -57,19 +59,23 @@
                                         d="M19 9l-7 7-7-7" />
                                 </svg>
                             </button>
+
                             <div x-show="openCategory" x-cloak x-transition.origin.top @click.outside="openCategory = false"
-                                class="absolute left-0 right-0 top-[60px] z-50 overflow-hidden rounded-2xl border border-stone-200 bg-white p-2 shadow-xl">
+                                class="absolute left-0 right-0 top-[60px] z-[999] max-h-80 overflow-y-auto rounded-2xl border border-stone-200 bg-white p-2 shadow-2xl">
                                 <button type="button" @click="selectedCategory = 'all'; openCategory = false"
                                     class="flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-amber-50 hover:text-amber-700"
                                     :class="selectedCategory === 'all' ? 'bg-amber-100 text-amber-800' : 'text-stone-700'">
-                                    <span>Semua Kategori
+                                    <span>
+                                        Semua Kategori
                                     </span>
+
                                     <svg x-show="selectedCategory === 'all'" x-cloak class="h-4 w-4" fill="none"
                                         stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                             d="M5 13l4 4L19 7" />
                                     </svg>
                                 </button>
+
                                 @foreach ($categories as $category)
                                     @if ($category->menus->isNotEmpty())
                                         <button type="button"
@@ -77,7 +83,10 @@
                                             class="mt-1 flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-amber-50 hover:text-amber-700"
                                             :class="selectedCategory === '{{ $category->id }}' ? 'bg-amber-100 text-amber-800' :
                                                 'text-stone-700'">
-                                            <span class="truncate">{{ $category->name }}</span>
+                                            <span class="truncate">
+                                                {{ $category->name }}
+                                            </span>
+
                                             <svg x-show="selectedCategory === '{{ $category->id }}'" x-cloak
                                                 class="h-4 w-4 shrink-0" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
@@ -117,7 +126,7 @@
                                 </div>
 
                                 <div
-                                    class="grid grid-cols-1 gap-3 min-[640px]:grid-cols-2 min-[1024px]:grid-cols-3 xl:gap-4">
+                                    class="grid grid-cols-1 gap-3 min-[640px]:grid-cols-4 min-[1024px]:grid-cols-4 xl:gap-4">
                                     @foreach ($category->menus as $menu)
                                         <div x-show="menuVisible({{ $category->id }}, @js($menu->name), @js($menu->description ?? ''))"
                                             x-cloak
@@ -187,7 +196,7 @@
 
             {{-- Cart Area - 30% --}}
             <aside
-                class="min-w-0 self-start min-[768px]:sticky min-[768px]:top-24 min-[768px]:z-20 min-[768px]:max-h-[calc(100dvh-10rem)]">
+                class="min-w-0 self-start min-[768px]:sticky min-[768px]:top-24 min-[768px]:z-10 min-[768px]:max-h-[calc(100dvh-10rem)]">
                 <div
                     class="flex w-full flex-col overflow-hidden rounded-[2rem] border border-stone-100 bg-white shadow-sm min-[768px]:max-h-[calc(100dvh-10rem)]">
                     {{-- Cart Header --}}

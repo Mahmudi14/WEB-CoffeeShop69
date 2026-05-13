@@ -54,7 +54,7 @@
         }" @keydown.escape.window="statusOpen = false; paymentOpen = false"
             class="rounded-[2rem] border border-stone-100 bg-white p-5 shadow-sm">
             <form method="GET" action="{{ route('cashier.orders.index') }}"
-                class="grid gap-3 xl:grid-cols-[minmax(0,1fr)_220px_220px_110px_110px] xl:items-end">
+                class="grid gap-3 min-[1024px]:grid-cols-[minmax(240px,1fr)_160px_170px_96px_96px] min-[1024px]:items-end">
                 <div>
                     <label class="mb-2 block text-xs font-black uppercase tracking-wider text-stone-400">
                         Cari Order

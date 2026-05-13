@@ -58,13 +58,13 @@
         </section>
 
         {{-- Audit Kas --}}
-        <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        <section class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5">
             <div class="rounded-[2rem] border border-stone-200 bg-white p-5 shadow-sm">
                 <p class="text-sm font-bold text-stone-500">
                     Kas Awal
                 </p>
 
-                <p class="mt-3 text-3xl font-black text-stone-950">
+                <p class="mt-3 text-2xl font-black text-stone-950">
                     Rp{{ number_format($summary['opening_cash'], 0, ',', '.') }}
                 </p>
             </div>
@@ -74,7 +74,7 @@
                     Cash Masuk
                 </p>
 
-                <p class="mt-3 text-3xl font-black text-emerald-800">
+                <p class="mt-3 text-2xl font-black text-emerald-800">
                     Rp{{ number_format($summary['cash_sales'], 0, ',', '.') }}
                 </p>
             </div>
@@ -84,7 +84,7 @@
                     Non Tunai
                 </p>
 
-                <p class="mt-3 text-3xl font-black text-sky-800">
+                <p class="mt-3 text-2xl font-black text-sky-800">
                     Rp{{ number_format($summary['non_cash_sales'], 0, ',', '.') }}
                 </p>
             </div>
@@ -94,7 +94,7 @@
                     Pengeluaran
                 </p>
 
-                <p class="mt-3 text-3xl font-black text-rose-800">
+                <p class="mt-3 text-2xl font-black text-rose-800">
                     Rp{{ number_format($summary['expense_total'], 0, ',', '.') }}
                 </p>
             </div>
@@ -104,7 +104,7 @@
                     Estimasi Kas Laci
                 </p>
 
-                <p class="mt-3 text-3xl font-black text-amber-800">
+                <p class="mt-3 text-2xl font-black text-amber-800">
                     Rp{{ number_format($summary['estimated_cash'], 0, ',', '.') }}
                 </p>
             </div>
@@ -156,39 +156,60 @@
         </section>
 
         {{-- Payment Breakdown --}}
-        <section class="grid gap-6 lg:grid-cols-3">
-            <div class="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm">
-                <h3 class="text-lg font-black text-stone-950">
-                    Breakdown Pembayaran
-                </h3>
-
-                <div class="mt-5 space-y-3">
-                    <div class="flex justify-between rounded-2xl bg-stone-50 px-4 py-3">
-                        <span class="text-sm font-bold text-stone-600">Cash</span>
-                        <span class="text-sm font-black text-stone-950">
-                            Rp{{ number_format($summary['cash_sales'], 0, ',', '.') }}
-                        </span>
+        <section class="grid items-stretch gap-6 lg:grid-cols-3">
+            <div class="h-full rounded-[2rem] border border-stone-200 bg-white p-6 shadow-sm">
+                <div class="flex h-full min-h-[360px] flex-col">
+                    {{-- Header --}}
+                    <div>
+                        <h3 class="text-xl font-black text-stone-950">
+                            Breakdown Pembayaran
+                        </h3>
                     </div>
 
-                    <div class="flex justify-between rounded-2xl bg-stone-50 px-4 py-3">
-                        <span class="text-sm font-bold text-stone-600">QRIS</span>
-                        <span class="text-sm font-black text-stone-950">
-                            Rp{{ number_format($summary['qris_sales'], 0, ',', '.') }}
-                        </span>
+                    {{-- Rincian pemasukan - dempet atas --}}
+                    <div class="mt-5 space-y-3">
+                        <div class="flex justify-between gap-4 rounded-2xl bg-stone-50 px-4 py-3">
+                            <span class="text-sm font-bold text-stone-600">
+                                Cash
+                            </span>
+
+                            <span class="text-sm font-black text-stone-950">
+                                Rp{{ number_format($summary['cash_sales'], 0, ',', '.') }}
+                            </span>
+                        </div>
+
+                        <div class="flex justify-between gap-4 rounded-2xl bg-stone-50 px-4 py-3">
+                            <span class="text-sm font-bold text-stone-600">
+                                QRIS
+                            </span>
+
+                            <span class="text-sm font-black text-stone-950">
+                                Rp{{ number_format($summary['qris_sales'], 0, ',', '.') }}
+                            </span>
+                        </div>
+
+                        <div class="flex justify-between gap-4 rounded-2xl bg-stone-50 px-4 py-3">
+                            <span class="text-sm font-bold text-stone-600">
+                                Transfer
+                            </span>
+
+                            <span class="text-sm font-black text-stone-950">
+                                Rp{{ number_format($summary['transfer_sales'], 0, ',', '.') }}
+                            </span>
+                        </div>
                     </div>
 
-                    <div class="flex justify-between rounded-2xl bg-stone-50 px-4 py-3">
-                        <span class="text-sm font-bold text-stone-600">Transfer</span>
-                        <span class="text-sm font-black text-stone-950">
-                            Rp{{ number_format($summary['transfer_sales'], 0, ',', '.') }}
-                        </span>
-                    </div>
+                    {{-- Total penjualan - selalu dempet bawah --}}
+                    <div class="mt-auto pt-6">
+                        <div class="flex justify-between gap-4 rounded-2xl bg-amber-50 px-4 py-4">
+                            <span class="text-sm font-black text-amber-800">
+                                Total Penjualan
+                            </span>
 
-                    <div class="flex justify-between rounded-2xl bg-amber-50 px-4 py-4">
-                        <span class="text-sm font-black text-amber-800">Total Penjualan</span>
-                        <span class="text-sm font-black text-amber-800">
-                            Rp{{ number_format($summary['total_sales'], 0, ',', '.') }}
-                        </span>
+                            <span class="text-sm font-black text-amber-800">
+                                Rp{{ number_format($summary['total_sales'], 0, ',', '.') }}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -121,73 +121,88 @@
         </section>
 
         {{-- Ringkasan Order Operasional --}}
-        <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-            <div class="rounded-[2rem] border border-amber-200 bg-amber-50 p-5 shadow-sm">
+        <section class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5">
+            <div
+                class="grid min-h-[170px] grid-rows-[auto_1fr_auto] rounded-[2rem] border border-amber-200 bg-amber-50 p-5 shadow-sm">
                 <p class="text-sm font-bold text-amber-700">
                     Orderan Masuk
                 </p>
 
-                <p class="mt-3 text-3xl font-black tracking-tight text-amber-800">
-                    {{ $summary['incoming_orders'] ?? 0 }}
-                </p>
+                <div class="flex items-center justify-center">
+                    <p class="text-center text-4xl font-black tracking-tight text-amber-800">
+                        {{ $summary['incoming_orders'] ?? 0 }}
+                    </p>
+                </div>
 
-                <p class="mt-2 text-xs font-semibold text-amber-700">
-                    Menunggu persetujuan kasir
+                <p class="text-xs font-semibold text-amber-700">
+                    Menunggu persetujuan
                 </p>
             </div>
 
-            <div class="rounded-[2rem] border border-emerald-200 bg-emerald-50 p-5 shadow-sm">
+            <div
+                class="grid min-h-[170px] grid-rows-[auto_1fr_auto] rounded-[2rem] border border-emerald-200 bg-emerald-50 p-5 shadow-sm">
                 <p class="text-sm font-bold text-emerald-700">
                     Selesai
                 </p>
 
-                <p class="mt-3 text-3xl font-black tracking-tight text-emerald-800">
-                    {{ $summary['completed_orders'] ?? 0 }}
-                </p>
+                <div class="flex items-center justify-center">
+                    <p class="text-center text-4xl font-black tracking-tight text-emerald-800">
+                        {{ $summary['completed_orders'] ?? 0 }}
+                    </p>
+                </div>
 
-                <p class="mt-2 text-xs font-semibold text-emerald-700">
+                <p class="text-xs font-semibold text-emerald-700">
                     Order completed
                 </p>
             </div>
 
-            <div class="rounded-[2rem] border border-yellow-200 bg-yellow-50 p-5 shadow-sm">
-                <p class="text-sm font-bold text-yellow-700">
+            <div
+                class="grid min-h-[170px] grid-rows-[auto_1fr_auto] rounded-[2rem] border border-yellow-200 bg-yellow-50 p-5 shadow-sm">
+                <p class="text-[10px] font-bold text-yellow-700">
                     Menunggu Pembayaran
                 </p>
 
-                <p class="mt-3 text-3xl font-black tracking-tight text-yellow-800">
-                    {{ $summary['pending_cash_orders'] ?? 0 }}
-                </p>
+                <div class="flex items-center justify-center">
+                    <p class="text-center text-4xl font-black tracking-tight text-yellow-800">
+                        {{ $summary['pending_cash_orders'] ?? 0 }}
+                    </p>
+                </div>
 
-                <p class="mt-2 text-xs font-semibold text-yellow-700">
+                <p class="text-xs font-semibold text-yellow-700">
                     Bayar tunai
                 </p>
             </div>
 
-            <div class="rounded-[2rem] border border-orange-200 bg-orange-50 p-5 shadow-sm">
-                <p class="text-sm font-bold text-orange-700">
+            <div
+                class="grid min-h-[170px] grid-rows-[auto_1fr_auto] rounded-[2rem] border border-orange-200 bg-orange-50 p-5 shadow-sm">
+                <p class="text-[10px] font-bold text-orange-700">
                     Menunggu Verifikasi
                 </p>
 
-                <p class="mt-3 text-3xl font-black tracking-tight text-orange-800">
-                    {{ $summary['pending_verification_orders'] ?? 0 }}
-                </p>
+                <div class="flex items-center justify-center">
+                    <p class="text-center text-4xl font-black tracking-tight text-orange-800">
+                        {{ $summary['pending_verification_orders'] ?? 0 }}
+                    </p>
+                </div>
 
-                <p class="mt-2 text-xs font-semibold text-orange-700">
+                <p class="text-xs font-semibold text-orange-700">
                     QRIS / Transfer
                 </p>
             </div>
 
-            <div class="rounded-[2rem] border border-rose-200 bg-rose-50 p-5 shadow-sm">
+            <div
+                class="grid min-h-[170px] grid-rows-[auto_1fr_auto] rounded-[2rem] border border-orange-200 bg-orange-50 p-5 shadow-sm">
                 <p class="text-sm font-bold text-rose-700">
                     Batal / Ditolak
                 </p>
 
-                <p class="mt-3 text-3xl font-black tracking-tight text-rose-800">
-                    {{ $summary['cancelled_or_rejected_orders'] ?? 0 }}
-                </p>
+                <div class="flex items-center justify-center">
+                    <p class="text-center text-4xl font-black tracking-tight  text-rose-800">
+                        {{ $summary['cancelled_or_rejected_orders'] ?? 0 }}
+                    </p>
+                </div>
 
-                <p class="mt-2 text-xs font-semibold text-rose-700">
+                <p class="text-xs font-semibold text-rose-700">
                     Batal: {{ $summary['cancelled_orders'] ?? 0 }} • Ditolak: {{ $summary['rejected_orders'] ?? 0 }}
                 </p>
             </div>
