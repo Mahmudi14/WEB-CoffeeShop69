@@ -80,15 +80,16 @@
                     </div>
 
                     {{-- Table --}}
-                    <div x-show="orderType === dineInType" x-cloak x-data="tableDropdown(@js((string) old('table_id', '')))" @keydown.escape.window="close()">
+                    <div x-show="orderType === dineInType" x-cloak x-data="tableDropdown(@js((string) old('table_id', '')))" @keydown.escape.window="close()"
+                        class="relative z-[80]">
                         <label class="mb-2 block text-sm font-bold text-stone-700">
                             Pilih Meja
                         </label>
 
                         <input type="hidden" name="table_id" :value="orderType === dineInType ? selectedTable : ''">
 
-                        <div class="relative">
-                            <button type="button" @click="toggle()"
+                        <div class="relative" @click.outside="close()">
+                            <button type="button" @click.stop="toggle()"
                                 class="flex w-full items-center justify-between gap-3 rounded-2xl border border-stone-200 bg-white px-4 py-3 text-left text-sm font-semibold text-stone-900 outline-none transition focus:border-amber-500 focus:ring-4 focus:ring-amber-100">
                                 <span class="min-w-0 truncate">
                                     <span x-show="selectedTable === ''">
@@ -110,8 +111,8 @@
                                 </svg>
                             </button>
 
-                            <div x-show="tableOpen" x-cloak x-transition.origin.top @click.outside="close()"
-                                class="absolute left-0 right-0 top-[54px] z-50 max-h-64 overflow-y-auto rounded-2xl border border-stone-200 bg-white p-2 shadow-xl">
+                            <div x-show="tableOpen" x-cloak x-transition.origin.top
+                                class="absolute left-0 right-0 top-[54px] z-[999] max-h-64 overflow-y-auto rounded-2xl border border-stone-200 bg-white p-2 shadow-2xl">
                                 <button type="button" @click="select('')"
                                     class="flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-amber-50 hover:text-amber-700"
                                     :class="selectedTable === '' ? 'bg-amber-100 text-amber-800' : 'text-stone-700'">
@@ -510,6 +511,26 @@
 
                 remainingAmount() {
                     return Math.max(this.grandTotal - this.parseMoney(this.paidAmount), 0);
+                },
+            };
+        }
+
+        function tableDropdown(initialTableId) {
+            return {
+                selectedTable: initialTableId,
+                tableOpen: false,
+
+                toggle() {
+                    this.tableOpen = !this.tableOpen;
+                },
+
+                close() {
+                    this.tableOpen = false;
+                },
+
+                select(tableId) {
+                    this.selectedTable = tableId;
+                    this.close();
                 },
             };
         }
