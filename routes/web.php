@@ -55,7 +55,7 @@ Route::get('/', function () {
     return redirect()
         ->route('login')
         ->with('error', 'Akun belum memiliki role yang valid.');
-});
+})->middleware('no-cache');
 
 
 /*
