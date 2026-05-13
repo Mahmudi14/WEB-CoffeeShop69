@@ -97,9 +97,10 @@
                 </div>
             </div>
         </section>
-        <div class="grid gap-6 xl:grid-cols-12">
+        <div
+            class="grid gap-6 min-[900px]:grid-cols-[minmax(0,1fr)_340px] min-[1200px]:grid-cols-[minmax(0,1fr)_390px] xl:grid-cols-[minmax(0,1fr)_420px]">
             {{-- Menu Area --}}
-            <section class="xl:col-span-8">
+            <section class="min-w-0">
                 <div class="space-y-8">
                     @forelse ($categories as $category)
                         @if ($category->menus->isNotEmpty())
@@ -110,13 +111,13 @@
                                     <span class="rounded-full bg-stone-100 px-3 py-1 text-xs font-black text-stone-500">
                                         {{ $category->menus->count() }} menu </span>
                                 </div>
-                                <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                                <div class="grid gap-3 sm:grid-cols-2 min-[900px]:grid-cols-3 xl:gap-4">
                                     @foreach ($category->menus as $menu)
                                         <div x-show="menuVisible({{ $category->id }}, @js($menu->name), @js($menu->description ?? ''))"
                                             x-cloak
                                             class="group overflow-hidden rounded-[1.75rem] border border-stone-100 bg-stone-50 p-4 transition hover:-translate-y-0.5 hover:border-amber-200 hover:bg-white hover:shadow-md">
                                             <div
-                                                class="mb-4 flex h-32 items-center justify-center overflow-hidden rounded-2xl bg-white text-stone-400 border border-stone-100">
+                                                class="mb-3 flex h-24 items-center justify-center overflow-hidden rounded-2xl border border-stone-100 bg-white text-stone-400 min-[1200px]:h-28 xl:mb-4 xl:h-32">
                                                 @if ($menu->image_path)
                                                     <img src="{{ asset('storage/' . $menu->image_path) }}"
                                                         class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
@@ -127,19 +128,19 @@
                                                         No Image </span>
                                                 @endif
                                             </div>
-                                            <div class="min-h-[74px]">
-                                                <h3 class="line-clamp-1 text-base font-black text-stone-950">
+                                            <div>
+                                                <h3 class="line-clamp-1 text-sm font-black text-stone-950 xl:text-base">
                                                     {{ $menu->name }} </h3>
-                                                <p class="mt-1 line-clamp-2 text-sm leading-6 text-stone-500">
-                                                    {{ $menu->description ?: 'Tidak ada deskripsi.' }} </p>
                                             </div>
                                             <div class="mt-4">
-                                                <p class="text-xl font-black text-stone-950">
+                                                <p class="text-lg font-black text-stone-950 xl:text-xl">
                                                     Rp{{ number_format($menu->normal_price, 0, ',', '.') }} </p>
-                                            </div> <button type="button"
-                                                @click="addItem({ id: {{ $menu->id }}, name: @js($menu->name), normal_price: {{ (int) $menu->normal_price }}, note: '' })"
-                                                class="mt-4 flex w-full items-center justify-center rounded-2xl bg-amber-600 px-4 py-3 text-sm font-black text-white shadow-lg shadow-amber-600/20 transition hover:bg-amber-700 active:scale-[0.98]">
-                                                Tambah </button>
+                                            </div>
+                                            <button type="button"
+                                                @click="addItem({ id: {{ $menu->id }}, name: @js($menu->name), normal_price: {{ (int) $menu->normal_price }} })"
+                                                class="mt-3 flex w-full items-center justify-center rounded-2xl bg-amber-600 px-4 py-2.5 text-sm font-black text-white shadow-lg shadow-amber-600/20 transition hover:bg-amber-700 active:scale-[0.98] xl:mt-4 xl:py-3">
+                                                Tambah
+                                            </button>
                                         </div>
                                     @endforeach
                                 </div>
@@ -157,11 +158,11 @@
                 </div>
             </section>
             {{-- Cart Area --}}
-            <aside class="xl:col-span-4">
+            <aside class="min-w-0">
                 <div
-                    class="sticky top-24 flex max-h-[calc(100vh-7rem)] flex-col overflow-hidden rounded-[2rem] border border-stone-100 bg-white shadow-sm">
+                    class="flex max-h-none flex-col overflow-hidden rounded-[2rem] border border-stone-100 bg-white shadow-sm min-[900px]:sticky min-[900px]:top-24 min-[900px]:max-h-[calc(100dvh-7rem)]">
                     {{-- Cart Header --}}
-                    <div class="shrink-0 border-b border-stone-100 p-5">
+                    <div class="shrink-0 border-b border-stone-100 p-4 xl:p-5">
                         <div class="flex items-center justify-between gap-4">
                             <div>
                                 <h2 class="text-lg font-black text-stone-950"> Cart </h2>
@@ -194,7 +195,7 @@
                     <template x-if="cart.length > 0">
                         <div class="flex min-h-0 flex-1 flex-col">
                             {{-- Items --}}
-                            <div class="min-h-0 flex-1 overflow-y-auto p-5">
+                            <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 xl:p-5">
                                 <div class="space-y-3"> <template x-for="item in cart" :key="item.key">
                                         <div class="rounded-2xl border border-stone-100 bg-stone-50 p-4">
                                             <div class="flex items-start justify-between gap-3">
@@ -224,7 +225,9 @@
                                             </div>
                                         </div>
                                     </template> </div>
-                            </div> {{-- Summary --}} <div class="shrink-0 border-t border-stone-100 bg-white p-5">
+                            </div>
+                            {{-- Summary --}}
+                            <div class="shrink-0 border-t border-stone-100 bg-white p-4 xl:p-5">
                                 <div class="space-y-4">
                                     <div class="flex items-center justify-between"> <span
                                             class="text-sm font-bold text-stone-500"> Subtotal </span> <span
@@ -295,7 +298,6 @@
                         name: item.name,
                         normal_price: Number(item.normal_price),
                         quantity: Math.max(Number(item.quantity) || 1, 1),
-                        note: item.note || '',
                     };
                 },
 
@@ -328,7 +330,7 @@
                 },
 
                 addItem(menu) {
-                    const existing = this.cart.find(item => item.menu_id === menu.id && item.note === '');
+                    const existing = this.cart.find(item => item.menu_id === menu.id);
 
                     if (existing) {
                         existing.quantity++;
