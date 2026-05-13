@@ -101,7 +101,7 @@ Route::middleware(['auth', 'role:superadmin'])
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'role:admin'])
+Route::middleware(['auth', 'role:admin', 'no-cache'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
@@ -136,7 +136,7 @@ Route::middleware(['auth', 'role:admin'])
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'role:cashier'])
+Route::middleware(['auth', 'role:cashier', 'no-cache'])
     ->prefix('cashier')
     ->name('cashier.')
     ->group(function () {
