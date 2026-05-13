@@ -97,9 +97,9 @@
                 </div>
             </div>
         </section>
-        <div class="flex flex-col sm:flex-row gap-6 items-start">
+        <div class="grid gap-6 lg:grid-cols-12 items-start">
             {{-- Menu Area --}}
-            <section class="flex-1 min-w-0">
+            <section class="lg:col-span-7 xl:col-span-8">
                 <div class="space-y-8">
                     @forelse ($categories as $category)
                         @if ($category->menus->isNotEmpty())
@@ -110,7 +110,7 @@
                                     <span class="rounded-full bg-stone-100 px-3 py-1 text-xs font-black text-stone-500">
                                         {{ $category->menus->count() }} menu </span>
                                 </div>
-                                <div class="grid gap-4 grid-cols-2 xl:grid-cols-3">
+                                <div class="grid gap-3 sm:grid-cols-2 min-[900px]:grid-cols-3 xl:gap-4">
                                     @foreach ($category->menus as $menu)
                                         <div x-show="menuVisible({{ $category->id }}, @js($menu->name), @js($menu->description ?? ''))"
                                             x-cloak
@@ -157,9 +157,9 @@
                 </div>
             </section>
             {{-- Cart Area --}}
-            <aside class="w-full sm:w-[280px] lg:w-[320px] xl:w-[360px] shrink-0">
+            <aside class="lg:col-span-5 xl:col-span-4">
                 <div
-                    class="sticky top-6 flex h-[calc(100dvh-6rem)] flex-col overflow-hidden rounded-[2rem] border border-stone-100 bg-white shadow-sm">
+                    class="flex max-h-none flex-col overflow-hidden rounded-[2rem] border border-stone-100 bg-white shadow-sm min-[900px]:sticky min-[900px]:top-24 min-[900px]:max-h-[calc(100dvh-7rem)]">
                     {{-- Cart Header --}}
                     <div class="shrink-0 border-b border-stone-100 p-4 xl:p-5">
                         <div class="flex items-center justify-between gap-4">
@@ -194,7 +194,7 @@
                     <template x-if="cart.length > 0">
                         <div class="flex min-h-0 flex-1 flex-col">
                             {{-- Items --}}
-                            <div class="min-h-0 flex-1 overflow-y-auto p-5">
+                            <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 xl:p-5">
                                 <div class="space-y-3"> <template x-for="item in cart" :key="item.key">
                                         <div class="rounded-2xl border border-stone-100 bg-stone-50 p-4">
                                             <div class="flex items-start justify-between gap-3">
