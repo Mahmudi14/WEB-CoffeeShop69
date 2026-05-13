@@ -81,7 +81,7 @@
 
                     {{-- Table --}}
                     <div x-show="orderType === dineInType" x-cloak x-data="tableDropdown(@js((string) old('table_id', '')))" @keydown.escape.window="close()"
-                        class="relative z-[80]">
+                        class="relative z-[10]">
                         <label class="mb-2 block text-sm font-bold text-stone-700">
                             Pilih Meja
                         </label>
