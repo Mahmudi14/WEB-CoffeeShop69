@@ -97,9 +97,10 @@
                 </div>
             </div>
         </section>
-        <div class="grid gap-6 lg:grid-cols-12 items-start">
+        <div
+            class="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_400px] 2xl:grid-cols-[minmax(0,1fr)_430px]">
             {{-- Menu Area --}}
-            <section class="lg:col-span-7 xl:col-span-8">
+            <section class="min-w-0">
                 <div class="space-y-8">
                     @forelse ($categories as $category)
                         @if ($category->menus->isNotEmpty())
@@ -157,7 +158,7 @@
                 </div>
             </section>
             {{-- Cart Area --}}
-            <aside class="lg:col-span-5 xl:col-span-4">
+            <aside class="min-w-0 self-start">
                 <div
                     class="flex max-h-none flex-col overflow-hidden rounded-[2rem] border border-stone-100 bg-white shadow-sm min-[900px]:sticky min-[900px]:top-24 min-[900px]:max-h-[calc(100dvh-7rem)]">
                     {{-- Cart Header --}}
