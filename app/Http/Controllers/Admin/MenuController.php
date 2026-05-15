@@ -47,6 +47,10 @@ class MenuController extends Controller
         return view('admin.menus.create', compact('categories'));
     }
 
+    public function show (Menu $menu){
+        return view('admin.menus.show', compact('menu'));
+    }
+
     public function store(StoreMenuRequest $request)
     {
         $this->menuService->create(

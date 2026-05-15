@@ -48,6 +48,20 @@ class CashierController extends Controller
             ->with('success', 'Kasir berhasil ditambahkan.');
     }
 
+    public function show(User $cashier)
+{
+    return view('admin.cashiers.show', compact('cashier'));
+}
+
+public function destroy(User $cashier)
+{
+    $cashier->delete();
+
+    return redirect()
+        ->route('admin.cashiers.index')
+        ->with('success', 'Kasir berhasil dihapus.');
+}
+
     public function edit(User $cashier)
     {
         $this->cashierService->ensureCashier($cashier);

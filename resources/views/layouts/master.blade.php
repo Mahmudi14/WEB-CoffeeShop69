@@ -80,8 +80,7 @@
 <body class="min-h-screen bg-stone-50 text-stone-900 antialiased">
     <div x-data="{ sidebarOpen: false }" class="min-h-screen">
         {{-- Mobile overlay --}}
-        {{-- Overlay --}}
-        @if ($role === 'cashier')
+        @if ($role === 'cashier' || $role === 'admin')
             <div x-cloak x-show="sidebarOpen" x-transition.opacity class="fixed inset-0 z-40 bg-stone-950/50"
                 @click="sidebarOpen = false"></div>
         @else
@@ -98,7 +97,7 @@
         @endif
 
         {{-- Main content --}}
-        <div class="{{ $role === 'cashier' ? '' : 'lg:pl-72' }}">
+        <div class="{{ $role === 'cashier' || $role === 'admin' ? '' : 'lg:pl-72' }}">
             @include('layouts.partials.master-topbar', [
                 'pageTitle' => $pageTitle,
                 'role' => $role,

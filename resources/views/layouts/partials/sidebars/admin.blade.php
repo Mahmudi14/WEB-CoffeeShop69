@@ -69,8 +69,8 @@
     ];
 @endphp
 
-<aside
-    class="fixed inset-y-0 left-0 z-50 w-72 border-r border-stone-200 bg-white transition-transform duration-300 lg:translate-x-0"
+
+<aside class="fixed inset-y-0 left-0 z-50 w-72 border-r border-stone-200 bg-white transition-transform duration-300"
     :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
     <div class="flex h-full flex-col">
         <x-sidebar-brand role="admin" />

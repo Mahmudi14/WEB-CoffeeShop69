@@ -46,24 +46,24 @@
                     </p>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">
+                <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
                     <a href="{{ $safeRoute('admin.orders.index') }}"
-                        class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm font-black text-white transition hover:bg-white/15">
+                        class="inline-flex w-full items-center justify-center rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm font-black text-white transition hover:bg-white/15 active:scale-[0.98]">
                         Order
                     </a>
 
                     <a href="{{ $safeRoute('admin.menus.index') }}"
-                        class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm font-black text-white transition hover:bg-white/15">
+                        class="inline-flex w-full items-center justify-center rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm font-black text-white transition hover:bg-white/15 active:scale-[0.98]">
                         Menu
                     </a>
 
                     <a href="{{ $safeRoute('admin.cashiers.index') }}"
-                        class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm font-black text-white transition hover:bg-white/15">
+                        class="inline-flex w-full items-center justify-center rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm font-black text-white transition hover:bg-white/15 active:scale-[0.98]">
                         Kasir
                     </a>
 
                     <a href="{{ $safeRoute('admin.reports.index') }}"
-                        class="inline-flex items-center justify-center rounded-2xl bg-amber-500 px-4 py-3 text-sm font-black text-stone-950 shadow-lg shadow-amber-500/25 transition hover:bg-amber-400 active:scale-[0.98]">
+                        class="inline-flex w-full items-center justify-center rounded-2xl bg-amber-500 px-4 py-3 text-sm font-black text-stone-950 shadow-lg shadow-amber-500/25 transition hover:bg-amber-400 active:scale-[0.98]">
                         Laporan
                     </a>
                 </div>
@@ -357,74 +357,80 @@
                     </div>
                 </div>
 
-                <div class="rounded-[2rem] border border-stone-100 bg-white p-6 shadow-sm">
-                    <div class="flex items-center justify-between gap-4">
-                        <h3 class="text-lg font-black text-stone-950">
-                            Shift Aktif
-                        </h3>
+                <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_360px]">
+                    {{-- Shift Aktif --}}
+                    <div class="rounded-[2rem] border border-stone-100 bg-white p-6 shadow-sm">
+                        <div class="flex items-center justify-between gap-4">
+                            <h3 class="text-lg font-black text-stone-950">
+                                Shift Aktif
+                            </h3>
 
-                        <span
-                            class="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-black uppercase tracking-wide text-emerald-700">
-                            Open
-                        </span>
-                    </div>
+                            <span
+                                class="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-black uppercase tracking-wide text-emerald-700">
+                                Open
+                            </span>
+                        </div>
 
-                    <div class="mt-5 space-y-3">
-                        @forelse ($activeCashierShifts as $shift)
-                            <div class="rounded-2xl bg-emerald-50 px-4 py-4">
-                                <div class="flex items-start justify-between gap-4">
-                                    <div>
-                                        <p class="text-sm font-black text-emerald-900">
-                                            {{ $shift->user?->name ?? 'Kasir' }}
-                                        </p>
-                                        <p class="mt-1 text-xs font-semibold text-emerald-700">
-                                            {{ $shift->opened_at->format('d M Y, H:i') }}
-                                        </p>
-                                    </div>
+                        <div class="mt-5 space-y-3">
+                            @forelse ($activeCashierShifts as $shift)
+                                <div class="rounded-2xl bg-emerald-50 px-4 py-4">
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div class="min-w-0">
+                                            <p class="truncate text-sm font-black text-emerald-900">
+                                                {{ $shift->user?->name ?? 'Kasir' }}
+                                            </p>
 
-                                    <div class="text-right">
-                                        <p class="text-[11px] font-bold uppercase tracking-wide text-emerald-700">
-                                            Kas Awal
-                                        </p>
-                                        <p class="mt-1 text-sm font-black text-emerald-900">
-                                            Rp{{ number_format($shift->opening_cash, 0, ',', '.') }}
-                                        </p>
+                                            <p class="mt-1 text-xs font-semibold text-emerald-700">
+                                                {{ $shift->opened_at->format('d M Y, H:i') }}
+                                            </p>
+                                        </div>
+
+                                        <div class="shrink-0 text-right">
+                                            <p class="text-[11px] font-bold uppercase tracking-wide text-emerald-700">
+                                                Kas Awal
+                                            </p>
+
+                                            <p class="mt-1 text-sm font-black text-emerald-900">
+                                                Rp{{ number_format($shift->opening_cash, 0, ',', '.') }}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        @empty
-                            <div class="rounded-2xl border border-dashed border-stone-300 bg-stone-50 p-6 text-center">
-                                <p class="text-sm font-bold text-stone-500">
-                                    Tidak ada shift aktif.
-                                </p>
-                            </div>
-                        @endforelse
+                            @empty
+                                <div class="rounded-2xl border border-dashed border-stone-300 bg-stone-50 p-6 text-center">
+                                    <p class="text-sm font-bold text-stone-500">
+                                        Tidak ada shift aktif.
+                                    </p>
+                                </div>
+                            @endforelse
+                        </div>
                     </div>
-                </div>
 
-                <div class="rounded-[2rem] border border-stone-100 bg-white p-6 shadow-sm">
-                    <h3 class="text-lg font-black text-stone-950">
-                        Akses Cepat
-                    </h3>
+                    {{-- Akses Cepat --}}
+                    <div class="rounded-[2rem] border border-stone-100 bg-white p-6 shadow-sm">
+                        <h3 class="text-lg font-black text-stone-950">
+                            Akses Cepat
+                        </h3>
 
-                    <div class="mt-5 grid gap-3">
-                        <a href="{{ $safeRoute('admin.menus.index') }}"
-                            class="flex items-center justify-between rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm font-black text-stone-700 transition hover:border-amber-300 hover:bg-amber-50/40 hover:text-amber-700">
-                            <span>Kelola Menu</span>
-                            <span>→</span>
-                        </a>
+                        <div class="mt-5 grid gap-3">
+                            <a href="{{ $safeRoute('admin.menus.index') }}"
+                                class="flex items-center justify-between rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm font-black text-stone-700 transition hover:border-amber-300 hover:bg-amber-50/40 hover:text-amber-700">
+                                <span>Kelola Menu</span>
+                                <span>→</span>
+                            </a>
 
-                        <a href="{{ $safeRoute('admin.promotions.index') }}"
-                            class="flex items-center justify-between rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm font-black text-stone-700 transition hover:border-amber-300 hover:bg-amber-50/40 hover:text-amber-700">
-                            <span>Kelola Promo</span>
-                            <span>→</span>
-                        </a>
+                            <a href="{{ $safeRoute('admin.promotions.index') }}"
+                                class="flex items-center justify-between rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm font-black text-stone-700 transition hover:border-amber-300 hover:bg-amber-50/40 hover:text-amber-700">
+                                <span>Kelola Promo</span>
+                                <span>→</span>
+                            </a>
 
-                        <a href="{{ $safeRoute('admin.cashiers.index') }}"
-                            class="flex items-center justify-between rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm font-black text-stone-700 transition hover:border-amber-300 hover:bg-amber-50/40 hover:text-amber-700">
-                            <span>Kelola Kasir</span>
-                            <span>→</span>
-                        </a>
+                            <a href="{{ $safeRoute('admin.cashiers.index') }}"
+                                class="flex items-center justify-between rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm font-black text-stone-700 transition hover:border-amber-300 hover:bg-amber-50/40 hover:text-amber-700">
+                                <span>Kelola Kasir</span>
+                                <span>→</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

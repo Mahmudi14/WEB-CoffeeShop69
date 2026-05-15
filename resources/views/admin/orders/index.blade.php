@@ -31,229 +31,191 @@
                 </div>
             </div>
         </section>
-        <section class="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
-            <form action="{{ route('admin.orders.index') }}" method="GET">
-                <div class="grid gap-4 lg:grid-cols-[minmax(220px,1fr)_180px_180px_240px_190px] lg:items-end">
-                    <div>
-                        <label class="mb-2 block text-xs font-black uppercase tracking-wider text-stone-400">
-                            Cari Order
-                        </label>
+        <section class="rounded-3xl border border-stone-200 bg-white p-4 shadow-sm lg:p-5">
+            @php
+                $orderStatusOptions = [
+                    '' => [
+                        'label' => 'Semua',
+                        'active' => 'bg-amber-100 text-amber-800',
+                        'hover' => 'hover:bg-amber-50 hover:text-amber-700',
+                    ],
+                    'pending_payment' => [
+                        'label' => 'Menunggu Bayar',
+                        'active' => 'bg-amber-100 text-amber-800',
+                        'hover' => 'hover:bg-amber-50 hover:text-amber-700',
+                    ],
+                    'pending_payment_verification' => [
+                        'label' => 'Menunggu Verifikasi',
+                        'active' => 'bg-sky-100 text-sky-800',
+                        'hover' => 'hover:bg-sky-50 hover:text-sky-700',
+                    ],
+                    'processing' => [
+                        'label' => 'Processing',
+                        'active' => 'bg-orange-100 text-orange-800',
+                        'hover' => 'hover:bg-orange-50 hover:text-orange-700',
+                    ],
+                    'completed' => [
+                        'label' => 'Completed',
+                        'active' => 'bg-emerald-100 text-emerald-800',
+                        'hover' => 'hover:bg-emerald-50 hover:text-emerald-700',
+                    ],
+                    'cancelled' => [
+                        'label' => 'Cancelled',
+                        'active' => 'bg-rose-100 text-rose-800',
+                        'hover' => 'hover:bg-rose-50 hover:text-rose-700',
+                    ],
+                    'rejected' => [
+                        'label' => 'Rejected',
+                        'active' => 'bg-rose-100 text-rose-800',
+                        'hover' => 'hover:bg-rose-50 hover:text-rose-700',
+                    ],
+                    'expired' => [
+                        'label' => 'Expired',
+                        'active' => 'bg-stone-200 text-stone-900',
+                        'hover' => 'hover:bg-stone-100 hover:text-stone-800',
+                    ],
+                ];
 
-                        <input type="text" name="search" value="{{ request('search', $search ?? '') }}"
-                            placeholder="Nomor / customer"
-                            class="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm font-semibold text-stone-900 outline-none transition focus:border-amber-500 focus:ring-4 focus:ring-amber-100">
-                    </div>
+                $sourceOptions = [
+                    '' => [
+                        'label' => 'Semua',
+                        'active' => 'bg-amber-100 text-amber-800',
+                        'hover' => 'hover:bg-amber-50 hover:text-amber-700',
+                    ],
+                    'cashier_pos' => [
+                        'label' => 'POS Kasir',
+                        'active' => 'bg-amber-100 text-amber-800',
+                        'hover' => 'hover:bg-amber-50 hover:text-amber-700',
+                    ],
+                    'customer_qr' => [
+                        'label' => 'QR Customer',
+                        'active' => 'bg-sky-100 text-sky-800',
+                        'hover' => 'hover:bg-sky-50 hover:text-sky-700',
+                    ],
+                ];
+            @endphp
 
-                    <div>
-                        <label class="mb-2 block text-xs font-black uppercase tracking-wider text-stone-400">
-                            Dari Tanggal
-                        </label>
+            <form action="{{ route('admin.orders.index') }}" method="GET"
+                class="grid gap-3 lg:grid-cols-[minmax(0,1.2fr)_minmax(220px,1fr)_minmax(160px,0.8fr)_max-content] lg:items-end xl:grid-cols-[minmax(0,1.4fr)_minmax(260px,1fr)_minmax(180px,0.8fr)_max-content]">
 
-                        <input type="date" name="date_from" value="{{ request('date_from', $dateFrom ?? '') }}"
-                            class="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm font-semibold text-stone-900 outline-none transition focus:border-amber-500 focus:ring-4 focus:ring-amber-100">
-                    </div>
+                {{-- Search --}}
+                <div class="min-w-0">
+                    <label class="mb-2 block text-xs font-black uppercase tracking-wider text-stone-400">
+                        Cari Order
+                    </label>
 
-                    <div>
-                        <label class="mb-2 block text-xs font-black uppercase tracking-wider text-stone-400">
-                            Sampai Tanggal
-                        </label>
+                    <input type="text" name="search" value="{{ request('search', $search ?? '') }}"
+                        placeholder="Nomor / customer"
+                        class="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm font-semibold text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-amber-500 focus:ring-4 focus:ring-amber-100">
+                </div>
 
-                        <input type="date" name="date_to" value="{{ request('date_to', $dateTo ?? '') }}"
-                            class="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm font-semibold text-stone-900 outline-none transition focus:border-amber-500 focus:ring-4 focus:ring-amber-100">
-                    </div>
+                {{-- Status Order --}}
+                <div class="min-w-0" x-data="filterDropdown(@js((string) ($orderStatus ?? request('order_status'))))" @keydown.escape.window="close()">
+                    <label class="mb-2 block text-xs font-black uppercase tracking-wider text-stone-400">
+                        Status Order
+                    </label>
 
-                    <div x-data="filterDropdown(@js((string) ($orderStatus ?? request('order_status'))))" @keydown.escape.window="close()">
-                        <label class="mb-2 block text-xs font-black uppercase tracking-wider text-stone-400">
-                            Status Order
-                        </label>
+                    <input type="hidden" name="order_status" x-model="selectedValue">
 
-                        <input type="hidden" name="order_status" x-model="selectedValue">
+                    <div class="relative">
+                        <button type="button" @click="toggle()"
+                            class="flex w-full items-center justify-between gap-3 rounded-2xl border border-stone-200 bg-white px-4 py-3 text-left text-sm font-semibold text-stone-900 outline-none transition focus:border-amber-500 focus:ring-4 focus:ring-amber-100">
+                            <span class="min-w-0 truncate">
+                                @foreach ($orderStatusOptions as $value => $option)
+                                    <span x-show="selectedValue === @js((string) $value)" x-cloak>
+                                        {{ $option['label'] }}
+                                    </span>
+                                @endforeach
+                            </span>
 
-                        <div class="relative">
-                            <button type="button" @click="toggle()"
-                                class="flex w-full items-center justify-between gap-3 rounded-2xl border border-stone-200 bg-white px-4 py-3 text-left text-sm font-semibold text-stone-900 outline-none transition focus:border-amber-500 focus:ring-4 focus:ring-amber-100">
-                                <span class="min-w-0 truncate">
-                                    <span x-show="selectedValue === ''">Semua</span>
-                                    <span x-show="selectedValue === 'pending_payment'" x-cloak>Menunggu Bayar</span>
-                                    <span x-show="selectedValue === 'pending_payment_verification'" x-cloak>Menunggu
-                                        Verifikasi</span>
-                                    <span x-show="selectedValue === 'processing'" x-cloak>Processing</span>
-                                    <span x-show="selectedValue === 'completed'" x-cloak>Completed</span>
-                                    <span x-show="selectedValue === 'cancelled'" x-cloak>Cancelled</span>
-                                    <span x-show="selectedValue === 'rejected'" x-cloak>Rejected</span>
-                                    <span x-show="selectedValue === 'expired'" x-cloak>Expired</span>
-                                </span>
+                            <svg class="h-4 w-4 shrink-0 text-stone-400 transition"
+                                :class="dropdownOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
 
-                                <svg class="h-4 w-4 shrink-0 text-stone-400 transition"
-                                    :class="dropdownOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4"
-                                        d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </button>
-
-                            <div x-show="dropdownOpen" x-cloak x-transition.origin.top @click.outside="close()"
-                                class="absolute left-0 right-0 top-[54px] z-50 max-h-72 overflow-y-auto rounded-2xl border border-stone-200 bg-white p-2 shadow-xl">
-
-                                <button type="button" @click="select('')"
-                                    class="flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-amber-50 hover:text-amber-700"
-                                    :class="selectedValue === '' ? 'bg-amber-100 text-amber-800' : 'text-stone-700'">
-                                    <span>Semua</span>
-
-                                    <svg x-show="selectedValue === ''" x-cloak class="h-4 w-4 shrink-0" fill="none"
-                                        stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                            d="M5 13l4 4L19 7" />
-                                    </svg>
-                                </button>
-
-                                <button type="button" @click="select('pending_payment')"
-                                    class="mt-1 flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-amber-50 hover:text-amber-700"
-                                    :class="selectedValue === 'pending_payment' ? 'bg-amber-100 text-amber-800' :
+                        <div x-show="dropdownOpen" x-cloak x-transition.origin.top @click.outside="close()"
+                            class="absolute left-0 right-0 top-full z-50 mt-2 max-h-72 overflow-y-auto rounded-2xl border border-stone-200 bg-white p-2 shadow-xl">
+                            @foreach ($orderStatusOptions as $value => $option)
+                                <button type="button" @click="select(@js((string) $value))"
+                                    class="{{ $loop->first ? '' : 'mt-1' }} flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition {{ $option['hover'] }}"
+                                    :class="selectedValue === @js((string) $value) ? '{{ $option['active'] }}' :
                                         'text-stone-700'">
-                                    <span>Menunggu Bayar</span>
+                                    <span class="truncate">
+                                        {{ $option['label'] }}
+                                    </span>
 
-                                    <svg x-show="selectedValue === 'pending_payment'" x-cloak class="h-4 w-4 shrink-0"
-                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                            d="M5 13l4 4L19 7" />
-                                    </svg>
-                                </button>
-
-                                <button type="button" @click="select('pending_payment_verification')"
-                                    class="mt-1 flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-sky-50 hover:text-sky-700"
-                                    :class="selectedValue === 'pending_payment_verification' ? 'bg-sky-100 text-sky-800' :
-                                        'text-stone-700'">
-                                    <span>Menunggu Verifikasi</span>
-
-                                    <svg x-show="selectedValue === 'pending_payment_verification'" x-cloak
+                                    <svg x-show="selectedValue === @js((string) $value)" x-cloak
                                         class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                             d="M5 13l4 4L19 7" />
                                     </svg>
                                 </button>
-
-                                <button type="button" @click="select('processing')"
-                                    class="mt-1 flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-orange-50 hover:text-orange-700"
-                                    :class="selectedValue === 'processing' ? 'bg-orange-100 text-orange-800' : 'text-stone-700'">
-                                    <span>Processing</span>
-
-                                    <svg x-show="selectedValue === 'processing'" x-cloak class="h-4 w-4 shrink-0"
-                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                            d="M5 13l4 4L19 7" />
-                                    </svg>
-                                </button>
-
-                                <button type="button" @click="select('completed')"
-                                    class="mt-1 flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-emerald-50 hover:text-emerald-700"
-                                    :class="selectedValue === 'completed' ? 'bg-emerald-100 text-emerald-800' :
-                                        'text-stone-700'">
-                                    <span>Completed</span>
-
-                                    <svg x-show="selectedValue === 'completed'" x-cloak class="h-4 w-4 shrink-0"
-                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                            d="M5 13l4 4L19 7" />
-                                    </svg>
-                                </button>
-
-                                <button type="button" @click="select('cancelled')"
-                                    class="mt-1 flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-rose-50 hover:text-rose-700"
-                                    :class="selectedValue === 'cancelled' ? 'bg-rose-100 text-rose-800' : 'text-stone-700'">
-                                    <span>Cancelled</span>
-
-                                    <svg x-show="selectedValue === 'cancelled'" x-cloak class="h-4 w-4 shrink-0"
-                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                            d="M5 13l4 4L19 7" />
-                                    </svg>
-                                </button>
-
-                                <button type="button" @click="select('rejected')"
-                                    class="mt-1 flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-rose-50 hover:text-rose-700"
-                                    :class="selectedValue === 'rejected' ? 'bg-rose-100 text-rose-800' : 'text-stone-700'">
-                                    <span>Rejected</span>
-
-                                    <svg x-show="selectedValue === 'rejected'" x-cloak class="h-4 w-4 shrink-0"
-                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                            d="M5 13l4 4L19 7" />
-                                    </svg>
-                                </button>
-
-                                <button type="button" @click="select('expired')"
-                                    class="mt-1 flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-stone-100 hover:text-stone-800"
-                                    :class="selectedValue === 'expired' ? 'bg-stone-200 text-stone-900' : 'text-stone-700'">
-                                    <span>Expired</span>
-
-                                    <svg x-show="selectedValue === 'expired'" x-cloak class="h-4 w-4 shrink-0"
-                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                            d="M5 13l4 4L19 7" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div x-data="filterDropdown(@js((string) ($source ?? request('source'))))" @keydown.escape.window="close()">
-                        <label class="mb-2 block text-xs font-black uppercase tracking-wider text-stone-400">
-                            Sumber
-                        </label>
-
-                        <input type="hidden" name="source" x-model="selectedValue">
-
-                        <div class="relative">
-                            <button type="button" @click="toggle()"
-                                class="flex w-full items-center justify-between gap-3 rounded-2xl border border-stone-200 bg-white px-4 py-3 text-left text-sm font-semibold text-stone-900 outline-none transition focus:border-amber-500 focus:ring-4 focus:ring-amber-100">
-                                <span class="min-w-0 truncate">
-                                    <span x-show="selectedValue === ''">Semua</span>
-                                    <span x-show="selectedValue === 'cashier_pos'" x-cloak>POS Kasir</span>
-                                    <span x-show="selectedValue === 'customer_qr'" x-cloak>QR Customer</span>
-                                </span>
-
-                                <svg class="h-4 w-4 shrink-0 text-stone-400 transition"
-                                    :class="dropdownOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4"
-                                        d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </button>
-
-                            <div x-show="dropdownOpen" x-cloak x-transition.origin.top @click.outside="close()"
-                                class="absolute left-0 right-0 top-[54px] z-50 overflow-hidden rounded-2xl border border-stone-200 bg-white p-2 shadow-xl">
-
-                                <button type="button" @click="select('')"
-                                    class="flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-amber-50 hover:text-amber-700"
-                                    :class="selectedValue === '' ? 'bg-amber-100 text-amber-800' : 'text-stone-700'">
-                                    <span>Semua</span>
-                                </button>
-
-                                <button type="button" @click="select('cashier_pos')"
-                                    class="mt-1 flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-amber-50 hover:text-amber-700"
-                                    :class="selectedValue === 'cashier_pos' ? 'bg-amber-100 text-amber-800' : 'text-stone-700'">
-                                    <span>POS Kasir</span>
-                                </button>
-
-                                <button type="button" @click="select('customer_qr')"
-                                    class="mt-1 flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-sky-50 hover:text-sky-700"
-                                    :class="selectedValue === 'customer_qr' ? 'bg-sky-100 text-sky-800' : 'text-stone-700'">
-                                    <span>QR Customer</span>
-                                </button>
-                            </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 gap-3 border-t border-stone-100 pt-5 sm:grid-cols-2">
+                {{-- Source --}}
+                <div class="min-w-0" x-data="filterDropdown(@js((string) ($source ?? request('source'))))" @keydown.escape.window="close()">
+                    <label class="mb-2 block text-xs font-black uppercase tracking-wider text-stone-400">
+                        Sumber
+                    </label>
+
+                    <input type="hidden" name="source" x-model="selectedValue">
+
+                    <div class="relative">
+                        <button type="button" @click="toggle()"
+                            class="flex w-full items-center justify-between gap-3 rounded-2xl border border-stone-200 bg-white px-4 py-3 text-left text-sm font-semibold text-stone-900 outline-none transition focus:border-amber-500 focus:ring-4 focus:ring-amber-100">
+                            <span class="min-w-0 truncate">
+                                @foreach ($sourceOptions as $value => $option)
+                                    <span x-show="selectedValue === @js((string) $value)" x-cloak>
+                                        {{ $option['label'] }}
+                                    </span>
+                                @endforeach
+                            </span>
+
+                            <svg class="h-4 w-4 shrink-0 text-stone-400 transition"
+                                :class="dropdownOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+
+                        <div x-show="dropdownOpen" x-cloak x-transition.origin.top @click.outside="close()"
+                            class="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-2xl border border-stone-200 bg-white p-2 shadow-xl">
+                            @foreach ($sourceOptions as $value => $option)
+                                <button type="button" @click="select(@js((string) $value))"
+                                    class="{{ $loop->first ? '' : 'mt-1' }} flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition {{ $option['hover'] }}"
+                                    :class="selectedValue === @js((string) $value) ? '{{ $option['active'] }}' :
+                                        'text-stone-700'">
+                                    <span>
+                                        {{ $option['label'] }}
+                                    </span>
+
+                                    <svg x-show="selectedValue === @js((string) $value)" x-cloak
+                                        class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                            d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Buttons --}}
+                <div class="flex gap-2 lg:justify-end">
                     <button type="submit"
-                        class="inline-flex w-full items-center justify-center rounded-2xl bg-stone-950 px-5 py-3 text-sm font-black text-white shadow-sm transition hover:bg-stone-800 active:scale-[0.98]">
+                        class="inline-flex flex-1 items-center justify-center whitespace-nowrap rounded-2xl bg-stone-950 px-5 py-3 text-sm font-black text-white shadow-sm transition hover:bg-stone-800 active:scale-[0.98] lg:flex-none">
                         Filter
                     </button>
 
                     <a href="{{ route('admin.orders.index') }}"
-                        class="inline-flex w-full items-center justify-center rounded-2xl border border-stone-200 bg-white px-5 py-3 text-sm font-black text-stone-700 shadow-sm transition hover:bg-stone-50 active:scale-[0.98]">
+                        class="inline-flex flex-1 items-center justify-center whitespace-nowrap rounded-2xl border border-stone-200 bg-white px-5 py-3 text-sm font-black text-stone-700 shadow-sm transition hover:bg-stone-50 active:scale-[0.98] lg:flex-none">
                         Reset
                     </a>
                 </div>

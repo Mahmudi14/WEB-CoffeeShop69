@@ -11,7 +11,7 @@
                 class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,158,11,0.22),transparent_35%),linear-gradient(135deg,rgba(255,255,255,0.06),transparent_45%)] pointer-events-none">
             </div>
 
-            <div class="relative z-10 flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+            <div class="relative z-10 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                     <div
                         class="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/10 px-3 py-1.5 mb-4">

@@ -35,6 +35,7 @@ class PromotionController extends Controller
         ]);
     }
 
+
     public function create()
     {
         $menus = $this->promotionQueryService->menuOptions();
@@ -52,6 +53,10 @@ class PromotionController extends Controller
         return redirect()
             ->route('admin.promotions.index')
             ->with('success', 'Promo berhasil ditambahkan.');
+    }
+
+    public function show(Promotion $promotion){
+        return view('admin.promotions.show',compact('promotion'));
     }
 
     public function edit(Promotion $promotion)

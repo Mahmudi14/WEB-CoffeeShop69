@@ -5,26 +5,44 @@
 
 @section('content')
     <div class="space-y-6">
-        <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-                <p class="text-xs font-black uppercase tracking-[0.22em] text-amber-600">
-                    Order Detail
-                </p>
-
-                <h2 class="mt-2 text-3xl font-black tracking-tight text-stone-950">
-                    {{ $order->order_number }}
-                </h2>
-
-                <p class="mt-2 text-sm leading-6 text-stone-600">
-                    Dibuat pada {{ $order->created_at->format('d M Y H:i') }}
-                </p>
+        {{-- Header --}}
+        <section class="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#171412] p-6 shadow-xl">
+            <div
+                class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,158,11,0.22),transparent_35%),linear-gradient(135deg,rgba(255,255,255,0.06),transparent_45%)]">
             </div>
 
-            <a href="{{ route('admin.orders.index') }}"
-                class="inline-flex items-center justify-center rounded-2xl border border-stone-200 bg-white px-5 py-3 text-sm font-black text-stone-700 shadow-sm transition hover:bg-stone-50">
-                Kembali
-            </a>
-        </div>
+            <div class="relative z-10 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                <div class="min-w-0">
+                    <div
+                        class="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1.5">
+                        <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+
+                        <span class="text-[11px] font-black uppercase tracking-[0.22em] text-stone-300">
+                            Order Detail
+                        </span>
+                    </div>
+
+                    <h2 class="truncate text-2xl font-black tracking-tight text-white sm:text-3xl">
+                        {{ $order->order_number }}
+                    </h2>
+
+                    <p class="mt-2 max-w-2xl text-sm leading-6 text-stone-300">
+                        Detail transaksi order, item pesanan, pembayaran, ringkasan total, dan informasi operasional order.
+                    </p>
+
+                    <p class="mt-1 text-xs font-bold text-stone-400">
+                        Dibuat pada {{ $order->created_at->format('d M Y H:i') }}
+                    </p>
+                </div>
+
+                <div class="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center">
+                    <a href="{{ route('admin.orders.index') }}"
+                        class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/10 px-5 py-3 text-sm font-black text-white transition hover:bg-white/15 active:scale-[0.98]">
+                        Kembali
+                    </a>
+                </div>
+            </div>
+        </section>
 
         <div class="grid gap-6 xl:grid-cols-[1fr_380px]">
             <div class="space-y-6">

@@ -106,17 +106,17 @@ Route::middleware(['auth', 'role:admin'])
     ->name('admin.')
     ->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-        Route::resource('cashiers', AdminCashierController::class)->except(['show', 'destroy']);
+        Route::resource('cashiers', AdminCashierController::class);
         Route::patch('/cashiers/{cashier}/toggle-status', [AdminCashierController::class, 'toggleStatus'])->name('cashiers.toggle-status');
-        Route::resource('categories', AdminCategoryController::class)->except(['show', 'destroy']);
+        Route::resource('categories', AdminCategoryController::class)->except(['destroy']);
         Route::patch('/categories/{category}/toggle-status', [AdminCategoryController::class, 'toggleStatus'])->name('categories.toggle-status');
-        Route::resource('menus', AdminMenuController::class)->except(['show', 'destroy']);
+        Route::resource('menus', AdminMenuController::class)->except(['destroy']);
         Route::patch('/menus/{menu}/toggle-status', [AdminMenuController::class, 'toggleStatus'])->name('menus.toggle-status');
         Route::patch('/menus/{menu}/toggle-availability', [AdminMenuController::class, 'toggleAvailability'])->name('menus.toggle-availability');
-        Route::resource('tables', AdminTableController::class)->except(['show', 'destroy']);
+        Route::resource('tables', AdminTableController::class)->except(['destroy']);
         Route::patch('/tables/{table}/toggle-status', [AdminTableController::class, 'toggleStatus'])->name('tables.toggle-status');
         Route::patch('/tables/{table}/regenerate-qr-token', [AdminTableController::class, 'regenerateQrToken'])->name('tables.regenerate-qr-token');
-        Route::resource('promotions', AdminPromotionController::class)->except(['show', 'destroy']);
+        Route::resource('promotions', AdminPromotionController::class)->except(['destroy']);
         Route::patch('/promotions/{promotion}/toggle-status', [AdminPromotionController::class, 'toggleStatus'])->name('promotions.toggle-status');
         Route::resource('taxes', AdminTaxController::class)->except(['show', 'destroy']);
         Route::patch('/taxes/{tax}/toggle-status', [AdminTaxController::class, 'toggleStatus'])->name('taxes.toggle-status');

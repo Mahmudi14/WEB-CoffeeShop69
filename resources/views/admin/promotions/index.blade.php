@@ -10,7 +10,7 @@
                 class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,158,11,0.22),transparent_35%),linear-gradient(135deg,rgba(255,255,255,0.06),transparent_45%)] pointer-events-none">
             </div>
 
-            <div class="relative z-10 flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+            <div class="relative z-10 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                     <div
                         class="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/10 px-3 py-1.5 mb-4">
@@ -231,121 +231,117 @@
                     </p>
                 </div>
             @else
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-stone-200">
+                <div class="overflow-x-auto lg:overflow-visible">
+                    <table class="w-full min-w-[720px] table-fixed divide-y divide-stone-200 lg:min-w-0">
                         <thead class="bg-stone-100">
                             <tr>
-                                <th class="px-6 py-4 text-left text-xs font-black uppercase tracking-wider text-stone-500">
-                                    Promo</th>
-                                <th class="px-6 py-4 text-left text-xs font-black uppercase tracking-wider text-stone-500">
-                                    Diskon</th>
-                                <th class="px-6 py-4 text-left text-xs font-black uppercase tracking-wider text-stone-500">
-                                    Cakupan</th>
-                                <th class="px-6 py-4 text-left text-xs font-black uppercase tracking-wider text-stone-500">
-                                    Periode</th>
-                                <th class="px-6 py-4 text-left text-xs font-black uppercase tracking-wider text-stone-500">
-                                    Status</th>
                                 <th
-                                    class="px-6 py-4 text-right text-xs font-black uppercase tracking-wider text-stone-500">
-                                    Aksi</th>
+                                    class="w-14 px-3 py-4 text-left text-xs font-black uppercase tracking-wider text-stone-500">
+                                    No
+                                </th>
+
+                                <th class="px-4 py-4 text-left text-xs font-black uppercase tracking-wider text-stone-500">
+                                    Promo
+                                </th>
+
+                                <th
+                                    class="w-36 px-3 py-4 text-left text-xs font-black uppercase tracking-wider text-stone-500">
+                                    Diskon
+                                </th>
+
+                                <th
+                                    class="w-36 px-3 py-4 text-left text-xs font-black uppercase tracking-wider text-stone-500">
+                                    Cakupan
+                                </th>
+
+                                <th
+                                    class="w-28 px-3 py-4 text-left text-xs font-black uppercase tracking-wider text-stone-500">
+                                    Status
+                                </th>
+
+                                <th
+                                    class="w-36 px-3 py-4 text-right text-xs font-black uppercase tracking-wider text-stone-500">
+                                    Aksi
+                                </th>
                             </tr>
                         </thead>
 
                         <tbody class="divide-y divide-stone-100">
                             @foreach ($promotions as $promotion)
-                                <tr class="hover:bg-stone-50">
-                                    <td class="px-6 py-4">
-                                        <p class="text-sm font-black text-stone-950">
+                                <tr class="transition hover:bg-stone-50">
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm font-bold text-stone-500">
+                                        @if (method_exists($promotions, 'firstItem'))
+                                            {{ $promotions->firstItem() + $loop->index }}
+                                        @else
+                                            {{ $loop->iteration }}
+                                        @endif
+                                    </td>
+
+                                    <td class="px-4 py-4">
+                                        <p class="truncate text-sm font-black text-stone-950">
                                             {{ $promotion->name }}
-                                        </p>
-
-                                        <p class="mt-1 line-clamp-1 text-xs font-semibold text-stone-500">
-                                            {{ $promotion->description ?: 'Tanpa deskripsi' }}
-                                        </p>
-
-                                        <p class="mt-1 text-xs font-semibold text-stone-400">
-                                            Prioritas: {{ $promotion->priority }}
                                         </p>
                                     </td>
 
-                                    <td class="whitespace-nowrap px-6 py-4">
+                                    <td class="whitespace-nowrap px-3 py-4">
                                         @if ($promotion->discount_type === 'percentage')
                                             <p class="text-sm font-black text-emerald-700">
                                                 {{ rtrim(rtrim(number_format($promotion->discount_value, 2, ',', '.'), '0'), ',') }}%
+                                            </p>
+
+                                            <p class="mt-1 text-[11px] font-semibold text-stone-500">
+                                                Persentase
                                             </p>
                                         @else
                                             <p class="text-sm font-black text-emerald-700">
                                                 Rp{{ number_format($promotion->discount_value, 0, ',', '.') }}
                                             </p>
-                                        @endif
 
-                                        <p class="mt-1 text-xs font-semibold text-stone-500">
-                                            {{ $promotion->discount_type === 'percentage' ? 'Persentase' : 'Nominal' }}
-                                        </p>
+                                            <p class="mt-1 text-[11px] font-semibold text-stone-500">
+                                                Nominal
+                                            </p>
+                                        @endif
                                     </td>
 
-                                    <td class="whitespace-nowrap px-6 py-4">
+                                    <td class="whitespace-nowrap px-3 py-4">
                                         @if ($promotion->scope === 'all_menu')
                                             <span
-                                                class="rounded-full bg-sky-100 px-3 py-1 text-xs font-black text-sky-700">
+                                                class="inline-flex rounded-full bg-sky-100 px-3 py-1 text-xs font-black text-sky-700">
                                                 Semua Menu
                                             </span>
                                         @else
                                             <span
-                                                class="rounded-full bg-amber-100 px-3 py-1 text-xs font-black text-amber-700">
+                                                class="inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-black text-amber-700">
                                                 {{ $promotion->menus_count }} Menu
                                             </span>
                                         @endif
                                     </td>
 
-                                    <td class="whitespace-nowrap px-6 py-4 text-xs font-semibold text-stone-600">
-                                        <p>
-                                            Mulai:
-                                            <span class="font-black">
-                                                {{ $promotion->starts_at ? $promotion->starts_at->format('d M Y H:i') : 'Langsung' }}
-                                            </span>
-                                        </p>
-                                        <p class="mt-1">
-                                            Berakhir:
-                                            <span class="font-black">
-                                                {{ $promotion->ends_at ? $promotion->ends_at->format('d M Y H:i') : 'Tanpa batas' }}
-                                            </span>
-                                        </p>
-                                    </td>
-
-                                    <td class="whitespace-nowrap px-6 py-4">
+                                    <td class="whitespace-nowrap px-3 py-4">
                                         @if ($promotion->is_active)
                                             <span
-                                                class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-black text-emerald-700">
+                                                class="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-black text-emerald-700">
                                                 Aktif
                                             </span>
                                         @else
                                             <span
-                                                class="rounded-full bg-rose-100 px-3 py-1 text-xs font-black text-rose-700">
+                                                class="inline-flex rounded-full bg-rose-100 px-3 py-1 text-xs font-black text-rose-700">
                                                 Nonaktif
                                             </span>
                                         @endif
                                     </td>
 
-                                    <td class="whitespace-nowrap px-6 py-4 text-right">
+                                    <td class="whitespace-nowrap px-3 py-4 text-right">
                                         <div class="flex justify-end gap-2">
                                             <a href="{{ route('admin.promotions.edit', $promotion) }}"
-                                                class="inline-flex rounded-2xl border border-stone-200 bg-white px-4 py-2 text-xs font-black text-stone-700 shadow-sm transition hover:bg-stone-50">
+                                                class="inline-flex items-center justify-center rounded-2xl border border-stone-200 bg-white px-3 py-2 text-xs font-black text-stone-700 shadow-sm transition hover:bg-stone-50 active:scale-[0.98]">
                                                 Edit
                                             </a>
 
-                                            <form method="POST"
-                                                action="{{ route('admin.promotions.toggle-status', $promotion) }}">
-                                                @csrf
-                                                @method('PATCH')
-
-                                                <button type="submit"
-                                                    class="{{ $promotion->is_active
-                                                        ? 'border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100'
-                                                        : 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100' }} inline-flex rounded-2xl border px-4 py-2 text-xs font-black transition">
-                                                    {{ $promotion->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
-                                                </button>
-                                            </form>
+                                            <a href="{{ route('admin.promotions.show', $promotion) }}"
+                                                class="inline-flex items-center justify-center rounded-2xl bg-stone-950 px-3 py-2 text-xs font-black text-white shadow-sm transition hover:bg-stone-800 active:scale-[0.98]">
+                                                Detail
+                                            </a>
                                         </div>
                                     </td>
                                 </tr>

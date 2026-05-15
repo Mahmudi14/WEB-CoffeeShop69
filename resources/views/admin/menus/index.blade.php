@@ -10,7 +10,7 @@
                 class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,158,11,0.22),transparent_35%),linear-gradient(135deg,rgba(255,255,255,0.06),transparent_45%)] pointer-events-none">
             </div>
 
-            <div class="relative z-10 flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+            <div class="relative z-10 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                     <div
                         class="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/10 px-3 py-1.5 mb-4">
@@ -36,9 +36,12 @@
             </div>
         </section>
 
-        <section class="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
-            <form method="GET" action="{{ route('admin.menus.index') }}" class="grid gap-4 lg:grid-cols-12 lg:items-end">
-                <div class="lg:col-span-4">
+        <section class="rounded-3xl border border-stone-200 bg-white p-4 shadow-sm lg:p-5">
+            <form method="GET" action="{{ route('admin.menus.index') }}"
+                class="grid gap-4 sm:grid-cols-2 lg:grid-cols-6 lg:items-end xl:grid-cols-[minmax(320px,1fr)_190px_150px_170px_max-content]">
+
+                {{-- Search --}}
+                <div class="min-w-0 sm:col-span-2 lg:col-span-3 xl:col-span-1">
                     <label class="mb-2 block text-xs font-black uppercase tracking-wider text-stone-400">
                         Cari Menu
                     </label>
@@ -47,7 +50,9 @@
                         class="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm font-semibold text-stone-900 outline-none transition focus:border-amber-500 focus:ring-4 focus:ring-amber-100">
                 </div>
 
-                <div class="lg:col-span-2" x-data="filterDropdown(@js((string) $categoryId))" @keydown.escape.window="close()">
+                {{-- Kategori --}}
+                <div class="min-w-0 sm:col-span-1 lg:col-span-3 xl:col-span-1" x-data="filterDropdown(@js((string) $categoryId))"
+                    @keydown.escape.window="close()">
                     <label class="mb-2 block text-xs font-black uppercase tracking-wider text-stone-400">
                         Kategori
                     </label>
@@ -76,7 +81,7 @@
                         </button>
 
                         <div x-show="dropdownOpen" x-cloak x-transition.origin.top @click.outside="close()"
-                            class="absolute left-0 right-0 top-[54px] z-50 max-h-64 overflow-y-auto rounded-2xl border border-stone-200 bg-white p-2 shadow-xl">
+                            class="absolute left-0 right-0 top-full z-50 mt-2 max-h-64 overflow-y-auto rounded-2xl border border-stone-200 bg-white p-2 shadow-xl">
                             <button type="button" @click="select('')"
                                 class="flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-amber-50 hover:text-amber-700"
                                 :class="selectedValue === '' ? 'bg-amber-100 text-amber-800' : 'text-stone-700'">
@@ -109,7 +114,9 @@
                     </div>
                 </div>
 
-                <div class="lg:col-span-2" x-data="filterDropdown(@js((string) $status))" @keydown.escape.window="close()">
+                {{-- Status --}}
+                <div class="min-w-0 sm:col-span-1 lg:col-span-2 xl:col-span-1" x-data="filterDropdown(@js((string) $status))"
+                    @keydown.escape.window="close()">
                     <label class="mb-2 block text-xs font-black uppercase tracking-wider text-stone-400">
                         Status
                     </label>
@@ -134,7 +141,7 @@
                         </button>
 
                         <div x-show="dropdownOpen" x-cloak x-transition.origin.top @click.outside="close()"
-                            class="absolute left-0 right-0 top-[54px] z-50 overflow-hidden rounded-2xl border border-stone-200 bg-white p-2 shadow-xl">
+                            class="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-2xl border border-stone-200 bg-white p-2 shadow-xl">
                             <button type="button" @click="select('')"
                                 class="flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-amber-50 hover:text-amber-700"
                                 :class="selectedValue === '' ? 'bg-amber-100 text-amber-800' : 'text-stone-700'">
@@ -156,7 +163,9 @@
                     </div>
                 </div>
 
-                <div class="lg:col-span-2" x-data="filterDropdown(@js((string) $availability))" @keydown.escape.window="close()">
+                {{-- Ketersediaan --}}
+                <div class="min-w-0 sm:col-span-1 lg:col-span-2 xl:col-span-1" x-data="filterDropdown(@js((string) $availability))"
+                    @keydown.escape.window="close()">
                     <label class="mb-2 block text-xs font-black uppercase tracking-wider text-stone-400">
                         Ketersediaan
                     </label>
@@ -181,7 +190,7 @@
                         </button>
 
                         <div x-show="dropdownOpen" x-cloak x-transition.origin.top @click.outside="close()"
-                            class="absolute left-0 right-0 top-[54px] z-50 overflow-hidden rounded-2xl border border-stone-200 bg-white p-2 shadow-xl">
+                            class="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-2xl border border-stone-200 bg-white p-2 shadow-xl">
                             <button type="button" @click="select('')"
                                 class="flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-amber-50 hover:text-amber-700"
                                 :class="selectedValue === '' ? 'bg-amber-100 text-amber-800' : 'text-stone-700'">
@@ -203,14 +212,15 @@
                     </div>
                 </div>
 
-                <div class="flex gap-3 lg:col-span-2 lg:justify-end">
+                {{-- Actions --}}
+                <div class="flex gap-3 sm:col-span-2 lg:col-span-2 lg:justify-end xl:col-span-1">
                     <button type="submit"
-                        class="inline-flex flex-1 items-center justify-center rounded-2xl bg-stone-950 px-5 py-3 text-sm font-black text-white shadow-sm transition hover:bg-stone-800 active:scale-[0.98] lg:flex-none">
+                        class="inline-flex flex-1 items-center justify-center whitespace-nowrap rounded-2xl bg-stone-950 px-5 py-3 text-sm font-black text-white shadow-sm transition hover:bg-stone-800 active:scale-[0.98] xl:flex-none">
                         Filter
                     </button>
 
                     <a href="{{ route('admin.menus.index') }}"
-                        class="inline-flex flex-1 items-center justify-center rounded-2xl border border-stone-200 bg-white px-5 py-3 text-sm font-black text-stone-700 shadow-sm transition hover:bg-stone-50 active:scale-[0.98] lg:flex-none">
+                        class="inline-flex flex-1 items-center justify-center whitespace-nowrap rounded-2xl border border-stone-200 bg-white px-5 py-3 text-sm font-black text-stone-700 shadow-sm transition hover:bg-stone-50 active:scale-[0.98] xl:flex-none">
                         Reset
                     </a>
                 </div>
@@ -238,36 +248,51 @@
                     </p>
                 </div>
             @else
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-stone-200">
+                <div class="overflow-x-auto rounded-3xl border border-stone-200 bg-white shadow-sm">
+                    <table class="w-full table-fixed divide-y divide-stone-200">
                         <thead class="bg-stone-100">
                             <tr>
-                                <th class="px-6 py-4 text-left text-xs font-black uppercase tracking-wider text-stone-500">
-                                    Menu
+                                <th
+                                    class="w-14 px-3 py-4 text-left text-xs font-black uppercase tracking-wider text-stone-500">
+                                    No
                                 </th>
-                                <th class="px-6 py-4 text-left text-xs font-black uppercase tracking-wider text-stone-500">
+
+                                <th class="px-3 py-4 text-left text-xs font-black uppercase tracking-wider text-stone-500">
+                                    Nama Menu
+                                </th>
+
+                                <th
+                                    class="w-32 px-3 py-4 text-left text-xs font-black uppercase tracking-wider text-stone-500 lg:w-26">
                                     Kategori
                                 </th>
+
                                 <th
-                                    class="px-6 py-4 text-right text-xs font-black uppercase tracking-wider text-stone-500">
+                                    class="w-32 px-3 py-4 text-right text-xs font-black uppercase tracking-wider text-stone-500 lg:w-26">
                                     Harga
                                 </th>
-                                <th class="px-6 py-4 text-left text-xs font-black uppercase tracking-wider text-stone-500">
-                                    Status
-                                </th>
+
                                 <th
-                                    class="px-6 py-4 text-right text-xs font-black uppercase tracking-wider text-stone-500">
+                                    class="w-36 px-3 py-4 text-center text-xs font-black uppercase tracking-wider text-stone-500 lg:w-40">
                                     Aksi
                                 </th>
                             </tr>
                         </thead>
 
                         <tbody class="divide-y divide-stone-100">
-                            @foreach ($menus as $menu)
-                                <tr class="hover:bg-stone-50">
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center gap-4">
-                                            <div class="h-14 w-14 overflow-hidden rounded-2xl bg-stone-100">
+                            @forelse ($menus as $menu)
+                                <tr class="transition hover:bg-stone-50">
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm font-bold text-stone-600">
+                                        @if (method_exists($menus, 'firstItem'))
+                                            {{ $menus->firstItem() + $loop->index }}
+                                        @else
+                                            {{ $loop->iteration }}
+                                        @endif
+                                    </td>
+
+                                    <td class="px-3 py-4">
+                                        <div class="flex min-w-0 items-center gap-3">
+                                            <div
+                                                class="h-12 w-12 shrink-0 overflow-hidden rounded-2xl bg-stone-100 lg:h-14 lg:w-14">
                                                 @if ($menu->image_path)
                                                     <img src="{{ Storage::url($menu->image_path) }}"
                                                         alt="{{ $menu->name }}" class="h-full w-full object-cover">
@@ -277,89 +302,70 @@
                                                 @endif
                                             </div>
 
-                                            <div>
-                                                <p class="text-sm font-black text-stone-950">
+                                            <div class="min-w-0">
+                                                <p class="truncate text-sm font-black text-stone-950">
                                                     {{ $menu->name }}
                                                 </p>
+                                                <div class="mt-2 flex flex-wrap gap-1.5">
+                                                    @if ($menu->is_active)
+                                                        <span
+                                                            class="inline-flex rounded-full bg-emerald-100 px-2.5 py-1 text-[11px] font-black text-emerald-700">
+                                                            Aktif
+                                                        </span>
+                                                    @else
+                                                        <span
+                                                            class="inline-flex rounded-full bg-rose-100 px-2.5 py-1 text-[11px] font-black text-rose-700">
+                                                            Nonaktif
+                                                        </span>
+                                                    @endif
 
-                                                <p class="mt-1 line-clamp-1 text-xs font-semibold text-stone-500">
-                                                    {{ $menu->description ?: 'Tanpa deskripsi' }}
-                                                </p>
+                                                    @if ($menu->is_available)
+                                                        <span
+                                                            class="inline-flex rounded-full bg-sky-100 px-2.5 py-1 text-[11px] font-black text-sky-700">
+                                                            Tersedia
+                                                        </span>
+                                                    @else
+                                                        <span
+                                                            class="inline-flex rounded-full bg-orange-100 px-2.5 py-1 text-[11px] font-black text-orange-700">
+                                                            Habis
+                                                        </span>
+                                                    @endif
+                                                </div>
                                             </div>
                                         </div>
                                     </td>
 
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm font-bold text-stone-700">
-                                        {{ $menu->category?->name ?? '-' }}
+                                    <td class="whitespace-nowrap px-3 py-4">
+                                        <span class="block truncate text-sm font-bold text-stone-700">
+                                            {{ $menu->category?->name ?? '-' }}
+                                        </span>
                                     </td>
 
-                                    <td class="whitespace-nowrap px-6 py-4 text-right text-sm font-black text-stone-950">
+                                    <td class="whitespace-nowrap px-3 py-4 text-right text-sm font-black text-stone-950">
                                         Rp{{ number_format($menu->normal_price, 0, ',', '.') }}
                                     </td>
-                                    <td class="whitespace-nowrap px-6 py-4">
-                                        <div class="flex flex-col gap-1">
-                                            @if ($menu->is_active)
-                                                <span
-                                                    class="w-fit rounded-full bg-emerald-100 px-3 py-1 text-xs font-black text-emerald-700">
-                                                    Aktif
-                                                </span>
-                                            @else
-                                                <span
-                                                    class="w-fit rounded-full bg-rose-100 px-3 py-1 text-xs font-black text-rose-700">
-                                                    Nonaktif
-                                                </span>
-                                            @endif
 
-                                            @if ($menu->is_available)
-                                                <span
-                                                    class="w-fit rounded-full bg-sky-100 px-3 py-1 text-xs font-black text-sky-700">
-                                                    Tersedia
-                                                </span>
-                                            @else
-                                                <span
-                                                    class="w-fit rounded-full bg-orange-100 px-3 py-1 text-xs font-black text-orange-700">
-                                                    Habis
-                                                </span>
-                                            @endif
-                                        </div>
-                                    </td>
-
-                                    <td class="whitespace-nowrap px-6 py-4 text-right">
+                                    <td class="whitespace-nowrap px-3 py-4 text-right">
                                         <div class="flex justify-end gap-2">
                                             <a href="{{ route('admin.menus.edit', $menu) }}"
-                                                class="inline-flex rounded-2xl border border-stone-200 bg-white px-4 py-2 text-xs font-black text-stone-700 shadow-sm transition hover:bg-stone-50">
+                                                class="inline-flex items-center justify-center rounded-2xl border border-stone-200 bg-white px-3 py-2 text-xs font-black text-stone-700 shadow-sm transition hover:bg-stone-50 active:scale-[0.98] lg:px-4">
                                                 Edit
                                             </a>
 
-                                            <form method="POST"
-                                                action="{{ route('admin.menus.toggle-availability', $menu) }}">
-                                                @csrf
-                                                @method('PATCH')
-
-                                                <button type="submit"
-                                                    class="{{ $menu->is_available
-                                                        ? 'border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100'
-                                                        : 'border-sky-200 bg-sky-50 text-sky-700 hover:bg-sky-100' }} inline-flex rounded-2xl border px-4 py-2 text-xs font-black transition">
-                                                    {{ $menu->is_available ? 'Tandai Habis' : 'Tersedia' }}
-                                                </button>
-                                            </form>
-
-                                            <form method="POST"
-                                                action="{{ route('admin.menus.toggle-status', $menu) }}">
-                                                @csrf
-                                                @method('PATCH')
-
-                                                <button type="submit"
-                                                    class="{{ $menu->is_active
-                                                        ? 'border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100'
-                                                        : 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100' }} inline-flex rounded-2xl border px-4 py-2 text-xs font-black transition">
-                                                    {{ $menu->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
-                                                </button>
-                                            </form>
+                                            <a href="{{ route('admin.menus.show', $menu) }}"
+                                                class="inline-flex items-center justify-center rounded-2xl bg-stone-950 px-3 py-2 text-xs font-black text-white shadow-sm transition hover:bg-stone-800 active:scale-[0.98] lg:px-4">
+                                                Detail
+                                            </a>
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="px-4 py-10 text-center text-sm font-bold text-stone-500">
+                                        Belum ada data menu.
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

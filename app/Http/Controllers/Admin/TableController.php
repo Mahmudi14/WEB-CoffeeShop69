@@ -34,6 +34,10 @@ class TableController extends Controller
         ]);
     }
 
+    public function show(CafeTable $table) {
+        return view('admin.tables.show',compact('table'));
+    }
+
     public function create()
     {
         return view('admin.tables.create');
