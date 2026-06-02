@@ -250,17 +250,72 @@
                     </p>
                 </div>
 
-                <form method="POST" action="{{ route('admin.tables.toggle-status', $table) }}" class="shrink-0">
-                    @csrf
-                    @method('PATCH')
-
-                    <button type="submit"
+                <div x-data="{ confirmOpen: false }" class="shrink-0">
+                    <button type="button" @click="confirmOpen = true"
                         class="{{ $table->is_active
                             ? 'border-rose-300 bg-rose-600 text-white hover:bg-rose-700'
                             : 'border-emerald-300 bg-emerald-600 text-white hover:bg-emerald-700' }} inline-flex w-full items-center justify-center rounded-2xl border px-5 py-3 text-sm font-black transition active:scale-[0.98] lg:w-auto">
                         {{ $table->is_active ? 'Nonaktifkan Meja' : 'Aktifkan Meja' }}
                     </button>
-                </form>
+
+                    {{-- Modal Confirmation --}}
+                    <div x-cloak x-show="confirmOpen" x-transition.opacity @keydown.escape.window="confirmOpen = false"
+                        class="fixed inset-0 z-50 flex items-center justify-center bg-stone-950/60 px-4">
+                        <div x-show="confirmOpen" x-transition.scale.origin.center @click.outside="confirmOpen = false"
+                            class="w-full max-w-md rounded-[2rem] border border-stone-200 bg-white p-6 shadow-2xl">
+
+                            <div
+                                class="flex h-12 w-12 items-center justify-center rounded-2xl {{ $table->is_active ? 'bg-rose-100' : 'bg-emerald-100' }}">
+                                @if ($table->is_active)
+                                    <svg class="h-6 w-6 text-rose-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4"
+                                            d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                                    </svg>
+                                @else
+                                    <svg class="h-6 w-6 text-emerald-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4"
+                                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                @endif
+                            </div>
+
+                            <h3 class="mt-5 text-lg font-black text-stone-950">
+                                {{ $table->is_active ? 'Nonaktifkan Meja?' : 'Aktifkan Meja?' }}
+                            </h3>
+
+                            <p class="mt-2 text-sm font-semibold leading-6 text-stone-500">
+                                @if ($table->is_active)
+                                    Meja <span class="font-black text-stone-900">{{ $table->name }}</span> akan
+                                    dinonaktifkan.
+                                    QR meja tidak disarankan digunakan oleh customer sampai meja diaktifkan kembali.
+                                @else
+                                    Meja <span class="font-black text-stone-900">{{ $table->name }}</span> akan
+                                    diaktifkan
+                                    kembali dan QR meja bisa digunakan lagi oleh customer.
+                                @endif
+                            </p>
+
+                            <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                                <button type="button" @click="confirmOpen = false"
+                                    class="inline-flex items-center justify-center rounded-2xl border border-stone-200 bg-white px-5 py-3 text-sm font-black text-stone-700 transition hover:bg-stone-50">
+                                    Batal
+                                </button>
+
+                                <form method="POST" action="{{ route('admin.tables.toggle-status', $table) }}">
+                                    @csrf
+                                    @method('PATCH')
+
+                                    <button type="submit"
+                                        class="{{ $table->is_active ? 'bg-rose-600 hover:bg-rose-700' : 'bg-emerald-600 hover:bg-emerald-700' }} inline-flex w-full items-center justify-center rounded-2xl px-5 py-3 text-sm font-black text-white transition active:scale-[0.98] sm:w-auto">
+                                        {{ $table->is_active ? 'Ya, Nonaktifkan' : 'Ya, Aktifkan' }}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -287,58 +342,55 @@
                     Regenerate QR
                 </button>
             </div>
-        </section>
 
-        {{-- Modal Regenerate QR --}}
-        <div x-cloak x-show="regenerateModalOpen" x-transition.opacity
-            class="fixed inset-0 z-[80] flex items-center justify-center bg-stone-950/70 px-4 backdrop-blur-sm">
-            <div x-show="regenerateModalOpen" x-transition.scale.origin.center @click.outside="closeRegenerateModal()"
-                class="w-full max-w-md overflow-hidden rounded-[2rem] border border-stone-200 bg-white shadow-2xl">
-                <div class="border-b border-stone-100 px-6 py-5">
-                    <div class="flex items-start gap-4">
-                        <div
-                            class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-rose-50 text-rose-600">
-                            <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4"
-                                    d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-                            </svg>
-                        </div>
+            {{-- Modal Regenerate QR --}}
+            <div x-cloak x-show="regenerateModalOpen" x-transition.opacity @keydown.escape.window="closeRegenerateModal()"
+                class="fixed inset-0 z-[80] flex items-center justify-center bg-stone-950/70 px-4 backdrop-blur-sm">
 
-                        <div>
-                            <p class="text-xs font-black uppercase tracking-[0.22em] text-rose-500">
-                                Konfirmasi QR
-                            </p>
+                <div x-show="regenerateModalOpen" x-transition.scale.origin.center @click.outside="closeRegenerateModal()"
+                    class="w-full max-w-md rounded-[2rem] border border-stone-200 bg-white p-6 shadow-2xl">
 
-                            <h3 class="mt-1 text-xl font-black text-stone-900">
-                                Regenerate QR token?
-                            </h3>
+                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-100">
+                        <svg class="h-6 w-6 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4"
+                                d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                        </svg>
+                    </div>
 
-                            <p class="mt-2 text-sm leading-6 text-stone-500">
-                                QR lama untuk <span class="font-black text-stone-900">{{ $table->name }}</span> tidak
-                                akan bisa dipakai lagi.
-                            </p>
-                        </div>
+                    <h3 class="mt-5 text-lg font-black text-stone-950">
+                        Regenerate QR Token?
+                    </h3>
+
+                    <p class="mt-2 text-sm font-semibold leading-6 text-stone-500">
+                        QR lama untuk meja
+                        <span class="font-black text-stone-900">{{ $table->name }}</span>
+                        tidak akan bisa digunakan lagi oleh customer.
+                    </p>
+
+                    <p
+                        class="mt-3 rounded-2xl border border-rose-100 bg-rose-50 px-4 py-3 text-xs font-bold leading-5 text-rose-700">
+                        Setelah token dibuat ulang, gunakan QR terbaru untuk meja ini. QR lama otomatis tidak berlaku.
+                    </p>
+
+                    <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                        <button type="button" @click="closeRegenerateModal()"
+                            class="inline-flex items-center justify-center rounded-2xl border border-stone-200 bg-white px-5 py-3 text-sm font-black text-stone-700 transition hover:bg-stone-50">
+                            Batal
+                        </button>
+
+                        <form method="POST" action="{{ route('admin.tables.regenerate-qr-token', $table) }}">
+                            @csrf
+                            @method('PATCH')
+
+                            <button type="submit"
+                                class="inline-flex w-full items-center justify-center rounded-2xl bg-rose-600 px-5 py-3 text-sm font-black text-white transition hover:bg-rose-700 active:scale-[0.98] sm:w-auto">
+                                Ya, Regenerate
+                            </button>
+                        </form>
                     </div>
                 </div>
-
-                <div class="flex flex-col-reverse gap-3 px-6 py-5 sm:flex-row sm:justify-end">
-                    <button type="button" @click="closeRegenerateModal()"
-                        class="inline-flex items-center justify-center rounded-2xl border border-stone-200 bg-white px-4 py-2.5 text-sm font-black text-stone-700 transition hover:bg-stone-50">
-                        Batal
-                    </button>
-
-                    <form method="POST" action="{{ route('admin.tables.regenerate-qr-token', $table) }}">
-                        @csrf
-                        @method('PATCH')
-
-                        <button type="submit"
-                            class="inline-flex w-full items-center justify-center rounded-2xl bg-rose-600 px-4 py-2.5 text-sm font-black text-white shadow-lg shadow-rose-600/20 transition hover:bg-rose-700 active:scale-[0.98] sm:w-auto">
-                            Ya, Regenerate
-                        </button>
-                    </form>
-                </div>
             </div>
-        </div>
+        </section>
 
         {{-- Toast --}}
         <div x-cloak x-show="toastOpen" x-transition.opacity

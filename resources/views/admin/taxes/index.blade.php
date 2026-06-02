@@ -231,7 +231,6 @@
                                 </th>
                             </tr>
                         </thead>
-
                         <tbody class="divide-y divide-stone-100">
                             @foreach ($taxes as $tax)
                                 <tr class="hover:bg-stone-50">
@@ -278,23 +277,99 @@
                                     </td>
 
                                     <td class="whitespace-nowrap px-6 py-4 text-right">
-                                        <div class="flex justify-end gap-2">
+                                        <div x-data="{ confirmOpen: false }" class="flex justify-end gap-2">
                                             <a href="{{ route('admin.taxes.edit', $tax) }}"
                                                 class="inline-flex rounded-2xl border border-stone-200 bg-white px-4 py-2 text-xs font-black text-stone-700 shadow-sm transition hover:bg-stone-50">
                                                 Edit
                                             </a>
 
-                                            <form method="POST" action="{{ route('admin.taxes.toggle-status', $tax) }}">
-                                                @csrf
-                                                @method('PATCH')
+                                            <button type="button" @click="confirmOpen = true"
+                                                class="{{ $tax->is_active
+                                                    ? 'border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100'
+                                                    : 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100' }} inline-flex rounded-2xl border px-4 py-2 text-xs font-black transition active:scale-[0.98]">
+                                                {{ $tax->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
+                                            </button>
 
-                                                <button type="submit"
-                                                    class="{{ $tax->is_active
-                                                        ? 'border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100'
-                                                        : 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100' }} inline-flex rounded-2xl border px-4 py-2 text-xs font-black transition">
-                                                    {{ $tax->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
-                                                </button>
-                                            </form>
+                                            <template x-teleport="body">
+                                                <div x-cloak x-show="confirmOpen" x-transition.opacity
+                                                    @keydown.escape.window="confirmOpen = false"
+                                                    class="fixed inset-0 z-[9999] flex items-center justify-center bg-stone-950/60 px-4">
+
+                                                    <div x-show="confirmOpen" x-transition.scale.origin.center
+                                                        @click.outside="confirmOpen = false"
+                                                        class="w-full max-w-md rounded-[2rem] border border-stone-200 bg-white p-6 text-left shadow-2xl">
+
+                                                        <div
+                                                            class="flex h-12 w-12 items-center justify-center rounded-2xl {{ $tax->is_active ? 'bg-rose-100' : 'bg-emerald-100' }}">
+                                                            @if ($tax->is_active)
+                                                                <svg class="h-6 w-6 text-rose-600" fill="none"
+                                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                                        stroke-width="2.4"
+                                                                        d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                                                                </svg>
+                                                            @else
+                                                                <svg class="h-6 w-6 text-emerald-600" fill="none"
+                                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                                        stroke-width="2.4"
+                                                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                                </svg>
+                                                            @endif
+                                                        </div>
+
+                                                        <h3 class="mt-5 text-lg font-black text-stone-950">
+                                                            {{ $tax->is_active ? 'Nonaktifkan Pajak?' : 'Aktifkan Pajak?' }}
+                                                        </h3>
+
+                                                        <p class="mt-2 text-sm font-semibold leading-6 text-stone-500">
+                                                            @if ($tax->is_active)
+                                                                Pajak <span
+                                                                    class="font-black text-stone-900">{{ $tax->name }}</span>
+                                                                akan
+                                                                dinonaktifkan dan tidak digunakan pada perhitungan transaksi
+                                                                baru.
+                                                            @else
+                                                                Pajak <span
+                                                                    class="font-black text-stone-900">{{ $tax->name }}</span>
+                                                                akan
+                                                                diaktifkan kembali dan digunakan pada perhitungan transaksi
+                                                                baru.
+                                                            @endif
+                                                        </p>
+
+                                                        <div
+                                                            class="{{ $tax->is_active ? 'border-rose-100 bg-rose-50 text-rose-700' : 'border-emerald-100 bg-emerald-50 text-emerald-700' }} mt-3 rounded-2xl border px-4 py-3 text-xs font-bold leading-5">
+                                                            @if ($tax->is_active)
+                                                                Tindakan ini tidak menghapus data pajak, hanya mengubah
+                                                                status menjadi nonaktif.
+                                                            @else
+                                                                Jika pajak ini diaktifkan, pajak aktif sebelumnya akan
+                                                                otomatis dinonaktifkan.
+                                                            @endif
+                                                        </div>
+
+                                                        <div
+                                                            class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                                                            <button type="button" @click="confirmOpen = false"
+                                                                class="inline-flex items-center justify-center rounded-2xl border border-stone-200 bg-white px-5 py-3 text-sm font-black text-stone-700 transition hover:bg-stone-50">
+                                                                Batal
+                                                            </button>
+
+                                                            <form method="POST"
+                                                                action="{{ route('admin.taxes.toggle-status', $tax) }}">
+                                                                @csrf
+                                                                @method('PATCH')
+
+                                                                <button type="submit"
+                                                                    class="{{ $tax->is_active ? 'bg-rose-600 hover:bg-rose-700' : 'bg-emerald-600 hover:bg-emerald-700' }} inline-flex w-full items-center justify-center rounded-2xl px-5 py-3 text-sm font-black text-white transition active:scale-[0.98] sm:w-auto">
+                                                                    {{ $tax->is_active ? 'Ya, Nonaktifkan' : 'Ya, Aktifkan' }}
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </template>
                                         </div>
                                     </td>
                                 </tr>

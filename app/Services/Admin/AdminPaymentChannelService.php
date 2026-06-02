@@ -14,11 +14,24 @@ class AdminPaymentChannelService
 
     public function create(array $data, ?UploadedFile $qrImage = null): PaymentChannel
     {
+        $qrImagePath = null;
+
         if ($qrImage) {
-            $data['qr_image_path'] = $this->imageService->store($qrImage);
+            $qrImagePath = $this->imageService->store($qrImage);
         }
 
-        return PaymentChannel::create($data);
+        return PaymentChannel::create([
+            'method' => $data['method'],
+            'name' => $data['name'],
+            'account_name' => $data['account_name'] ?? null,
+            'account_number' => $data['account_number'] ?? null,
+            'qr_image_path' => $qrImagePath,
+
+            // Tidak dikirim dari form, disetel otomatis
+            'note' => null,
+            'sort_order' => 0,
+            'is_active' => true,
+        ]);
     }
 
     public function update(
@@ -28,21 +41,37 @@ class AdminPaymentChannelService
         bool $removeQrImage = false
     ): PaymentChannel {
         $oldQrImagePath = $paymentChannel->qr_image_path;
+        $qrImagePath = $oldQrImagePath;
 
         if ($removeQrImage) {
             $this->imageService->delete($oldQrImagePath);
-            $data['qr_image_path'] = null;
+            $qrImagePath = null;
         }
 
         if ($qrImage) {
             $newQrImagePath = $this->imageService->store($qrImage);
 
-            $this->imageService->delete($oldQrImagePath);
+            if ($oldQrImagePath) {
+                $this->imageService->delete($oldQrImagePath);
+            }
 
-            $data['qr_image_path'] = $newQrImagePath;
+            $qrImagePath = $newQrImagePath;
         }
 
-        $paymentChannel->update($data);
+        $paymentChannel->update([
+            'method' => $data['method'],
+            'name' => $data['name'],
+            'account_name' => $data['account_name'] ?? null,
+            'account_number' => $data['account_number'] ?? null,
+            'qr_image_path' => $qrImagePath,
+
+            // Tidak dipakai lagi dari form
+            'note' => null,
+            'sort_order' => 0,
+
+            // Saat edit, status boleh diubah
+            'is_active' => (bool) ($data['is_active'] ?? false),
+        ]);
 
         return $paymentChannel->fresh();
     }

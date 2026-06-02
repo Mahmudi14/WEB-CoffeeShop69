@@ -234,29 +234,92 @@
                         </p>
                     </section>
                 @elseif ($canCancel)
-                    <section class="rounded-3xl border border-rose-200 bg-rose-50 p-6 shadow-sm">
-                        <h3 class="text-lg font-black text-rose-800">
-                            Batalkan Order
-                        </h3>
+                    <section x-data="{ confirmOpen: @js($errors->has('cancel_reason')) }" class="rounded-3xl border border-rose-200 bg-rose-50 p-6 shadow-sm">
+                        <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                            <div class="max-w-2xl">
+                                <h3 class="text-lg font-black text-rose-800">
+                                    Batalkan Order
+                                </h3>
 
-                        <p class="mt-2 text-sm leading-6 text-rose-700">
-                            Gunakan hanya untuk kesalahan operasional. Order yang dibatalkan tidak dihapus, hanya diubah
-                            statusnya.
-                        </p>
+                                <p class="mt-2 text-sm leading-6 text-rose-700">
+                                    Gunakan hanya untuk kesalahan operasional. Order yang dibatalkan tidak dihapus, hanya
+                                    diubah
+                                    statusnya.
+                                </p>
+                            </div>
 
-                        <form method="POST" action="{{ route('admin.orders.cancel', $order) }}" class="mt-5 space-y-3">
-                            @csrf
-                            @method('PATCH')
-
-                            <textarea name="cancel_reason" rows="3" required
-                                class="w-full rounded-2xl border border-rose-200 bg-white px-4 py-3 text-sm font-semibold text-stone-900 outline-none transition focus:border-rose-500 focus:ring-4 focus:ring-rose-100"
-                                placeholder="Tulis alasan pembatalan...">{{ old('cancel_reason') }}</textarea>
-
-                            <button type="submit" onclick="return confirm('Yakin ingin membatalkan order ini?')"
-                                class="w-full rounded-2xl bg-rose-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-rose-600/20 transition hover:bg-rose-700">
+                            <button type="button" @click="confirmOpen = true"
+                                class="inline-flex w-full items-center justify-center rounded-2xl border border-rose-300 bg-rose-600 px-5 py-3 text-sm font-black text-white transition hover:bg-rose-700 active:scale-[0.98] lg:w-auto">
                                 Batalkan Order
                             </button>
-                        </form>
+                        </div>
+
+                        {{-- Modal Confirmation --}}
+                        <div x-cloak x-show="confirmOpen" x-transition.opacity @keydown.escape.window="confirmOpen = false"
+                            class="fixed inset-0 z-[9999] flex items-center justify-center bg-stone-950/60 px-4">
+
+                            <div x-show="confirmOpen" x-transition.scale.origin.center @click.outside="confirmOpen = false"
+                                class="w-full max-w-md rounded-[2rem] border border-stone-200 bg-white p-6 shadow-2xl">
+
+                                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-100">
+                                    <svg class="h-6 w-6 text-rose-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4"
+                                            d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                                    </svg>
+                                </div>
+
+                                <h3 class="mt-5 text-lg font-black text-stone-950">
+                                    Batalkan Order?
+                                </h3>
+
+                                <p class="mt-2 text-sm font-semibold leading-6 text-stone-500">
+                                    Order <span class="font-black text-stone-900">{{ $order->order_number }}</span> akan
+                                    dibatalkan.
+                                    Status order akan berubah menjadi batal, tetapi data order tetap tersimpan di sistem.
+                                </p>
+
+                                <form method="POST" action="{{ route('admin.orders.cancel', $order) }}"
+                                    class="mt-5 space-y-4">
+                                    @csrf
+                                    @method('PATCH')
+
+                                    <div>
+                                        <label class="mb-2 block text-sm font-bold text-stone-700">
+                                            Alasan Pembatalan
+                                        </label>
+
+                                        <textarea name="cancel_reason" rows="4" required
+                                            class="w-full rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-rose-500 focus:bg-white focus:ring-4 focus:ring-rose-100"
+                                            placeholder="Tulis alasan pembatalan...">{{ old('cancel_reason') }}</textarea>
+
+                                        @error('cancel_reason')
+                                            <p class="mt-2 text-xs font-bold text-rose-600">
+                                                {{ $message }}
+                                            </p>
+                                        @enderror
+                                    </div>
+
+                                    <p
+                                        class="rounded-2xl border border-rose-100 bg-rose-50 px-4 py-3 text-xs font-bold leading-5 text-rose-700">
+                                        Pastikan alasan pembatalan sudah benar karena informasi ini akan tersimpan pada
+                                        riwayat order.
+                                    </p>
+
+                                    <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                                        <button type="button" @click="confirmOpen = false"
+                                            class="inline-flex items-center justify-center rounded-2xl border border-stone-200 bg-white px-5 py-3 text-sm font-black text-stone-700 transition hover:bg-stone-50">
+                                            Batal
+                                        </button>
+
+                                        <button type="submit"
+                                            class="inline-flex w-full items-center justify-center rounded-2xl bg-rose-600 px-5 py-3 text-sm font-black text-white transition hover:bg-rose-700 active:scale-[0.98] sm:w-auto">
+                                            Ya, Batalkan Order
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </section>
                 @endif
             </aside>

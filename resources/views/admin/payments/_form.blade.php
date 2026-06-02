@@ -117,79 +117,99 @@
                     </div>
                 </div>
 
-                <div class="grid gap-5 lg:grid-cols-[1fr_260px]">
-                    <div>
-                        <label for="qr_image" class="mb-2 block text-sm font-bold text-stone-700">
-                            Gambar QRIS
-                        </label>
-
-                        <input id="qr_image" type="file" name="qr_image" accept=".jpg,.jpeg,.png,.webp"
-                            class="block w-full rounded-2xl border border-stone-200 bg-stone-50 px-5 py-3 text-sm font-semibold text-stone-900 outline-none transition file:mr-4 file:rounded-xl file:border-0 file:bg-stone-950 file:px-4 file:py-2 file:text-sm file:font-black file:text-white hover:file:bg-stone-800 focus:border-amber-500 focus:bg-white focus:ring-4 focus:ring-amber-100">
-
-                        <p class="mt-2 text-xs font-semibold text-stone-500">
-                            Dipakai untuk metode QRIS. Format: JPG, PNG, WEBP. Maksimal 2MB.
-                        </p>
-
-                        @error('qr_image')
-                            <p class="mt-2 text-xs font-bold text-rose-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div>
-                        <p class="mb-2 text-sm font-bold text-stone-700">
-                            Preview
-                        </p>
-
-                        <div
-                            class="flex min-h-[160px] items-center justify-center rounded-2xl border border-dashed border-stone-300 bg-stone-50 p-4">
-                            @if ($channel->qr_image_path)
-                                <img src="{{ asset('storage/' . $channel->qr_image_path) }}" alt="{{ $channel->name }}"
-                                    class="max-h-40 rounded-2xl object-contain">
-                            @else
-                                <p class="text-xs font-black uppercase tracking-wider text-stone-400">
-                                    Belum ada QR
-                                </p>
-                            @endif
-                        </div>
-
-                        @if ($channel->qr_image_path)
-                            <label class="mt-3 flex items-center gap-2 text-xs font-bold text-rose-600">
-                                <input type="checkbox" name="remove_qr_image" value="1"
-                                    class="rounded border-stone-300 text-rose-600 focus:ring-rose-500">
-                                Hapus gambar QR
-                            </label>
-                        @endif
-                    </div>
-                </div>
-
-                <div>
-                    <label for="note" class="mb-2 block text-sm font-bold text-stone-700">
-                        Catatan / Instruksi
+                {{-- Gambar QRIS --}}
+                <div x-data="paymentQrPreview(@js($channel->qr_image_path ? asset('storage/' . $channel->qr_image_path) : null))">
+                    <label class="mb-2 block text-sm font-bold text-stone-700">
+                        Gambar QRIS
                     </label>
 
-                    <textarea id="note" name="note" rows="4" placeholder="Contoh: Setelah transfer, upload bukti pembayaran."
-                        class="w-full rounded-2xl border border-stone-200 bg-stone-50 px-5 py-4 text-sm font-semibold text-stone-900 outline-none transition focus:border-amber-500 focus:bg-white focus:ring-4 focus:ring-amber-100">{{ old('note', $channel->note) }}</textarea>
+                    <div class="grid gap-4 lg:grid-cols-[180px,1fr] lg:items-start">
+                        {{-- Preview --}}
+                        <div
+                            class="h-44 w-full overflow-hidden rounded-3xl border border-stone-200 bg-stone-100 lg:h-40 lg:w-44">
+                            <template x-if="imagePreview">
+                                <img :src="imagePreview" alt="Preview gambar QRIS"
+                                    class="h-full w-full object-contain p-3">
+                            </template>
 
-                    @error('note')
-                        <p class="mt-2 text-xs font-bold text-rose-600">{{ $message }}</p>
-                    @enderror
+                            <template x-if="!imagePreview">
+                                <div class="flex h-full w-full flex-col items-center justify-center px-4 text-center">
+                                    <div
+                                        class="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-white shadow-sm">
+                                        <svg class="h-6 w-6 text-stone-400" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M3 4h6v6H3V4zm12 0h6v6h-6V4zM3 14h6v6H3v-6zm12 0h2v2h-2v-2zm4 0h2v2h-2v-2zm-4 4h2v2h-2v-2zm4 0h2v2h-2v-2z" />
+                                        </svg>
+                                    </div>
+
+                                    <p class="text-xs font-black uppercase tracking-wider text-stone-400">
+                                        No QR
+                                    </p>
+
+                                    <p class="mt-1 text-xs font-semibold text-stone-500">
+                                        Belum ada QRIS
+                                    </p>
+                                </div>
+                            </template>
+                        </div>
+
+                        {{-- Input --}}
+                        <div class="min-w-0">
+                            <label for="qr_image"
+                                class="flex cursor-pointer flex-col items-center justify-center rounded-3xl border-2 border-dashed border-stone-200 bg-stone-50 px-5 py-6 text-center transition hover:border-amber-400 hover:bg-amber-50">
+                                <svg class="h-8 w-8 text-stone-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 16V4m0 0L8 8m4-4l4 4M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" />
+                                </svg>
+
+                                <span class="mt-3 text-sm font-black text-stone-800">
+                                    Pilih Gambar QRIS
+                                </span>
+
+                                <span class="mt-1 text-xs font-semibold text-stone-500">
+                                    JPG, PNG, atau WEBP. Maksimal 2MB.
+                                </span>
+
+                                <span x-show="fileName" x-cloak
+                                    class="mt-3 max-w-full truncate rounded-full bg-amber-100 px-3 py-1 text-xs font-black text-amber-700"
+                                    x-text="fileName">
+                                </span>
+                            </label>
+
+                            <input id="qr_image" type="file" name="qr_image"
+                                accept="image/png,image/jpeg,image/jpg,image/webp" class="hidden"
+                                @change="previewImage($event)">
+
+                            @if ($channel->qr_image_path)
+                                <p class="mt-3 text-xs font-semibold text-stone-500">
+                                    Gambar QR lama akan tetap digunakan jika tidak memilih gambar baru.
+                                </p>
+
+                                <label
+                                    class="mt-3 flex items-center gap-2 rounded-2xl border border-rose-100 bg-rose-50 px-4 py-3 text-xs font-bold text-rose-700">
+                                    <input type="checkbox" name="remove_qr_image" value="1"
+                                        class="rounded border-stone-300 text-rose-600 focus:ring-rose-500">
+
+                                    Hapus gambar QR
+                                </label>
+                            @else
+                                <p class="mt-3 text-xs font-semibold text-stone-500">
+                                    Jika tidak memilih gambar, metode pembayaran tetap tersimpan tanpa QRIS.
+                                </p>
+                            @endif
+
+                            @error('qr_image')
+                                <p class="mt-2 text-xs font-bold text-rose-600">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+                        </div>
+                    </div>
                 </div>
 
-                <div class="grid gap-5 lg:grid-cols-2">
-                    <div>
-                        <label for="sort_order" class="mb-2 block text-sm font-bold text-stone-700">
-                            Urutan
-                        </label>
-
-                        <input id="sort_order" type="number" name="sort_order" min="0"
-                            value="{{ old('sort_order', $channel->sort_order ?? 0) }}"
-                            class="h-[52px] w-full rounded-2xl border border-stone-200 bg-stone-50 px-5 text-sm font-bold text-stone-900 outline-none transition focus:border-amber-500 focus:bg-white focus:ring-4 focus:ring-amber-100">
-
-                        @error('sort_order')
-                            <p class="mt-2 text-xs font-bold text-rose-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
+                @if ($isEdit)
                     <div>
                         <label class="mb-2 block text-sm font-bold text-stone-700">
                             Status
@@ -199,15 +219,19 @@
 
                         <label
                             class="flex h-[52px] items-center gap-3 rounded-2xl border border-stone-200 bg-stone-50 px-5">
-                            <input type="checkbox" name="is_active" value="1" @checked(old('is_active', $channel->exists ? $channel->is_active : true))
+                            <input type="checkbox" name="is_active" value="1" @checked(old('is_active', $channel->is_active))
                                 class="rounded border-stone-300 text-amber-600 focus:ring-amber-500">
 
                             <span class="text-sm font-black text-stone-800">
                                 Aktif
                             </span>
                         </label>
+
+                        @error('is_active')
+                            <p class="mt-2 text-xs font-bold text-rose-600">{{ $message }}</p>
+                        @enderror
                     </div>
-                </div>
+                @endif
 
                 <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
                     <a href="{{ route('admin.payment-channels.index') }}"
@@ -223,4 +247,36 @@
             </form>
         </section>
     </div>
+    <script>
+        document.addEventListener('alpine:init', function() {
+            if (!window.__paymentQrPreviewRegistered) {
+                window.__paymentQrPreviewRegistered = true;
+
+                Alpine.data('paymentQrPreview', function(initialImage = null) {
+                    return {
+                        imagePreview: initialImage,
+                        fileName: '',
+                        objectUrl: null,
+
+                        previewImage(event) {
+                            const file = event.target.files[0];
+
+                            if (!file) {
+                                this.fileName = '';
+                                return;
+                            }
+
+                            if (this.objectUrl) {
+                                URL.revokeObjectURL(this.objectUrl);
+                            }
+
+                            this.fileName = file.name;
+                            this.objectUrl = URL.createObjectURL(file);
+                            this.imagePreview = this.objectUrl;
+                        }
+                    };
+                });
+            }
+        });
+    </script>
 @endsection

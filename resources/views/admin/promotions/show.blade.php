@@ -225,6 +225,73 @@
                 </div>
             </div>
         </section>
+        {{-- Aksi Berbahaya --}}
+        <section class="rounded-[2rem] border border-rose-200 bg-rose-50 p-6 shadow-sm">
+            <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                    <p class="text-xs font-black uppercase tracking-[0.22em] text-rose-600">
+                        Aksi Berbahaya
+                    </p>
 
+                    <h3 class="mt-2 text-xl font-black tracking-tight text-rose-950">
+                        Hapus Promo
+                    </h3>
+
+                    <p class="mt-2 max-w-2xl text-sm leading-6 text-rose-700">
+                        Promo yang dihapus tidak akan tampil lagi di daftar promo dan tidak akan digunakan pada transaksi
+                        baru.
+                    </p>
+                </div>
+
+                <div x-data="{ confirmOpen: false }" class="shrink-0">
+                    <button type="button" @click="confirmOpen = true"
+                        class="inline-flex w-full items-center justify-center rounded-2xl border border-rose-300 bg-rose-600 px-5 py-3 text-sm font-black text-white transition hover:bg-rose-700 active:scale-[0.98] lg:w-auto">
+                        Hapus Promo
+                    </button>
+
+                    {{-- Modal Confirmation --}}
+                    <div x-cloak x-show="confirmOpen" x-transition.opacity @keydown.escape.window="confirmOpen = false"
+                        class="fixed inset-0 z-50 flex items-center justify-center bg-stone-950/60 px-4">
+                        <div x-show="confirmOpen" x-transition.scale.origin.center @click.outside="confirmOpen = false"
+                            class="w-full max-w-md rounded-[2rem] border border-stone-200 bg-white p-6 shadow-2xl">
+
+                            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-100">
+                                <svg class="h-6 w-6 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4"
+                                        d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                                </svg>
+                            </div>
+
+                            <h3 class="mt-5 text-lg font-black text-stone-950">
+                                Hapus Promo?
+                            </h3>
+
+                            <p class="mt-2 text-sm font-semibold leading-6 text-stone-500">
+                                Promo <span class="font-black text-stone-900">{{ $promotion->name }}</span> akan dihapus
+                                dari
+                                daftar promo. Promo ini tidak akan digunakan lagi pada transaksi baru.
+                            </p>
+
+                            <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                                <button type="button" @click="confirmOpen = false"
+                                    class="inline-flex items-center justify-center rounded-2xl border border-stone-200 bg-white px-5 py-3 text-sm font-black text-stone-700 transition hover:bg-stone-50">
+                                    Batal
+                                </button>
+
+                                <form method="POST" action="{{ route('admin.promotions.destroy', $promotion) }}">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button type="submit"
+                                        class="inline-flex w-full items-center justify-center rounded-2xl bg-rose-600 px-5 py-3 text-sm font-black text-white transition hover:bg-rose-700 active:scale-[0.98] sm:w-auto">
+                                        Ya, Hapus Promo
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 @endsection

@@ -37,7 +37,7 @@ class AdminPromotionQueryService
                 $query->where('is_active', false);
             })
             ->orderBy('priority')
-            ->latest()
+            ->orderBy('id')
             ->paginate(10)
             ->withQueryString();
     }

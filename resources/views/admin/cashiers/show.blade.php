@@ -168,16 +168,55 @@
                         </p>
                     </div>
 
-                    <form method="POST" action="{{ route('admin.cashiers.destroy', $cashier) }}" class="shrink-0"
-                        onsubmit="return confirm('Yakin ingin menghapus kasir ini? Data yang dihapus tidak bisa dikembalikan.')">
-                        @csrf
-                        @method('DELETE')
-
-                        <button type="submit"
+                    <div x-data="{ confirmOpen: false }" class="shrink-0">
+                        <button type="button" @click="confirmOpen = true"
                             class="inline-flex w-full items-center justify-center rounded-2xl border border-rose-300 bg-rose-600 px-5 py-3 text-sm font-black text-white transition hover:bg-rose-700 active:scale-[0.98] lg:w-auto">
                             Hapus Kasir
                         </button>
-                    </form>
+
+                        {{-- Modal Confirmation --}}
+                        <div x-cloak x-show="confirmOpen" x-transition.opacity @keydown.escape.window="confirmOpen = false"
+                            class="fixed inset-0 z-50 flex items-center justify-center bg-stone-950/60 px-4">
+                            <div x-show="confirmOpen" x-transition.scale.origin.center @click.outside="confirmOpen = false"
+                                class="w-full max-w-md rounded-[2rem] border border-stone-200 bg-white p-6 shadow-2xl">
+
+                                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-100">
+                                    <svg class="h-6 w-6 text-rose-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4"
+                                            d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                                    </svg>
+                                </div>
+
+                                <h3 class="mt-5 text-lg font-black text-stone-950">
+                                    Hapus Kasir?
+                                </h3>
+
+                                <p class="mt-2 text-sm font-semibold leading-6 text-stone-500">
+                                    Kasir <span class="font-black text-stone-900">{{ $cashier->name }}</span> akan dihapus
+                                    dari
+                                    sistem dan tidak bisa digunakan lagi untuk login.
+                                </p>
+
+                                <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                                    <button type="button" @click="confirmOpen = false"
+                                        class="inline-flex items-center justify-center rounded-2xl border border-stone-200 bg-white px-5 py-3 text-sm font-black text-stone-700 transition hover:bg-stone-50">
+                                        Batal
+                                    </button>
+
+                                    <form method="POST" action="{{ route('admin.cashiers.destroy', $cashier) }}">
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button type="submit"
+                                            class="inline-flex w-full items-center justify-center rounded-2xl bg-rose-600 px-5 py-3 text-sm font-black text-white transition hover:bg-rose-700 active:scale-[0.98] sm:w-auto">
+                                            Ya, Hapus Kasir
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
         </div>

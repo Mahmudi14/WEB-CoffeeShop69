@@ -37,8 +37,15 @@
         </div>
     </div>
 
+    @php
+        $isEdit = isset($menu) && $menu->exists;
+    @endphp
+
     {{-- Harga + Status --}}
-    <div class="grid gap-5 lg:grid-cols-[260px_1fr_1fr] lg:items-end xl:grid-cols-[280px_1fr_1fr]">
+    <div @class([
+        'grid gap-5',
+        'md:grid-cols-[260px_minmax(0,1fr)_minmax(0,1fr)] md:items-end xl:grid-cols-[280px_minmax(0,1fr)_minmax(0,1fr)]' => $isEdit,
+    ])>
         <div x-data="rupiahInput(@js(old('normal_price', $menu->normal_price ?? 0)))">
             <label class="mb-2 block text-sm font-bold text-stone-700">
                 Harga Normal
@@ -56,23 +63,27 @@
             @enderror
         </div>
 
-        <label class="flex min-h-[48px] items-center gap-3 rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3">
-            <input type="checkbox" name="is_active" value="1" @checked(old('is_active', $menu->is_active ?? true))
-                class="h-4 w-4 rounded border-stone-300 text-amber-600 focus:ring-amber-500">
+        @if ($isEdit)
+            <label
+                class="flex min-h-[48px] items-center gap-3 rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3">
+                <input type="checkbox" name="is_active" value="1" @checked(old('is_active', $menu->is_active ?? true))
+                    class="h-4 w-4 rounded border-stone-300 text-amber-600 focus:ring-amber-500">
 
-            <span class="text-sm font-bold text-stone-700">
-                Menu aktif
-            </span>
-        </label>
+                <span class="text-sm font-bold text-stone-700">
+                    Menu aktif
+                </span>
+            </label>
 
-        <label class="flex min-h-[48px] items-center gap-3 rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3">
-            <input type="checkbox" name="is_available" value="1" @checked(old('is_available', $menu->is_available ?? true))
-                class="h-4 w-4 rounded border-stone-300 text-amber-600 focus:ring-amber-500">
+            <label
+                class="flex min-h-[48px] items-center gap-3 rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3">
+                <input type="checkbox" name="is_available" value="1" @checked(old('is_available', $menu->is_available ?? true))
+                    class="h-4 w-4 rounded border-stone-300 text-amber-600 focus:ring-amber-500">
 
-            <span class="text-sm font-bold text-stone-700">
-                Menu tersedia
-            </span>
-        </label>
+                <span class="text-sm font-bold text-stone-700">
+                    Menu tersedia
+                </span>
+            </label>
+        @endif
     </div>
 
     {{-- Deskripsi --}}

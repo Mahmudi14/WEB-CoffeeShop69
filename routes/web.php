@@ -116,7 +116,7 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('tables', AdminTableController::class)->except(['destroy']);
         Route::patch('/tables/{table}/toggle-status', [AdminTableController::class, 'toggleStatus'])->name('tables.toggle-status');
         Route::patch('/tables/{table}/regenerate-qr-token', [AdminTableController::class, 'regenerateQrToken'])->name('tables.regenerate-qr-token');
-        Route::resource('promotions', AdminPromotionController::class)->except(['destroy']);
+        Route::resource('promotions', AdminPromotionController::class);
         Route::patch('/promotions/{promotion}/toggle-status', [AdminPromotionController::class, 'toggleStatus'])->name('promotions.toggle-status');
         Route::resource('taxes', AdminTaxController::class)->except(['show', 'destroy']);
         Route::patch('/taxes/{tax}/toggle-status', [AdminTaxController::class, 'toggleStatus'])->name('taxes.toggle-status');

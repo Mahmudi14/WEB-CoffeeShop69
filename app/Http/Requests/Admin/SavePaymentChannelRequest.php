@@ -29,9 +29,7 @@ class SavePaymentChannelRequest extends FormRequest
             'account_name' => ['nullable', 'string', 'max:150'],
             'account_number' => ['nullable', 'string', 'max:100'],
             'qr_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-            'note' => ['nullable', 'string', 'max:1000'],
             'is_active' => ['nullable', 'boolean'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
             'remove_qr_image' => ['nullable', 'boolean'],
         ];
     }

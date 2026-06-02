@@ -93,7 +93,7 @@
                         </div>
 
                         <div class="mt-8 flex flex-col gap-3 border-t border-stone-100 pt-6 sm:flex-row sm:justify-end">
-                            <a href="{{ route('admin.tables.show', $table) }}"
+                            <a href="{{ route('admin.tables.index', $table) }}"
                                 class="inline-flex items-center justify-center rounded-2xl border border-stone-200 bg-white px-5 py-3 text-sm font-black text-stone-700 shadow-sm transition hover:bg-stone-50 active:scale-[0.98]">
                                 Batal
                             </a>

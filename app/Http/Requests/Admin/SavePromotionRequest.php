@@ -37,7 +37,6 @@ class SavePromotionRequest extends FormRequest
             ],
 
             'discount_value' => ['required', 'numeric', 'min:0.01'],
-            'priority' => ['required', 'integer', 'min:1'],
 
             'starts_at' => ['nullable', 'date'],
             'ends_at' => ['nullable', 'date', 'after_or_equal:starts_at'],

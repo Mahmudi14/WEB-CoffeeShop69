@@ -17,7 +17,10 @@ class AdminPromotionService
                 'scope' => $data['scope'],
                 'discount_type' => $data['discount_type'],
                 'discount_value' => $data['discount_value'],
-                'priority' => $data['priority'],
+
+                // Promo baru otomatis priority 0
+                'priority' => 0,
+
                 'starts_at' => $data['starts_at'] ?? null,
                 'ends_at' => $data['ends_at'] ?? null,
                 'is_active' => (bool) ($data['is_active'] ?? false),
@@ -40,7 +43,9 @@ class AdminPromotionService
                 'scope' => $data['scope'],
                 'discount_type' => $data['discount_type'],
                 'discount_value' => $data['discount_value'],
-                'priority' => $data['priority'],
+
+                // Priority tidak diubah saat edit
+
                 'starts_at' => $data['starts_at'] ?? null,
                 'ends_at' => $data['ends_at'] ?? null,
                 'is_active' => (bool) ($data['is_active'] ?? false),

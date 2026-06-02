@@ -6,15 +6,15 @@
 @section('content')
     <div class="space-y-6">
         {{-- Header --}}
-        <section class="relative overflow-hidden rounded-[2rem] bg-[#171412] p-6 shadow-xl border border-white/10">
+        <section class="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#171412] p-6 shadow-xl">
             <div
-                class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,158,11,0.22),transparent_35%),linear-gradient(135deg,rgba(255,255,255,0.06),transparent_45%)] pointer-events-none">
+                class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,158,11,0.22),transparent_35%),linear-gradient(135deg,rgba(255,255,255,0.06),transparent_45%)]">
             </div>
 
-            <div class="relative z-10 flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
-                <div>
+            <div class="relative z-10 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                <div class="min-w-0">
                     <div
-                        class="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/10 px-3 py-1.5">
+                        class="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1.5">
                         <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
 
                         <span class="text-[11px] font-black uppercase tracking-[0.22em] text-stone-300">
@@ -22,7 +22,7 @@
                         </span>
                     </div>
 
-                    <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                    <h1 class="text-2xl font-black tracking-tight text-white sm:text-3xl">
                         Ringkasan Shift
                     </h1>
 
@@ -31,8 +31,8 @@
                     </p>
                 </div>
 
-                <div class="flex flex-col gap-3 sm:flex-row sm:items-center xl:w-auto">
-                    <div class="rounded-2xl border border-white/10 bg-white/10 px-5 py-4 backdrop-blur-md">
+                <div class="flex shrink-0 flex-col gap-3 sm:flex-row sm:items-center">
+                    <div class="rounded-2xl border border-white/10 bg-white/10 px-5 py-4 backdrop-blur-md sm:text-right">
                         <p class="text-[11px] font-black uppercase tracking-widest text-stone-400">
                             Shift Dibuka
                         </p>

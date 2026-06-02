@@ -65,11 +65,9 @@
                                 <span x-show="selectedStatus === ''">
                                     Semua
                                 </span>
-
                                 <span x-show="selectedStatus === 'active'" x-cloak>
                                     Aktif
                                 </span>
-
                                 <span x-show="selectedStatus === 'inactive'" x-cloak>
                                     Nonaktif
                                 </span>

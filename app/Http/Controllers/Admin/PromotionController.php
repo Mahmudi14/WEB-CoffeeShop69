@@ -95,4 +95,12 @@ class PromotionController extends Controller
                 : 'Promo berhasil dinonaktifkan.'
         );
     }
+    public function destroy(Promotion $promotion)
+    {
+    $promotion->delete();
+
+    return redirect()
+        ->route('admin.promotions.index')
+        ->with('success', 'Promo berhasil dihapus.');
+    }
 }

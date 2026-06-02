@@ -28,36 +28,38 @@ class OrderPricingService
             $currentPrice = $normalPrice;
             $appliedPromotions = [];
 
-            $promotions = $this->getApplicablePromotions($menu->id);
+            $promotion = $this->getBestPromotionByBiggestDiscount(
+                menuId: $menu->id,
+                price: $normalPrice
+            );
 
-            $appliedOrder = 1;
-
-            foreach ($promotions as $promotion) {
+            if ($promotion) {
                 $priceBeforeDiscount = $currentPrice;
-                $discountAmountPerUnit = $this->calculateDiscountAmount($promotion, $currentPrice);
 
-                if ($discountAmountPerUnit <= 0) {
-                    continue;
-                }
+                $discountAmountPerUnit = $this->calculateDiscountAmount(
+                    promotion: $promotion,
+                    currentPrice: $currentPrice
+                );
 
                 $discountAmountPerUnit = min($discountAmountPerUnit, $currentPrice);
-                $currentPrice = max($currentPrice - $discountAmountPerUnit, 0);
 
-                $appliedPromotions[] = [
-                    'promotion_id' => $promotion->id,
-                    'promotion_name' => $promotion->name,
-                    'discount_type' => $promotion->discount_type,
-                    'discount_value' => $promotion->discount_value,
-                    'priority' => $promotion->priority,
-                    'price_before_discount' => $priceBeforeDiscount,
-                    'discount_amount_per_unit' => $discountAmountPerUnit,
-                    'price_after_discount' => $currentPrice,
-                    'quantity' => $quantity,
-                    'discount_amount_total' => $discountAmountPerUnit * $quantity,
-                    'applied_order' => $appliedOrder,
-                ];
+                if ($discountAmountPerUnit > 0) {
+                    $currentPrice = max($currentPrice - $discountAmountPerUnit, 0);
 
-                $appliedOrder++;
+                    $appliedPromotions[] = [
+                        'promotion_id' => $promotion->id,
+                        'promotion_name' => $promotion->name,
+                        'discount_type' => $promotion->discount_type,
+                        'discount_value' => $promotion->discount_value,
+                        'priority' => $promotion->priority,
+                        'price_before_discount' => $priceBeforeDiscount,
+                        'discount_amount_per_unit' => $discountAmountPerUnit,
+                        'price_after_discount' => $currentPrice,
+                        'quantity' => $quantity,
+                        'discount_amount_total' => $discountAmountPerUnit * $quantity,
+                        'applied_order' => 1,
+                    ];
+                }
             }
 
             $finalPrice = $currentPrice;
@@ -110,6 +112,20 @@ class OrderPricingService
         ];
     }
 
+    private function getBestPromotionByBiggestDiscount(int $menuId, int $price): ?Promotion
+    {
+        $promotions = $this->getApplicablePromotions($menuId);
+
+        return $promotions
+            ->sortByDesc(function (Promotion $promotion) use ($price) {
+                return $this->calculateCappedDiscountAmount(
+                    promotion: $promotion,
+                    price: $price
+                );
+            })
+            ->first();
+    }
+
     private function getApplicablePromotions(int $menuId)
     {
         return Promotion::query()
@@ -123,9 +139,18 @@ class OrderPricingService
                             });
                     });
             })
-            ->orderBy('priority')
             ->orderBy('id')
             ->get();
+    }
+
+    private function calculateCappedDiscountAmount(Promotion $promotion, int $price): int
+    {
+        $discountAmount = $this->calculateDiscountAmount(
+            promotion: $promotion,
+            currentPrice: $price
+        );
+
+        return min($discountAmount, $price);
     }
 
     private function calculateDiscountAmount(Promotion $promotion, int $currentPrice): int
